@@ -1,0 +1,93 @@
+.greeting {
+  text-align: center;
+}
+
+.greeting__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.greeting__line {
+  font-family: var(--font-serif);
+  font-size: 1.04rem;
+  line-height: 2;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+.greeting__gap {
+  display: block;
+  height: 16px;
+}
+
+.greeting__people {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.greeting__people-div {
+  width: 1px;
+  height: 22px;
+  background: var(--line);
+}
+
+.greeting__person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.greeting__parents {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+.greeting__parents-names {
+  color: var(--ink);
+}
+.greeting__of {
+  color: var(--ink-soft);
+}
+.greeting__child {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.greeting__side {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.greeting__child-name {
+  font-family: var(--font-serif);
+  font-size: 1.24rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.greeting__contact {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+}
+.greeting__contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.greeting__contact-btn svg {
+  color: var(--leaf);
+}

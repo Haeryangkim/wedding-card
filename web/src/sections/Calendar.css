@@ -1,0 +1,176 @@
+.calendar {
+  text-align: center;
+  background: var(--paper-2);
+}
+
+.calendar__dateline {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin-bottom: 22px;
+}
+
+.calendar__card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  box-shadow: var(--shadow);
+}
+
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px 0;
+}
+
+.calendar__wd {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 6px;
+}
+.calendar__wd--sun {
+  color: var(--accent);
+}
+
+.calendar__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+}
+.calendar__day {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--ink);
+  border-radius: 50%;
+}
+.calendar__cell.is-sun .calendar__day {
+  color: var(--accent);
+}
+.calendar__cell.is-target .calendar__day {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(181, 101, 74, 0.4);
+}
+.calendar__heart {
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  width: 13px;
+  height: 13px;
+  color: var(--accent);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+}
+
+.calendar__dday {
+  margin-top: 26px;
+  font-family: var(--font-sans);
+  font-size: 0.94rem;
+  color: var(--ink-soft);
+}
+.calendar__dday strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.calendar__count {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.calendar__count-unit {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 0 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.calendar__count-num {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.calendar__count-label {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+
+.calendar__married {
+  margin-top: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.calendar__married-hearts {
+  color: var(--accent);
+  font-size: 1.3rem;
+}
+.calendar__married-line {
+  font-family: var(--font-serif);
+  font-size: 1.16rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.calendar__married-sub {
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+
+.calendar__add {
+  margin-top: 24px;
+}
+
+.calendar__opt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  width: 100%;
+  min-height: 60px;
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease;
+}
+.calendar__opt.is-reco {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 32%, var(--card));
+}
+.calendar__opt-main {
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.calendar__opt-sub {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+.calendar__opt.is-reco .calendar__opt-sub {
+  color: var(--accent);
+  font-weight: 600;
+}

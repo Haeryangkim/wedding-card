@@ -1,0 +1,78 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# 정적 사이트를 GitHub Pages 로 배포하는 데 필요한 권한
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동시에 한 번만 배포
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      # owner 를 소문자로 바꿔 Pages 절대 URL/base 경로를 계산
+      - name: Compute Pages URLs
+        id: urls
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          owner=$(printf '%s' "$OWNER" | tr '[:upper:]' '[:lower:]')
+          {
+            echo "base=/$REPO/"
+            echo "site=https://$owner.github.io/$REPO/"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Install
+        working-directory: web
+        run: npm ci
+
+      - name: Build
+        working-directory: web
+        env:
+          VITE_BASE: ${{ steps.urls.outputs.base }}
+          VITE_SITE_URL: ${{ steps.urls.outputs.site }}
+          # 저장소 변수(vars.VITE_API_URL)가 비어 있으면 로컬 데모 모드로 빌드됨
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+        run: |
+          npm run build
+          touch dist/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

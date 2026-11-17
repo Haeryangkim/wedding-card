@@ -1,0 +1,43 @@
+.share {
+  text-align: center;
+  padding: 56px var(--gutter) calc(54px + env(safe-area-inset-bottom, 0px));
+}
+
+.share__mark {
+  font-size: 1.3rem;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.share__thanks {
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  line-height: 1.9;
+  color: var(--ink);
+}
+
+.share__actions {
+  margin: 26px 0 30px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.share__btn {
+  min-width: 132px;
+}
+
+.share__names {
+  font-family: var(--font-serif);
+  font-size: 1.04rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+.share__copy {
+  margin-top: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}

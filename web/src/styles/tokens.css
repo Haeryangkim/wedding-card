@@ -1,0 +1,27 @@
+/* 디자인 토큰 — 모든 모듈은 색/폰트/간격을 하드코딩하지 말고 이 변수만 사용합니다. */
+:root {
+  /* 종이·잉크 */
+  --paper: #faf6ef;
+  --paper-2: #f3ecdf;
+  --card: #fffdf8;
+  --ink: #3b332b;
+  --ink-soft: #7a6f63;
+  --ink-faint: #b3a899;
+  --line: #e6dccb;
+  /* 포인트 */
+  --accent: #b5654a; /* 테라코타 */
+  --accent-soft: #e9cfc2;
+  --leaf: #6f8a64; /* 세이지 그린 */
+  --leaf-soft: #d9e3d1;
+  --gold: #c2a15a;
+  --danger: #b84a4a;
+  /* 타이포 */
+  --font-serif: 'Gowun Batang', 'Nanum Myeongjo', 'Apple SD Gothic Neo', serif;
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-pixel: 'Galmuri11', 'DungGeunMo', 'Apple SD Gothic Neo', monospace;
+  /* 레이아웃 */
+  --page-max: 430px;
+  --gutter: 24px;
+  --radius: 14px;
+  --shadow: 0 6px 24px rgba(59, 51, 43, 0.08);
+}

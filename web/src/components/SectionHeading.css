@@ -1,0 +1,41 @@
+.section-heading {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.section-heading__eyebrow {
+  margin: 0 0 10px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.section-heading__title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.section-heading__rule {
+  display: block;
+  width: 30px;
+  height: 1px;
+  margin: 16px auto 0;
+  background: var(--gold);
+  opacity: 0.7;
+}
+
+.section-heading__subtitle {
+  margin: 14px auto 0;
+  max-width: 28ch;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}

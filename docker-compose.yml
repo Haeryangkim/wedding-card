@@ -1,0 +1,52 @@
+# 자체 호스팅 한 방 구성: `docker compose up -d --build`
+# web(nginx) 가 정적 청첩장을 서빙하고 /api 를 api 컨테이너로 프록시한다.
+# 설정은 .env 로 주입한다 (.env.example 참고).
+
+services:
+  api:
+    build:
+      context: ./server
+    environment:
+      PORT: "8787"
+      DB_PATH: /data/guestbook.db
+      # 같은 오리진(web 프록시)으로 쓰면 비워둬도 된다. 외부(GitHub Pages 등)에서
+      # 직접 호출하려면 해당 오리진을 넣는다. 예: https://haeryangkim.github.io
+      CORS_ORIGIN: ${CORS_ORIGIN:-}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      MAX_GUESTS: ${MAX_GUESTS:-1000}
+      # nginx 뒤에 있으므로 X-Forwarded-For 를 신뢰해 IP별 레이트리밋
+      TRUST_PROXY: "1"
+    volumes:
+      - guestbook-data:/data
+    expose:
+      - "8787"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8787/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_BASE: ${VITE_BASE:-/}
+        VITE_SITE_URL: ${VITE_SITE_URL:-}
+        VITE_API_URL: ${VITE_API_URL:-/}
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  guestbook-data:

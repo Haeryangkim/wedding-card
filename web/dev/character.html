@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>캐릭터 개발 하네스</title>
+    <style>
+      body {
+        margin: 0;
+        background: #cdb79a; /* 따뜻한 밝은 바닥(배경 가정) */
+        font-family: -apple-system, 'Apple SD Gothic Neo', sans-serif;
+        color: #2a2330;
+      }
+      #sheet {
+        display: block;
+        image-rendering: pixelated;
+      }
+      #creator-mount {
+        max-width: 430px;
+        margin: 24px auto;
+        background: #faf6ef;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      h2 {
+        text-align: center;
+        font-size: 14px;
+        color: #3b332b;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="sheet"></canvas>
+    <h2>캐릭터 만들기</h2>
+    <div id="creator-mount"></div>
+    <script type="module" src="/dev/character.tsx"></script>
+  </body>
+</html>

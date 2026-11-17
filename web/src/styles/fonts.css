@@ -1,0 +1,24 @@
+/* 자체 호스팅 폰트 (모두 SIL OFL). 외부 CDN 없이 도커/오프라인에서도 동일하게 동작합니다. */
+@import '@fontsource/gowun-batang/400.css';
+@import '@fontsource/gowun-batang/700.css';
+@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+
+/* 픽셀 방명록용 도트 폰트 — 필요한 굵기만 선언 */
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('../../node_modules/galmuri/dist/Galmuri11.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('../../node_modules/galmuri/dist/Galmuri11-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Galmuri9';
+  src: url('../../node_modules/galmuri/dist/Galmuri9.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}

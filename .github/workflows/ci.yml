@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  web:
+    name: Web (typecheck · test · build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install
+        working-directory: web
+        run: npm ci
+      - name: Typecheck
+        working-directory: web
+        run: npx tsc -b --noEmit
+      - name: Test
+        working-directory: web
+        run: npx vitest run --passWithNoTests
+      - name: Build
+        working-directory: web
+        run: npm run build
+
+  server:
+    name: Server (node:test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Test
+        working-directory: server
+        run: npm test
+
+  docker:
+    name: Docker compose smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build images
+        run: docker compose build
+
+      - name: Start stack
+        run: docker compose up -d
+
+      - name: Wait for web + api to be healthy
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8080/ >/dev/null 2>&1 \
+               && curl -sf http://localhost:8080/api/health >/dev/null 2>&1; then
+              echo "stack is up (attempt $i)"
+              exit 0
+            fi
+            echo "waiting for stack... ($i)"
+            sleep 2
+          done
+          echo "stack did not become healthy in time"
+          docker compose ps
+          docker compose logs
+          exit 1
+
+      - name: Smoke test through nginx
+        run: |
+          set -euo pipefail
+          base=http://localhost:8080
+
+          echo "== GET / =="
+          curl -sf "$base/" >/dev/null
+
+          echo "== GET /wedding.ics (text/calendar) =="
+          ct=$(curl -sf -o /tmp/wedding.ics -w '%{content_type}' "$base/wedding.ics")
+          echo "content-type: $ct"
+          echo "$ct" | grep -qi 'text/calendar'
+          grep -q 'BEGIN:VCALENDAR' /tmp/wedding.ics
+
+          echo "== GET /api/health =="
+          curl -sf "$base/api/health" | jq -e '.ok == true'
+
+          echo "== POST /api/guests =="
+          payload='{"name":"CI봇","message":"스모크 테스트입니다","side":"groom","appearance":{"skin":0,"hairStyle":1,"hairColor":2,"outfit":3,"outfitColor":4,"accessory":0},"password":"ci-test-pass"}'
+          id=$(curl -sf -X POST "$base/api/guests" -H 'Content-Type: application/json' -d "$payload" | jq -r '.id')
+          echo "created id=$id"
+          test -n "$id" && test "$id" != "null"
+
+          echo "== GET /api/guests contains new entry =="
+          curl -sf "$base/api/guests" | jq -e --arg id "$id" 'any(.[]; .id == $id)'
+
+          echo "== DELETE with password → 204 =="
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X DELETE "$base/api/guests/$id" \
+            -H 'Content-Type: application/json' -d '{"password":"ci-test-pass"}')
+          echo "delete status=$code"
+          test "$code" = "204"
+
+          echo "== entry is gone =="
+          curl -sf "$base/api/guests" | jq -e --arg id "$id" 'all(.[]; .id != $id)'
+
+          echo "all smoke checks passed"
+
+      - name: Dump logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v

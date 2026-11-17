@@ -1,0 +1,17 @@
+# 루트 컨텍스트에서 빌드할 경우를 대비한 제외 목록
+# (compose 는 ./web, ./server 를 각각 컨텍스트로 쓰며 그 디렉터리의 .dockerignore 를 따른다)
+.git
+.github
+node_modules
+**/node_modules
+**/dist
+data
+**/*.db
+**/*.db-shm
+**/*.db-wal
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+README.md

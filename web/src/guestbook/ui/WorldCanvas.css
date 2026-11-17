@@ -1,0 +1,22 @@
+.world-canvas-wrap {
+  width: 100%;
+  /* 페이지 세로 스크롤을 막지 않도록 일반 블록 흐름 유지 */
+  display: block;
+  line-height: 0;
+  background: var(--paper-2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.world-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* 가로 스크롤 금지, 세로 스크롤(페이지)은 허용 */
+  touch-action: pan-y;
+  /* 레티나에서는 디바이스 해상도로 그려지므로 기본(auto) 축소가 더 선명 */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}

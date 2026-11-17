@@ -1,0 +1,135 @@
+import { useEffect, useRef, useState } from 'react'
+import type { GuestEntry } from '../types'
+import { CharacterPreview } from './CharacterPreview'
+import { fullDate, sideLabel } from './format'
+import './GuestCard.css'
+
+export interface GuestCardProps {
+  entry: GuestEntry
+  mine: boolean
+  onClose: () => void
+  onDelete: (id: string, password: string) => Promise<void>
+  /** 맵에서 이 캐릭터로 카메라 이동 */
+  onLocate?: (id: string) => void
+}
+
+export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCardProps) {
+  const [deleting, setDeleting] = useState(false)
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const prev = document.activeElement as HTMLElement | null
+    const raf = requestAnimationFrame(() => cardRef.current?.focus())
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+        onClose()
+      }
+    }
+    document.addEventListener('keydown', onKey, true)
+    return () => {
+      cancelAnimationFrame(raf)
+      document.removeEventListener('keydown', onKey, true)
+      prev?.focus?.()
+    }
+  }, [onClose])
+
+  const confirmDelete = async () => {
+    if (busy) return
+    setBusy(true)
+    setError(null)
+    try {
+      await onDelete(entry.id, password)
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '삭제하지 못했어요.')
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="card-backdrop" onMouseDown={onClose}>
+      <div
+        ref={cardRef}
+        className="guest-card"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${entry.name}님의 축하 메시지`}
+        tabIndex={-1}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <button type="button" className="card-close" onClick={onClose} aria-label="닫기">
+          ✕
+        </button>
+
+        <div className="card-avatar">
+          <CharacterPreview kind={entry.appearance} scale={4} dir="down" animate />
+        </div>
+
+        <div className="card-headline">
+          <span className="card-name">{entry.name}</span>
+          <span className={`side-chip side-${entry.side}`}>{sideLabel(entry.side)}</span>
+          {mine && <span className="mine-badge">내 캐릭터</span>}
+        </div>
+
+        <p className="card-message">{entry.message}</p>
+        <p className="card-date">{fullDate(entry.createdAt)}</p>
+
+        <div className="card-actions">
+          {onLocate && (
+            <button type="button" className="card-ghost" onClick={() => onLocate(entry.id)}>
+              맵에서 보기
+            </button>
+          )}
+          {mine && !deleting && (
+            <button type="button" className="card-ghost danger" onClick={() => setDeleting(true)}>
+              삭제
+            </button>
+          )}
+        </div>
+
+        {mine && deleting && (
+          <div className="card-delete">
+            <label className="field">
+              <span className="field-label">삭제 비밀번호</span>
+              <input
+                className={`field-input${error ? ' has-error' : ''}`}
+                type="password"
+                value={password}
+                autoComplete="off"
+                placeholder="등록할 때 정한 비밀번호"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              {error && <span className="field-error">{error}</span>}
+            </label>
+            <div className="card-delete-actions">
+              <button
+                type="button"
+                className="card-ghost"
+                onClick={() => {
+                  setDeleting(false)
+                  setPassword('')
+                  setError(null)
+                }}
+                disabled={busy}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className="card-delete-confirm"
+                onClick={confirmDelete}
+                disabled={busy}
+              >
+                {busy ? '삭제 중…' : '삭제하기'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

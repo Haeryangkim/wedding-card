@@ -1,0 +1,113 @@
+/* 방명록 폼 공용 프리미티브 — JoinFlow / GuestCard / GuestList 가 공유 */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.field-hint {
+  font-weight: 400;
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+}
+.field-counter {
+  font-family: var(--font-pixel);
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+}
+.field-counter.is-over {
+  color: var(--danger);
+}
+
+.field-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+.field-input::placeholder {
+  color: var(--ink-faint);
+}
+.field-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.field-input.has-error {
+  border-color: var(--danger);
+}
+.field-textarea {
+  resize: vertical;
+  min-height: 84px;
+  line-height: 1.5;
+}
+.field-error {
+  font-size: 0.78rem;
+  color: var(--danger);
+}
+
+.side-toggle {
+  display: flex;
+  gap: 8px;
+}
+.side-btn {
+  flex: 1;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink-soft);
+  font-family: var(--font-pixel);
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+.side-btn.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* 하객 구분 칩 */
+.side-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+.side-chip.side-groom {
+  background: var(--leaf-soft);
+  color: var(--leaf);
+}
+.side-chip.side-bride {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.mine-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 0.68rem;
+}

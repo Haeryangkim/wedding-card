@@ -1,0 +1,150 @@
+/* 전역 기본 스타일 + 페이지 셸(모바일 폭 중앙 정렬) + 공용 프리미티브 */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  /* 데스크톱: 종이색 페이지를 부드러운 중립 배경 위에 띄움 */
+  background: #ece6db;
+  background-image: radial-gradient(circle at 50% -10%, #f4efe4 0%, #e7e0d4 60%, #e1d9cc 100%);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* iOS 더블탭 확대/의도치 않은 가로 제스처 억제 (세로 스크롤은 유지) */
+body {
+  touch-action: pan-y;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── 페이지 셸 ─────────────────────────────── */
+.page {
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--paper);
+  background-image: linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+  box-shadow: 0 0 60px rgba(59, 51, 43, 0.12);
+  overflow: hidden;
+}
+
+/* 각 섹션 공통 여백 */
+.section {
+  padding: 56px var(--gutter);
+}
+
+.section--tight {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.section-divider {
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent);
+}
+
+/* ── 공용 버튼 ─────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn--soft {
+  background: var(--paper-2);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.btn--leaf {
+  background: var(--leaf);
+  border-color: var(--leaf);
+  color: #fff;
+}
+
+.btn--sm {
+  min-height: 44px;
+  font-size: 0.86rem;
+}
+
+.btn[aria-pressed='true'] {
+  border-color: var(--accent);
+}
+
+/* 가로 스크롤 방지 */
+.page * {
+  max-width: 100%;
+}

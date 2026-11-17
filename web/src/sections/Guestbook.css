@@ -1,0 +1,8 @@
+.guestbook {
+  background: var(--paper-2);
+}
+
+/* 픽셀 방명록은 콘텐츠 열 전체 너비를 쓰며 내부 레이아웃을 스스로 관리합니다. */
+.guestbook__stage {
+  margin-top: 8px;
+}

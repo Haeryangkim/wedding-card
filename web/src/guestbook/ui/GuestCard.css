@@ -1,0 +1,157 @@
+@import './fields.css';
+
+.card-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--gutter) + env(safe-area-inset-top, 0px)) var(--gutter)
+    calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
+  background: rgba(40, 34, 28, 0.42);
+  backdrop-filter: blur(2px);
+  animation: card-fade 0.16s ease-out;
+}
+
+.guest-card {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  max-height: 86vh;
+  overflow-y: auto;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 20px 20px;
+  text-align: center;
+  outline: none;
+  animation: card-pop 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  color: var(--ink-faint);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.card-avatar {
+  display: flex;
+  justify-content: center;
+  min-height: 80px;
+  margin-bottom: 10px;
+}
+
+.card-headline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.card-name {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.card-message {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+  word-break: break-word;
+}
+.card-date {
+  margin: 0 0 16px;
+  font-family: var(--font-pixel);
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.card-ghost {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.card-ghost.danger {
+  color: var(--danger);
+  border-color: #e7cdca;
+}
+
+.card-delete {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.card-delete-actions {
+  display: flex;
+  gap: 8px;
+}
+.card-delete-actions .card-ghost {
+  flex: 1;
+}
+.card-delete-confirm {
+  flex: 1;
+  min-height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: var(--danger);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.card-delete-confirm:disabled {
+  opacity: 0.6;
+}
+
+@keyframes card-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes card-pop {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-backdrop,
+  .guest-card {
+    animation: none;
+  }
+}
