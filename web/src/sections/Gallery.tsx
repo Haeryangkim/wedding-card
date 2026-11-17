@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { lockScroll } from '../lib/scrollLock'
 import { wedding } from '../config/wedding'
 import { SectionHeading } from '../components/SectionHeading'
 import './Gallery.css'
@@ -43,11 +44,10 @@ export function Gallery() {
       if (e.key === 'ArrowLeft') go(-1)
     }
     document.addEventListener('keydown', onKey)
-    const prev = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const unlock = lockScroll()
     return () => {
       document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = prev
+      unlock()
     }
   }, [open, close, go])
 

@@ -62,8 +62,12 @@ function weddingIcs(): Plugin {
   }
 }
 
+const apiProxy = { '/api': 'http://localhost:8787' }
+
 export default defineConfig({
   base,
   plugins: [react(), ogTags(), weddingIcs()],
-  server: { host: true, proxy: { '/api': 'http://localhost:8787' } },
+  server: { host: true, proxy: apiProxy },
+  // `vite preview` (로컬 배포 확인용) 도 같은 프록시 사용
+  preview: { host: true, proxy: apiProxy },
 })

@@ -51,18 +51,18 @@ export interface WeddingConfig {
 
 export const wedding: WeddingConfig = {
   groom: {
-    name: '김신랑',
-    firstName: '신랑',
+    name: '김해량',
+    firstName: '해량',
     relation: '장남',
     father: { name: '김아버지' },
     mother: { name: '이어머니' },
     phone: '010-0000-0000',
   },
   bride: {
-    name: '박신부',
-    firstName: '신부',
+    name: '김지은',
+    firstName: '지은',
     relation: '장녀',
-    father: { name: '박아버지' },
+    father: { name: '김아버지' },
     mother: { name: '최어머니' },
     phone: '010-0000-0000',
   },
@@ -94,11 +94,11 @@ export const wedding: WeddingConfig = {
   coverImage: undefined,
   gallery: [],
   accounts: {
-    groomSide: [{ role: '신랑', bank: '예시은행', number: '000-0000-0000', holder: '김신랑' }],
-    brideSide: [{ role: '신부', bank: '예시은행', number: '000-0000-0000', holder: '박신부' }],
+    groomSide: [{ role: '신랑', bank: '예시은행', number: '000-0000-0000', holder: '김해량' }],
+    brideSide: [{ role: '신부', bank: '예시은행', number: '000-0000-0000', holder: '김지은' }],
   },
   share: {
-    title: '김신랑 ♥ 박신부 결혼합니다',
+    title: '김해량 ♥ 김지은 결혼합니다',
     description: '2027년 5월 15일 토요일 오후 12시 30분 · 예시웨딩홀',
   },
   kakaoJsKey: undefined,

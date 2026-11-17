@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef } from 'react'
 import type { ReactNode } from 'react'
+import { createPortal } from 'react-dom'
+import { lockScroll } from '../../lib/scrollLock'
 import './BottomSheet.css'
 
 export interface BottomSheetProps {
@@ -31,9 +33,7 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
 
     restoreFocusRef.current = (document.activeElement as HTMLElement) ?? null
 
-    const body = document.body
-    const prevOverflow = body.style.overflow
-    body.style.overflow = 'hidden'
+    const unlock = lockScroll()
 
     // 첫 포커스는 다이얼로그 패널 자체 (닫기 버튼에 포커스 링이 바로 뜨지 않도록)
     const panel = panelRef.current
@@ -70,14 +70,15 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
     return () => {
       cancelAnimationFrame(raf)
       document.removeEventListener('keydown', onKeyDown, true)
-      body.style.overflow = prevOverflow
+      unlock()
       restoreFocusRef.current?.focus?.()
     }
   }, [open])
 
   if (!open) return null
 
-  return (
+  // 조상에 transform/will-change 가 있으면 position: fixed 가 뷰포트가 아닌 그 조상 기준이 되므로 body 로 포털
+  return createPortal(
     <div className="sheet-backdrop" onMouseDown={onClose}>
       <div
         ref={panelRef}
@@ -100,6 +101,7 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
         </div>
         <div className="sheet-body">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

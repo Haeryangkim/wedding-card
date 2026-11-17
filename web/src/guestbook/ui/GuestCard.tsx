@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { GuestEntry } from '../types'
 import { CharacterPreview } from './CharacterPreview'
 import { fullDate, sideLabel } from './format'
@@ -55,7 +56,7 @@ export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCar
     }
   }
 
-  return (
+  return createPortal(
     <div className="card-backdrop" onMouseDown={onClose}>
       <div
         ref={cardRef}
@@ -135,6 +136,7 @@ export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCar
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

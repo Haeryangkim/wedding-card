@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { lockScroll } from '../lib/scrollLock'
 import './BottomSheet.css'
 
 interface BottomSheetProps {
@@ -18,11 +19,10 @@ export function BottomSheet({ open, onClose, title, children }: BottomSheetProps
       if (e.key === 'Escape') onClose()
     }
     document.addEventListener('keydown', onKey)
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const unlock = lockScroll()
     return () => {
       document.removeEventListener('keydown', onKey)
-      document.body.style.overflow = prevOverflow
+      unlock()
     }
   }, [open, onClose])
 

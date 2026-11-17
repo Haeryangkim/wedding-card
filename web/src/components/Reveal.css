@@ -10,6 +10,7 @@
 .reveal.is-in {
   opacity: 1;
   transform: none;
+  will-change: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -14,8 +14,8 @@ function utf8ByteLength(s: string): number {
 }
 
 const ev: CalendarEvent = {
-  title: '김신랑 ♥ 박신부 결혼식',
-  description: '김신랑 ♥ 박신부의 결혼식에 초대합니다.',
+  title: '김해량 ♥ 김지은 결혼식',
+  description: '김해량 ♥ 김지은의 결혼식에 초대합니다.',
   location: '예시웨딩홀 3층 그랜드홀, 서울특별시 중구 세종대로 110',
   start: new Date('2027-05-15T12:30:00+09:00'),
   end: new Date('2027-05-15T14:00:00+09:00'),
@@ -25,7 +25,7 @@ const ev: CalendarEvent = {
 describe('weddingEvent', () => {
   it('설정값에서 제목/장소/시간을 구성한다', () => {
     const e = weddingEvent(wedding, 'https://haeryangkim.github.io/wedding-card/')
-    expect(e.title).toBe('김신랑 ♥ 박신부 결혼식')
+    expect(e.title).toBe('김해량 ♥ 김지은 결혼식')
     expect(e.location).toBe('예시웨딩홀 3층 그랜드홀, 서울특별시 중구 세종대로 110')
     // 12:30 KST = 03:30 UTC, +90분 → 05:00 UTC
     expect(e.start.toISOString()).toBe('2027-05-15T03:30:00.000Z')
