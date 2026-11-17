@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { GuestEntry } from '../types'
 import { getSprite, SPRITE_H } from '../character'
+import { ensureStyles, headHeight, onStyleLoaded, styleOf, STYLE_META } from '../styles/registry'
 import { LOGICAL_W, MAX_STEPS_PER_FRAME, SIM_DT } from '../world/constants'
 import {
   computeLayout,
@@ -141,6 +142,7 @@ class WorldEngine {
   private running = false
   private destroyed = false
 
+  private offStyles: (() => void) | null = null
   private ro: ResizeObserver | null = null
   private io: IntersectionObserver | null = null
 
@@ -181,6 +183,11 @@ class WorldEngine {
     )
     this.io.observe(this.canvas)
 
+    // 다른 그림체의 모듈이 뒤늦게 도착하면 (움직임 줄이기 모드의 정지 화면도) 다시 그린다
+    this.offStyles = onStyleLoaded(() => {
+      if (!this.destroyed && this.reduced) this.draw()
+    })
+
     document.addEventListener('visibilitychange', this.onVisibility)
     // 주소창 접힘·화면 회전: 컨테이너 크기가 바뀌지 않는 브라우저에서도 다시 맞춘다
     window.visualViewport?.addEventListener('resize', this.onResize)
@@ -204,6 +211,7 @@ class WorldEngine {
     cancelAnimationFrame(this.raf)
     this.ro?.disconnect()
     this.io?.disconnect()
+    this.offStyles?.()
     document.removeEventListener('visibilitychange', this.onVisibility)
     window.visualViewport?.removeEventListener('resize', this.onResize)
     window.removeEventListener('orientationchange', this.onResize)
@@ -234,8 +242,11 @@ class WorldEngine {
     this.pool = entries.map((e) => ({ id: e.id, message: e.message }))
     const ids = entries.map((e) => e.id)
 
+    // 이 장면에 필요한 그림체 모듈을 불러오기 시작한다 (기본 픽셀뿐이면 아무 일도 없다)
+    ensureStyles(entries.map((e) => e.appearance))
+
     this.relayout(false, entries.length)
-    this.sim.sync(ids)
+    this.sim.sync(ids, this.sizeOf)
 
     const hidden = this.all.length - entries.length
     if (hidden !== this.overflowCount) {
@@ -259,6 +270,12 @@ class WorldEngine {
       this.settle()
       this.draw()
     }
+  }
+
+  /** 그림체별 몸집 배수 (이웃 간격) */
+  private sizeOf = (id: string): number => {
+    const e = this.entryById.get(id)
+    return e ? STYLE_META[styleOf(e.appearance)].sep : 1
   }
 
   /** stage 모드: 최근 하객부터 화면 정원만큼. 포커스된 하객은 오래됐어도 반드시 포함한다 */
@@ -471,17 +488,20 @@ class WorldEngine {
   }
 
   private draw(): void {
+    let sx: number
+    let sy: number
     if (this.stage) {
-      const scale = this.unit * this.dpr
-      this.ctx.setTransform(scale, 0, 0, scale, 0, 0)
+      sx = sy = this.unit * this.dpr
     } else {
-      const sx = this.canvas.width / this.layout.W
-      const sy = this.canvas.height / this.layout.H
-      this.ctx.setTransform(sx, 0, 0, sy, 0, 0)
+      sx = this.canvas.width / this.layout.W
+      sy = this.canvas.height / this.layout.H
     }
+    this.ctx.setTransform(sx, 0, 0, sy, 0, 0)
     this.ctx.imageSmoothingEnabled = false
     renderWorld({
       ctx: this.ctx,
+      sx,
+      sy,
       layout: this.layout,
       backdrop: this.backdrop,
       agents: this.sim.list(),
@@ -591,11 +611,15 @@ class WorldEngine {
   /** 발 기준 스프라이트 박스로 히트테스트. 앞(큰 y)부터 우선 */
   private pickAgent(lx: number, ly: number) {
     const agents = this.sim.list()
+    const ppu = this.stage ? this.unit * this.dpr : this.canvas.width / this.layout.W
     let best: { id: string; y: number } | null = null
     for (const a of agents) {
       if (a.life === 'despawn') continue
-      const withinX = Math.abs(lx - a.x) <= 10
-      const withinY = ly <= a.y + 2 && ly >= a.y - SPRITE_H - 2
+      const entry = this.entryById.get(a.id)
+      if (!entry) continue
+      const id = styleOf(entry.appearance)
+      const withinX = Math.abs(lx - a.x) <= STYLE_META[id].halfW
+      const withinY = ly <= a.y + 2 && ly >= a.y - headHeight(id, ppu) - 2
       if (withinX && withinY && (!best || a.y > best.y)) best = { id: a.id, y: a.y }
     }
     return best

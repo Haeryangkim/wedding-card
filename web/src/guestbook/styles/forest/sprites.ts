@@ -1,5 +1,5 @@
 /** 합성: 외형 → 층 순서대로 그리기, 스케일별 캔버스 캐시, 캐릭터 만들기용 파츠 정의. */
-import type { Appearance } from '../../types'
+import type { Appearance, PartKey } from '../../types'
 import { ACCESSORIES } from './accessories'
 import { drawArms, drawHead, drawLegs, drawShadow, gait } from './body'
 import type { Dir, Frame, PartDef, SpriteKind, View } from './dims'
@@ -10,7 +10,7 @@ import { drawTorso, OUTFITS, paletteFor, type OutfitDef } from './outfits'
 import { HAIR_COLORS, OUTFIT_COLORS, SKINS } from './palette'
 import { bouquet, GOWN, tiara, TUXEDO, veil } from './special'
 
-const COUNTS: Record<keyof Appearance, number> = {
+const COUNTS: Record<PartKey, number> = {
   skin: SKINS.length,
   hairStyle: HAIRS.length,
   hairColor: HAIR_COLORS.length,
@@ -104,7 +104,8 @@ export const MAX_DPR = 2
 export const MAX_SCALE = 12
 /** 캐시 상한: 개수와 총 픽셀 수(메모리) 둘 다 지킨다. 넘치면 가장 오래 안 쓴 것부터 버림 */
 export const CACHE_MAX_ENTRIES = 900
-export const CACHE_MAX_PIXELS = 16_000_000
+/** 800만 px = RGBA 32MB. 장면의 벡터 하객 100여 명(dpr 2 기준 한 장 약 2만 px x 걷기 3프레임)이 들어가는 크기 */
+export const CACHE_MAX_PIXELS = 8_000_000
 
 interface Entry {
   canvas: HTMLCanvasElement

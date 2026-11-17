@@ -6,7 +6,7 @@
  * 명목 크기(FOREST_W x FOREST_H)는 기존 픽셀 스타일의 논리 픽셀과 같은 단위라
  * 월드 렌더러가 같은 높이(36)로 배치할 수 있다.
  */
-import type { Appearance } from '../../types'
+import type { Appearance, PartKey } from '../../types'
 
 /** 명목(논리) 크기. getSprite 캔버스는 이 크기 x scale 픽셀 */
 export const FOREST_W = 28
@@ -27,7 +27,7 @@ export type SpriteKind = Appearance | 'groom' | 'bride'
 export type View = 'front' | 'side' | 'back'
 
 export interface PartDef {
-  key: keyof Appearance
+  key: PartKey
   label: string
   options: { label: string; swatch?: string }[]
 }

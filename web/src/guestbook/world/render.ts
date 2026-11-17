@@ -1,10 +1,16 @@
 /**
  * 프레임 렌더러 — 시뮬레이션 상태를 캔버스에 그린다(시뮬과 분리).
  * ctx 는 이미 "논리좌표→디바이스" 로 스케일되어 있고 imageSmoothing=off 상태로 들어온다.
+ *
+ * 그림체가 섞여 있다: 기본 픽셀은 장면의 도트 배율 그대로, 다른 그림체는 기기 픽셀 좌표에 직접
+ * (도트는 정수배 최근접 확대, 벡터는 기기 해상도 캔버스를 1:1 로) 그린다. 발 위치(x, y)가 공통 기준이고
+ * 그림자·이름표·말풍선·링은 그림체별 수치(styles/registry.ts 의 STYLE_META)를 쓴다.
+ * 스타일 모듈이 아직 안 온 하객은 그림자·이름표만 보이다가 준비되면 나타난다.
  * (world 내부 전용)
  */
 import type { GuestEntry } from '../types'
 import { getSprite, SPRITE_H, SPRITE_W, type Dir, type Frame } from '../character'
+import { blitScale, getSpriteAt, headHeight, spriteScale, styleOf, STYLE_META, type SpriteKind } from '../styles/registry'
 import type { ActiveBubble } from './bubbles'
 import { COUPLE_LABEL_DY, SPAWN_FALL_FROM } from './constants'
 import type { Particle } from './effects'
@@ -15,6 +21,9 @@ import type { Agent } from './sim'
 
 export interface RenderParams {
   ctx: CanvasRenderingContext2D
+  /** 논리 px 하나의 기기 픽셀 수 (ctx 에 걸린 배율과 같아야 한다) */
+  sx: number
+  sy: number
   layout: WorldLayout
   backdrop: HTMLCanvasElement
   agents: Agent[]
@@ -95,13 +104,14 @@ export function renderWorld(p: RenderParams): void {
     const entry = p.entryById.get(b.id)
     const a = agents.find((g) => g.id === b.id)
     if (!entry || !a) continue
-    drawBubble(p, a, b)
+    drawBubble(p, a, b, entry)
   }
 
   // 포커스 화살표(해당 캐릭터 위)
   if (p.focusId) {
     const a = agents.find((g) => g.id === p.focusId)
-    if (a) drawFocusArrow(ctx, a.x, feetToHeadTop(a) - 10 - bob(time, a.bobPhase), time)
+    const entry = a && p.entryById.get(a.id)
+    if (a && entry) drawFocusArrow(ctx, a.x, a.y - headOf(p, entry) - 10 - bob(time, a.bobPhase), time)
   }
 }
 
@@ -111,8 +121,9 @@ function bob(time: number, phase: number): number {
   return Math.sin(time * 2.4 + phase) * 0.6
 }
 
-function feetToHeadTop(a: Agent): number {
-  return a.y - SPRITE_H
+/** 발에서 머리 꼭대기까지(논리 px) — 그림체와 실제 확대 배율에 따라 다르다 */
+function headOf(p: RenderParams, entry: GuestEntry): number {
+  return headHeight(styleOf(entry.appearance), p.sx)
 }
 
 /** 걷기 4박자: 왼발 → 모음 → 오른발 → 모음. 모음(0)에서 상체가 1px 올라와 걸음마다 bob 이 생긴다. */
@@ -198,16 +209,18 @@ function drawGuest(p: RenderParams, a: Agent, entry: GuestEntry, showLabel: bool
   }
   if (a.hop > 0) yoff -= Math.sin(Math.min(1, a.hop) * Math.PI) * 4
 
+  const meta = STYLE_META[styleOf(entry.appearance)]
   ctx.save()
   ctx.globalAlpha = alpha
-  if (a.life !== 'spawn') drawShadow(ctx, a.x, a.y - 1, 7)
+  // 벡터 그림체는 스프라이트 안에 그림자가 있다 (shadowR = 0)
+  if (a.life !== 'spawn' && meta.shadowR > 0) drawShadow(ctx, a.x, a.y - 1, meta.shadowR)
 
   // 포커스 링
   if (p.focusId === a.id) {
     ctx.strokeStyle = PAL.accent
     ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.ellipse(a.x, a.y - 1, 10, 4, 0, 0, Math.PI * 2)
+    ctx.ellipse(a.x, a.y - 1, meta.halfW, 4, 0, 0, Math.PI * 2)
     ctx.stroke()
   }
 
@@ -215,7 +228,7 @@ function drawGuest(p: RenderParams, a: Agent, entry: GuestEntry, showLabel: bool
 
   if (p.fontReady && showLabel) {
     const variant = p.focusId === a.id ? 'focus' : 'normal'
-    drawLabel(ctx, entry.name, variant, a.x, a.y + yoff - SPRITE_H - 2, p.layout.W)
+    drawLabel(ctx, entry.name, variant, a.x, a.y + yoff - headOf(p, entry) - 2, p.layout.W)
   }
   ctx.restore()
 }
@@ -237,7 +250,7 @@ function drawCouple(p: RenderParams, kind: 'groom' | 'bride', x: number, y: numb
 /** 스프라이트(또는 dev 실루엣) 한 명 그리기 */
 function drawSprite(
   p: RenderParams,
-  kind: Parameters<typeof getSprite>[0],
+  kind: SpriteKind,
   dir: Dir,
   frame: Frame,
   x: number,
@@ -245,16 +258,40 @@ function drawSprite(
   fb: Fallback,
 ): void {
   const { ctx } = p
-  const dx = Math.round(x - SPRITE_W / 2)
-  const dy = Math.round(y - SPRITE_H)
-  if (p.fallback) {
-    drawSilhouette(ctx, dx, dy, fb)
+  const id = styleOf(kind)
+  if (id === 'pixel') {
+    const dx = Math.round(x - SPRITE_W / 2)
+    const dy = Math.round(y - SPRITE_H)
+    if (p.fallback) {
+      drawSilhouette(ctx, dx, dy, fb)
+      return
+    }
+    ctx.drawImage(getSprite(kind, dir, frame), dx, dy)
     return
   }
-  ctx.drawImage(getSprite(kind, dir, frame), dx, dy)
+  // 다른 그림체: 기기 픽셀 좌표에 직접 그린다 (도트 = 정수배 최근접, 벡터 = 구운 크기 그대로(dpr 2 초과분만 확대) + 스무딩)
+  const scale = spriteScale(id, p.sx)
+  const sprite = getSpriteAt(kind, dir, frame, scale)
+  const meta = STYLE_META[id]
+  if (!sprite) {
+    // 스타일 모듈을 불러오는 중이거나 불러오지 못했다 — 이름표·탭 판정만 떠다니지 않게 대체 실루엣을 세운다
+    if (meta.shadowR === 0) drawShadow(ctx, x, y - 1, 7)
+    drawSilhouette(ctx, Math.round(x - SPRITE_W / 2), Math.round(y - SPRITE_H), fb)
+    return
+  }
+  const k = blitScale(id, scale)
+  const w = sprite.width * k
+  const h = sprite.height * k
+  const devX = Math.round(x * p.sx - w / 2)
+  const devY = Math.round(y * p.sy - (h * meta.footY) / meta.nominalH)
+  ctx.setTransform(1, 0, 0, 1, 0, 0)
+  ctx.imageSmoothingEnabled = !meta.pixelated
+  ctx.drawImage(sprite, devX, devY, w, h)
+  ctx.imageSmoothingEnabled = false
+  ctx.setTransform(p.sx, 0, 0, p.sy, 0, 0)
 }
 
-/** dev 전용 대체 실루엣 — 간단한 사람 모양 (실제 스프라이트 준비 전까지만 사용) */
+/** 대체 실루엣 — 간단한 사람 모양 (dev 폴백, 그리고 그림체 모듈이 아직 없거나 불러오지 못한 하객) */
 function drawSilhouette(ctx: CanvasRenderingContext2D, dx: number, dy: number, fb: Fallback): void {
   const px = (ox: number, oy: number, w: number, h: number, c: string) => {
     ctx.fillStyle = c
@@ -359,7 +396,7 @@ function wrapKo(ctx: CanvasRenderingContext2D, text: string, maxW: number, maxLi
   return lines
 }
 
-function drawBubble(p: RenderParams, a: Agent, b: ActiveBubble): void {
+function drawBubble(p: RenderParams, a: Agent, b: ActiveBubble, entry: GuestEntry): void {
   const { ctx, layout } = p
   if (!p.fontReady) return
   ctx.font = `8px 'Galmuri9', 'Galmuri11', monospace`
@@ -378,7 +415,7 @@ function drawBubble(p: RenderParams, a: Agent, b: ActiveBubble): void {
 
   let yoff = bob(p.time, a.bobPhase)
   if (a.life === 'spawn') yoff += spawnYOffset(a.anim)
-  const headTop = a.y + yoff - SPRITE_H
+  const headTop = a.y + yoff - headOf(p, entry)
   const bottom = headTop - 4
   let left = a.x - boxW / 2
   left = Math.max(3, Math.min(left, layout.W - boxW - 3))

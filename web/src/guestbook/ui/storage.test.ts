@@ -48,6 +48,21 @@ describe('방명록 기기 저장소 (청첩장별)', () => {
     expect(map.has('wc.draft.v1')).toBe(false)
   })
 
+  it('임시 저장의 외형은 그림체에 맞게 보정해 읽는다 (예전 임시 저장은 기본 픽셀)', () => {
+    const parts = { skin: 1, hairStyle: 2, hairColor: 11, outfit: 3, outfitColor: 4, accessory: 5 }
+    saveDraft(a, { ...draft('메'), appearance: { ...parts, style: 'maple' } })
+    expect(loadDraft(a)?.appearance).toEqual({ ...parts, style: 'maple' })
+    saveDraft(a, { ...draft('옛'), appearance: parts })
+    expect(loadDraft(a)?.appearance).toEqual({ ...parts, hairColor: 9 })
+    map.set('wc.draft.v1:api:aa', JSON.stringify({ name: 'x', message: 'y', side: 'zzz', appearance: { style: 'nope', skin: 99 } }))
+    expect(loadDraft(a)).toEqual({
+      name: 'x',
+      message: 'y',
+      side: 'groom',
+      appearance: { skin: 5, hairStyle: 0, hairColor: 0, outfit: 0, outfitColor: 0, accessory: 0 },
+    })
+  })
+
   it('내 캐릭터 목록도 청첩장별이고, 예전 목록은 데모만 이어받는다', () => {
     map.set('wc.myids.v1', JSON.stringify(['old1']))
     expect([...loadMyIds(demo)]).toEqual(['old1'])

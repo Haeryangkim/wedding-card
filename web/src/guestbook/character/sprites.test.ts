@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { ACCESSORIES } from './accessories'
 import { HAIRS } from './hair'
 import { OUTFITS } from './outfits'
-import type { Appearance } from '../types'
+import type { Appearance, PartKey } from '../types'
 import type { Dir, Frame, SpriteKind } from './index'
 import {
   buildBuffer,
@@ -24,7 +24,7 @@ const BASE: Appearance = {
 
 /** PART_DEFS 에서 각 파츠 옵션 개수 */
 const counts = Object.fromEntries(PART_DEFS.map((p) => [p.key, p.options.length])) as Record<
-  keyof Appearance,
+  PartKey,
   number
 >
 
@@ -41,7 +41,7 @@ function equalBytes(a: Uint8ClampedArray, b: Uint8ClampedArray): boolean {
 }
 
 describe('normalizeAppearance', () => {
-  const keys: (keyof Appearance)[] = [
+  const keys: (PartKey)[] = [
     'skin',
     'hairStyle',
     'hairColor',

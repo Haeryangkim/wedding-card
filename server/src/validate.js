@@ -1,7 +1,8 @@
 /**
  * NewGuestInput 검증. web/src/guestbook/types.ts 의 LIMITS 와 Appearance 형태를 그대로 반영한다.
  *   name 1~12자, message 1~200자, password 4자 이상, side ∈ {groom,bride},
- *   appearance = 정확히 6개의 정수 필드(각 0..63)
+ *   appearance = 정확히 6개의 정수 필드(각 0..63) + 선택 필드 style ∈ {pixel, maple, forest}
+ *     (style 은 하객이 고른 그림체. 없으면 기본 픽셀 — 예전 클라이언트·저장된 글과 호환)
  * 성공 시 정제된 값을, 실패 시 { error } 를 돌려준다.
  */
 
@@ -12,6 +13,8 @@ const SIDES = new Set(['groom', 'bride'])
 /** Appearance 필드와 각 값의 상한(옵션 인덱스 범위). 0..63 로 넉넉히 제한. */
 const APPEARANCE_FIELDS = ['skin', 'hairStyle', 'hairColor', 'outfit', 'outfitColor', 'accessory']
 const APPEARANCE_MAX = 63
+/** 캐릭터 그림체 (web/src/guestbook/types.ts 의 CharacterStyleId) */
+const APPEARANCE_STYLES = new Set(['pixel', 'maple', 'forest'])
 
 // 제어 문자(C0 + DEL)를 제거한다. 방명록은 한 줄 텍스트이므로 개행·탭도 제거.
 const CONTROL = /[\u0000-\u001F\u007F]/g
@@ -71,8 +74,9 @@ export function validateNewGuest(raw) {
  */
 function validateAppearance(raw) {
   if (!isPlainObject(raw)) return null
+  const hasStyle = Object.hasOwn(raw, 'style')
   const keys = Object.keys(raw)
-  if (keys.length !== APPEARANCE_FIELDS.length) return null
+  if (keys.length !== APPEARANCE_FIELDS.length + (hasStyle ? 1 : 0)) return null
   /** @type {any} */
   const out = {}
   for (const field of APPEARANCE_FIELDS) {
@@ -81,6 +85,10 @@ function validateAppearance(raw) {
     const n = /** @type {number} */ (v)
     if (n < 0 || n > APPEARANCE_MAX) return null
     out[field] = n
+  }
+  if (hasStyle) {
+    if (typeof raw.style !== 'string' || !APPEARANCE_STYLES.has(raw.style)) return null
+    out.style = raw.style
   }
   return out
 }

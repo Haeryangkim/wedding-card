@@ -3,7 +3,7 @@
  * 그리고 가짜 캔버스로 모든 (옵션 x 방향 x 프레임) 렌더 경로가 예외 없이 도는지 + LRU 캐시 동작.
  */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import type { Appearance } from '../../types'
+import type { Appearance, PartKey } from '../../types'
 import { ACCESSORIES } from './accessories'
 import { HAIRS } from './hair'
 import {
@@ -26,8 +26,8 @@ import { OUTFITS } from './outfits'
 import { HAIR_COLORS, OUTFIT_COLORS, SKINS } from './palette'
 import { CACHE_MAX_ENTRIES, CACHE_MAX_PIXELS } from './sprites'
 
-const KEYS: (keyof Appearance)[] = ['skin', 'hairStyle', 'hairColor', 'outfit', 'outfitColor', 'accessory']
-const counts = Object.fromEntries(PART_DEFS.map((p) => [p.key, p.options.length])) as Record<keyof Appearance, number>
+const KEYS: (PartKey)[] = ['skin', 'hairStyle', 'hairColor', 'outfit', 'outfitColor', 'accessory']
+const counts = Object.fromEntries(PART_DEFS.map((p) => [p.key, p.options.length])) as Record<PartKey, number>
 const DIRS: Dir[] = ['down', 'left', 'right', 'up']
 const FRAMES: Frame[] = [0, 1, 2]
 
@@ -92,7 +92,7 @@ describe('STYLE_INFO', () => {
 describe('randomAppearance', () => {
   it('always yields valid indices and eventually reaches every option', () => {
     const r = rng(1)
-    const seen = Object.fromEntries(KEYS.map((k) => [k, new Set<number>()])) as Record<keyof Appearance, Set<number>>
+    const seen = Object.fromEntries(KEYS.map((k) => [k, new Set<number>()])) as Record<PartKey, Set<number>>
     for (let i = 0; i < 4000; i++) {
       const a = randomAppearance(r)
       expect(isValid(a)).toBe(true)

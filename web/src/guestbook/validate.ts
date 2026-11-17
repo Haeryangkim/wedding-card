@@ -5,7 +5,7 @@
  */
 import type { GuestEntry, NewGuestInput, Side } from './types'
 import { LIMITS } from './types'
-import { normalizeAppearance } from './character'
+import { normalizeAnyAppearance } from './styles/registry'
 
 /** 코드포인트 기준 글자 수 (이모지/한글을 사람이 세는 느낌으로 계산) */
 export function charLen(s: string): number {
@@ -72,7 +72,7 @@ export function sanitizeNewInput(input: NewGuestInput): NewGuestInput {
     name: truncate(collapseText(input.name), LIMITS.name),
     message: truncate(collapseText(input.message), LIMITS.message),
     side: toSide(input.side),
-    appearance: normalizeAppearance(input.appearance),
+    appearance: normalizeAnyAppearance(input.appearance),
     password: input.password,
   }
 }
@@ -105,7 +105,7 @@ export function sanitizeEntry(raw: unknown): GuestEntry | null {
     name,
     message,
     side: toSide(r.side),
-    appearance: normalizeAppearance(r.appearance),
+    appearance: normalizeAnyAppearance(r.appearance),
     createdAt,
   }
 }

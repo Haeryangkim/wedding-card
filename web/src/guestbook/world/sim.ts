@@ -45,12 +45,17 @@ export interface Agent {
   life: AgentLife
   /** 등장/퇴장 진행도 0..1 */
   anim: number
+  /** 몸집 배수(그림체별) — 이웃 분리 반경에 곱해진다. 기본 1 */
+  size: number
   rng: Rand
 }
 
 function clamp(v: number, lo: number, hi: number): number {
   return v < lo ? lo : v > hi ? hi : v
 }
+
+/** 몸집 배수의 상한 (공간 해시 칸 크기를 정한다) */
+export const MAX_AGENT_SIZE = 1.3
 
 /** 신랑·신부/장식을 피하는 회피점 목록 */
 interface AvoidPoint {
@@ -94,8 +99,11 @@ export class Simulation {
     }
   }
 
-  /** 하객 id 집합 동기화: 새 id는 등장, 사라진 id는 퇴장 시작 */
-  sync(ids: string[]): void {
+  /**
+   * 하객 id 집합 동기화: 새 id는 등장, 사라진 id는 퇴장 시작.
+   * sizeOf 를 넘기면 하객별 몸집 배수(그림체에 따라 다름)를 맞춘다.
+   */
+  sync(ids: string[], sizeOf?: (id: string) => number): void {
     const next = new Set(ids)
     for (const a of this.agents.values()) {
       if (!next.has(a.id) && a.life !== 'despawn') {
@@ -111,6 +119,12 @@ export class Simulation {
         // 다시 추가된 경우 되살림
         existing.life = 'alive'
         existing.anim = 1
+      }
+    }
+    if (sizeOf) {
+      for (const id of ids) {
+        const a = this.agents.get(id)
+        if (a) a.size = clamp(sizeOf(id), 0.5, MAX_AGENT_SIZE)
       }
     }
   }
@@ -148,6 +162,7 @@ export class Simulation {
       hop: 0,
       life: 'spawn',
       anim: 0,
+      size: 1,
       rng,
     }
     return a
@@ -193,7 +208,7 @@ export class Simulation {
 
     // 공간 해시(이웃 분리용) — 살아있는/등장 중 에이전트만
     const sepR = this.layout.separation
-    const cell = sepR
+    const cell = sepR * MAX_AGENT_SIZE
     const grid = new Map<number, Agent[]>()
     const key = (cx: number, cy: number) => (cx + 4096) * 100000 + (cy + 4096)
     for (const a of list) {
@@ -270,9 +285,10 @@ export class Simulation {
             const dx = a.x - b.x
             const dy = a.y - b.y
             const d2 = dx * dx + dy * dy
-            if (d2 > 0 && d2 < sepR * sepR) {
+            const r = sepR * (a.size + b.size) * 0.5
+            if (d2 > 0 && d2 < r * r) {
               const d = Math.sqrt(d2)
-              const f = (1 - d / sepR) / d
+              const f = (1 - d / r) / d
               sx += dx * f
               sy += dy * f
             }

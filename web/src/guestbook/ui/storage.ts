@@ -7,6 +7,7 @@
  * 모든 접근은 try/catch 로 감싸 시크릿 모드/차단 상황에서도 앱이 깨지지 않습니다.
  */
 import type { Appearance, Side } from '../types'
+import { normalizeAnyAppearance } from '../styles/registry'
 
 const MY_IDS_KEY = 'wc.myids.v1'
 const DRAFT_KEY = 'wc.draft.v1'
@@ -81,7 +82,13 @@ export function loadDraft(scope: StorageScope): JoinDraft | null {
   try {
     const d = JSON.parse(raw)
     if (d && typeof d === 'object' && typeof d.name === 'string' && typeof d.message === 'string') {
-      return d as JoinDraft
+      // 저장된 외형은 믿지 않는다: 그림체(style)에 맞는 범위로 보정 (예전 임시 저장은 style 이 없어 기본 픽셀)
+      return {
+        name: d.name,
+        side: d.side === 'bride' ? 'bride' : 'groom',
+        message: d.message,
+        appearance: normalizeAnyAppearance(d.appearance),
+      }
     }
   } catch {
     /* 무시 */

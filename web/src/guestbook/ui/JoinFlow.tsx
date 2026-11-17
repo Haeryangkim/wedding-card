@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Appearance, NewGuestInput, Side } from '../types'
 import { LIMITS } from '../types'
-import { randomAppearance } from '../character'
+import { normalizeAnyAppearance, randomAppearanceFor, styleOf } from '../styles/registry'
+import { useStyle } from '../styles/useStyle'
 import { charLen, hasFieldErrors, validateNewGuest } from '../validate'
 import type { GuestFieldErrors } from '../validate'
 import { CharacterCreator } from './CharacterCreator'
+import type { StyleMemory } from './CharacterCreator'
 import { CharacterPreview } from './CharacterPreview'
 import { sideLabel } from './format'
 import { clearDraft, loadDraft, saveDraft } from './storage'
@@ -26,7 +28,8 @@ export function JoinFlow({ onSubmit, scope }: JoinFlowProps) {
       name: d?.name ?? '',
       side: (d?.side ?? 'groom') as Side,
       message: d?.message ?? '',
-      appearance: d?.appearance ?? randomAppearance(),
+      // 임시 저장이 없으면 기본 그림체(기본 픽셀)의 랜덤 캐릭터로 시작한다
+      appearance: d ? normalizeAnyAppearance(d.appearance) : randomAppearanceFor('pixel'),
     }
     // 시트를 여는 순간의 임시 저장만 읽는다 (청첩장이 바뀌면 방명록 전체가 새로 마운트된다)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,6 +37,8 @@ export function JoinFlow({ onSubmit, scope }: JoinFlowProps) {
 
   const [step, setStep] = useState<1 | 2>(1)
   const [appearance, setAppearance] = useState<Appearance>(initial.appearance)
+  // 그림체별로 만들던 캐릭터 — 그림체를 바꾸거나 단계를 오가도 이 시트가 열려 있는 동안 기억한다
+  const styleMemory = useRef<StyleMemory>({})
   const [name, setName] = useState(initial.name)
   const [side, setSide] = useState<Side>(initial.side)
   const [message, setMessage] = useState(initial.message)
@@ -41,6 +46,8 @@ export function JoinFlow({ onSubmit, scope }: JoinFlowProps) {
   const [errors, setErrors] = useState<GuestFieldErrors>({})
   const [generalError, setGeneralError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  // 고른 그림체의 모듈이 아직 없으면(불러오는 중·실패) 캐릭터가 보이지 않는다 — 보지 못한 캐릭터로 넘어가지 못하게 한다
+  const styleReady = useStyle(styleOf(appearance)) !== null
 
   // 작성 중 임시 저장(비밀번호 제외) — 시트를 실수로 닫아도 복구
   // 열기만 하고 아무것도 바꾸지 않았다면 저장하지 않는다
@@ -56,6 +63,10 @@ export function JoinFlow({ onSubmit, scope }: JoinFlowProps) {
 
   const handleSubmit = async () => {
     if (submitting) return
+    if (!styleReady) {
+      setStep(1)
+      return
+    }
     const nextErrors = validateNewGuest({ name, message, password })
     setErrors(nextErrors)
     setGeneralError(null)
@@ -82,16 +93,20 @@ export function JoinFlow({ onSubmit, scope }: JoinFlowProps) {
 
       {step === 1 && (
         <div className="join-step">
-          <p className="join-lead">나를 닮은 픽셀 캐릭터를 만들어 주세요.</p>
-          <CharacterCreator value={appearance} onChange={setAppearance} />
+          <p className="join-lead">그림체를 고르고, 나를 닮은 캐릭터를 만들어 주세요.</p>
+          <CharacterCreator value={appearance} onChange={setAppearance} memory={styleMemory} />
           <button
             type="button"
             className="join-random"
-            onClick={() => setAppearance(randomAppearance())}
+            onClick={() => {
+              const next = randomAppearanceFor(styleOf(appearance))
+              styleMemory.current[styleOf(next)] = next
+              setAppearance(next)
+            }}
           >
             🎲 랜덤으로 바꾸기
           </button>
-          <button type="button" className="join-primary" onClick={() => setStep(2)}>
+          <button type="button" className="join-primary" onClick={() => setStep(2)} disabled={!styleReady}>
             다음
           </button>
         </div>

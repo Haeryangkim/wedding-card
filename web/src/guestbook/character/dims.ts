@@ -3,7 +3,7 @@
  * 인물은 약 16x32 (스타듀풍 키 큰 비율), 캔버스는 모자·베일·외곽선 여유를 둔 20x34.
  * 발바닥 외곽선이 맨 아래 행(y=33), 좌우 중심축은 x=9|10 사이.
  */
-import type { Appearance } from '../types'
+import type { Appearance, PartKey } from '../types'
 
 /** 스프라이트 원본 픽셀 크기 (화면에는 정수배 확대, image smoothing off) */
 export const SPRITE_W = 20
@@ -17,7 +17,7 @@ export type Frame = 0 | 1 | 2
 export type SpriteKind = Appearance | 'groom' | 'bride'
 
 export interface PartDef {
-  key: keyof Appearance
+  key: PartKey
   label: string // 예: "피부", "머리 모양"
   /** swatch 가 있으면 색상칩으로, 없으면 미리보기 썸네일로 표시 */
   options: { label: string; swatch?: string }[]

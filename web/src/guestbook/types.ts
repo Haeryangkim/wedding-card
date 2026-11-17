@@ -3,14 +3,26 @@
  * 필드를 바꾸면 server/ 와 web/src/guestbook/ 양쪽을 함께 수정해야 합니다.
  */
 
-/** 각 값은 guestbook/character/parts.ts 의 옵션 배열 인덱스 (0-based 정수) */
-export interface Appearance {
+/** 캐릭터 그림체. 스타일마다 파츠 목록·개수가 다르므로 외형 인덱스는 스타일과 함께일 때만 의미가 있다 */
+export type CharacterStyleId = 'pixel' | 'maple' | 'forest'
+
+/** 외형 파츠 — 각 값은 해당 스타일 옵션 배열의 인덱스 (0-based 정수) */
+export interface AppearanceParts {
   skin: number
   hairStyle: number
   hairColor: number
   outfit: number
   outfitColor: number
   accessory: number // 0 = 없음
+}
+export type PartKey = keyof AppearanceParts
+
+export interface Appearance extends AppearanceParts {
+  /**
+   * 하객이 고른 그림체. 없으면 'pixel'(기본 픽셀) — 스타일 선택이 생기기 전에 저장된 글과 호환.
+   * 정규화된 값에서는 'pixel' 일 때 이 필드를 생략한다 (guestbook/styles/registry.ts).
+   */
+  style?: CharacterStyleId
 }
 
 export type Side = 'groom' | 'bride'

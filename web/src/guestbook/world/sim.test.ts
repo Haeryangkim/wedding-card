@@ -100,4 +100,29 @@ describe('Simulation', () => {
       expect(a.y).toBeLessThanOrEqual(small.walk.maxY)
     }
   })
+
+  it('몸집 배수(그림체별)가 큰 하객은 이웃과 더 떨어져 선다 · 배수 1 이면 기존 궤적 그대로', () => {
+    const settle = (size?: number): number => {
+      const layout = computeLayout(2)
+      const sim = new Simulation(layout, 5)
+      sim.sync(['a', 'b'], size === undefined ? undefined : () => size)
+      const a = sim.agents.get('a')
+      const b = sim.agents.get('b')
+      if (!a || !b) throw new Error('agents')
+      // 둘을 거의 같은 자리에 세워 두고 걷지 않게 한 뒤 분리만 지켜본다
+      for (const g of [a, b]) {
+        g.life = 'alive'
+        g.state = 'idle'
+        g.stateTime = 1e9
+        g.y = layout.walk.minY + 60
+      }
+      a.x = 90
+      b.x = 91
+      for (let i = 0; i < 600; i++) sim.step(SIM_DT)
+      return Math.abs(a.x - b.x)
+    }
+    const base = settle()
+    expect(settle(1)).toBeCloseTo(base, 9)
+    expect(settle(1.3)).toBeGreaterThan(base * 1.15)
+  })
 })

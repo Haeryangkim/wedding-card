@@ -6,7 +6,7 @@ import { StrictMode, useCallback, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { WorldCanvas } from '../src/guestbook/ui/WorldCanvas'
 import type { Appearance, GuestEntry, Side } from '../src/guestbook/types'
-import { randomAppearance } from '../src/guestbook/character'
+import { randomAppearanceFor, STYLE_IDS } from '../src/guestbook/styles/registry'
 import { hashString, mulberry32 } from '../src/guestbook/world/rng'
 import '../src/styles/tokens.css'
 import '../src/styles/fonts.css'
@@ -31,8 +31,11 @@ const MESSAGES = [
   '두 분의 앞날을 응원합니다.',
 ]
 
+/** ?style=pixel|maple|forest 로 한 그림체만, 생략하면 세 그림체를 섞는다 */
+const ONLY = new URLSearchParams(location.search).get('style')
 function makeAppearance(r: () => number): Appearance {
-  return randomAppearance(r)
+  const id = STYLE_IDS.find((s) => s === ONLY) ?? STYLE_IDS[Math.floor(r() * STYLE_IDS.length)]
+  return randomAppearanceFor(id, r)
 }
 
 function makeEntry(id: string, i: number): GuestEntry {

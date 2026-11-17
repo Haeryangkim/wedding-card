@@ -72,6 +72,11 @@ test('검증 실패는 모두 400 { error } 를 돌려준다', async () => {
     validGuest({ appearance: { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 0, extra: 1 } }),
     validGuest({ appearance: { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 99 } }), // 범위 초과
     validGuest({ appearance: { skin: 1.5, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 0 } }), // 정수 아님
+    validGuest({ appearance: { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 0, style: 'anime' } }), // 모르는 그림체
+    validGuest({ appearance: { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 0, style: 7 } }), // 문자열 아님
+    validGuest({ appearance: { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 0, style: null } }),
+    validGuest({ appearance: { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, style: 'maple' } }), // style 이 파츠 자리를 대신할 수 없다
+    validGuest({ appearance: { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 0, style: 'maple', extra: 1 } }),
     validGuest({ extraField: 'nope' }), // 알 수 없는 필드
   ]
   for (const body of bad) {
@@ -116,4 +121,28 @@ test('없는 청첩장의 방명록 → 404, 예전 경로(/api/guests, /api/eve
   assert.equal((await fetch(`${srv.base}/api/weddings/no-such-one/events`)).status, 404)
   assert.equal((await fetch(`${srv.base}/api/guests`)).status, 404)
   assert.equal((await fetch(`${srv.base}/api/events`)).status, 404)
+})
+
+test('캐릭터 그림체(style)는 선택 필드: 저장되어 그대로 돌아오고, 없으면 예전처럼 6개 필드만 돌아온다', async () => {
+  const fresh = await start()
+  try {
+    await createWedding(fresh.base, SLUG)
+    const parts = { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 0 }
+    for (const style of ['pixel', 'maple', 'forest']) {
+      const res = await postGuest(fresh.base, SLUG, validGuest({ name: style, appearance: { ...parts, style } }))
+      assert.equal(res.status, 201, `style ${style}`)
+      assert.deepEqual((await res.json()).appearance, { ...parts, style })
+    }
+    const legacy = await postGuest(fresh.base, SLUG, validGuest({ name: '옛방식' }))
+    assert.equal(legacy.status, 201)
+    assert.deepEqual((await legacy.json()).appearance, parts)
+
+    const list = await (await fetch(`${fresh.base}/api/weddings/${SLUG}/guests`)).json()
+    assert.deepEqual(
+      list.map((/** @type {any} */ g) => [g.name, g.appearance.style]),
+      [['pixel', 'pixel'], ['maple', 'maple'], ['forest', 'forest'], ['옛방식', undefined]],
+    )
+  } finally {
+    await fresh.stop()
+  }
 })
