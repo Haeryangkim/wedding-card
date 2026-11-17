@@ -1,5 +1,6 @@
 # 자체 호스팅 한 방 구성: `docker compose up -d --build`
-# web(nginx) 가 정적 청첩장을 서빙하고 /api 를 api 컨테이너로 프록시한다.
+# web(nginx) 가 SPA 를 서빙하고 /api · /uploads · /w 를 api 컨테이너로 프록시한다.
+# api 는 청첩장(여러 개)·사진·방명록을 하나의 볼륨(/data)에 저장한다.
 # 설정은 .env 로 주입한다 (.env.example 참고).
 
 services:
@@ -8,22 +9,56 @@ services:
       context: ./server
     environment:
       PORT: "8787"
+      # DB 와 업로드 사진을 같은 볼륨에 둔다 → 볼륨 하나만 백업하면 된다.
       DB_PATH: /data/guestbook.db
+      UPLOAD_DIR: /data/uploads
+      # 사이트의 공개 주소(끝 슬래시 없이). 카카오톡 미리보기(og:url/og:image)와 캘린더 링크의
+      # 절대 URL 에 쓴다. 비우면 요청의 X-Forwarded-Proto/Host 에서 추정한다.
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-}
+      # 관리 로그인 토큰 서명 키. 비우면 처음 실행할 때 무작위로 만들어 DB 에 보관한다.
+      TOKEN_SECRET: ${TOKEN_SECRET:-}
+      TOKEN_TTL_HOURS: ${TOKEN_TTL_HOURS:-12}
+      # 링크 미리보기용 템플릿: web 컨테이너의 index.html 을 "처음 필요할 때" 가져온다
+      # (시작할 때 web 이 떠 있을 필요가 없다 → depends_on 순환 없음).
+      INDEX_HTML_URL: http://web/index.html
       # 같은 오리진(web 프록시)으로 쓰면 비워둬도 된다. 외부(GitHub Pages 등)에서
       # 직접 호출하려면 해당 오리진을 넣는다. 예: https://haeryangkim.github.io
       CORS_ORIGIN: ${CORS_ORIGIN:-}
+      # 운영자 토큰(선택): 모든 청첩장에 관리 권한 (신고된 청첩장/방명록 삭제 등)
       ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      # 서비스 전체 청첩장 수 / 청첩장당 방명록 수 상한
+      MAX_WEDDINGS: ${MAX_WEDDINGS:-2000}
       MAX_GUESTS: ${MAX_GUESTS:-1000}
+      # 서비스 전체 업로드 사진 용량 상한(바이트, 기본 5GB). 초과 시 업로드 507.
+      # 사진은 DB 와 같은 볼륨에 있으므로 디스크 여유보다 작게 잡는다.
+      MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:-5368709120}
       # IP별 방명록 등록 한도 (검증을 통과한 등록만 차감)
       RATE_MAX: ${RATE_MAX:-40}
       RATE_WINDOW_MS: ${RATE_WINDOW_MS:-600000}
       # (IP, 항목)별 삭제 비밀번호 실패 한도
       DELETE_RATE_MAX: ${DELETE_RATE_MAX:-5}
       DELETE_RATE_WINDOW_MS: ${DELETE_RATE_WINDOW_MS:-600000}
+      # IP별 청첩장 생성 한도 / (IP, 청첩장)별 로그인 실패 한도
+      CREATE_RATE_MAX: ${CREATE_RATE_MAX:-5}
+      CREATE_RATE_WINDOW_MS: ${CREATE_RATE_WINDOW_MS:-3600000}
+      LOGIN_RATE_MAX: ${LOGIN_RATE_MAX:-10}
+      LOGIN_RATE_WINDOW_MS: ${LOGIN_RATE_WINDOW_MS:-600000}
+      # 청첩장별(IP 무관) 로그인 실패 한도 — IP 를 바꿔 가며 오는 비밀번호 대입을 묶는다
+      LOGIN_SLUG_RATE_MAX: ${LOGIN_SLUG_RATE_MAX:-50}
+      LOGIN_SLUG_RATE_WINDOW_MS: ${LOGIN_SLUG_RATE_WINDOW_MS:-600000}
+      # IP별 사진 업로드 / 장소 검색 한도
+      PHOTO_RATE_MAX: ${PHOTO_RATE_MAX:-120}
+      PHOTO_RATE_WINDOW_MS: ${PHOTO_RATE_WINDOW_MS:-600000}
+      GEOCODE_RATE_MAX: ${GEOCODE_RATE_MAX:-20}
+      GEOCODE_RATE_WINDOW_MS: ${GEOCODE_RATE_WINDOW_MS:-60000}
+      # 장소 검색 업스트림(OpenStreetMap Nominatim). 기본값이면 지정할 필요 없다.
+      GEOCODE_URL: ${GEOCODE_URL:-https://nominatim.openstreetmap.org/search}
       # 동시 SSE 연결 상한 (전체 / IP별)
       SSE_MAX_CLIENTS: ${SSE_MAX_CLIENTS:-500}
       SSE_MAX_PER_IP: ${SSE_MAX_PER_IP:-30}
-      # nginx 뒤에 있으므로 nginx 가 덮어쓴 X-Real-IP / X-Forwarded-For 를 신뢰해 IP별 레이트리밋
+      # nginx 뒤에 있으므로 nginx 가 덮어쓴 X-Real-IP / X-Forwarded-* 를 신뢰한다.
+      # 주의: Docker Desktop(macOS/Windows)·rootless Docker·IPv6(userland proxy)에서는 nginx 가 보는
+      # 주소가 전부 브리지 게이트웨이라 IP별 한도가 서비스 전체에 걸린다 → README "TRUST_PROXY 주의" 참고.
       TRUST_PROXY: "1"
     volumes:
       - guestbook-data:/data
@@ -58,4 +93,5 @@ services:
       start_period: 10s
 
 volumes:
+  # sqlite DB(/data/guestbook.db) + 업로드 사진(/data/uploads). 이름은 예전 배포와의 호환을 위해 유지.
   guestbook-data:

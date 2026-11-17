@@ -10,10 +10,13 @@ server.listen(config.port, () => {
   process.stdout.write(
     JSON.stringify({
       t: new Date().toISOString(),
-      msg: 'guestbook api listening',
+      msg: 'wedding platform api listening',
       port: config.port,
       dbPath: config.dbPath,
+      uploadDir: config.uploadDir,
       cors: config.corsOrigin,
+      publicOrigin: config.publicOrigin,
+      maxWeddings: config.maxWeddings,
       maxGuests: config.maxGuests,
       trustProxy: config.trustProxy,
       admin: Boolean(config.adminToken),

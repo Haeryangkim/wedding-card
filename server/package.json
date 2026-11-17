@@ -1,9 +1,9 @@
 {
-  "name": "wedding-guestbook-server",
+  "name": "wedding-platform-server",
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "픽셀 방명록 API (node:http + node:sqlite, 외부 의존성 0개)",
+  "description": "모바일 청첩장 플랫폼 API — 청첩장 인스턴스·사진·방명록 (node:http + node:sqlite, 외부 의존성 0개)",
   "engines": {
     "node": ">=24"
   },

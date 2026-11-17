@@ -74,36 +74,146 @@ jobs:
         run: |
           set -euo pipefail
           base=http://localhost:8080
+          slug="ci-smoke-$(date +%s)"
+          admin_pw='ci-admin-pass'
 
-          echo "== GET / =="
-          curl -sf "$base/" >/dev/null
-
-          echo "== GET /wedding.ics (text/calendar) =="
-          ct=$(curl -sf -o /tmp/wedding.ics -w '%{content_type}' "$base/wedding.ics")
-          echo "content-type: $ct"
-          echo "$ct" | grep -qi 'text/calendar'
-          grep -q 'BEGIN:VCALENDAR' /tmp/wedding.ics
+          echo "== GET / and /new → SPA shell 200 =="
+          curl -sf "$base/" | grep -q '<div id="root">'
+          code=$(curl -s -o /tmp/new.html -w '%{http_code}' "$base/new")
+          echo "/new status=$code"
+          test "$code" = "200"
+          grep -q '<div id="root">' /tmp/new.html
 
           echo "== GET /api/health =="
           curl -sf "$base/api/health" | jq -e '.ok == true'
 
-          echo "== POST /api/guests =="
+          echo "== slug is available =="
+          curl -sf "$base/api/weddings/$slug/availability" | jq -e '.available == true'
+
+          echo "== POST /api/weddings → 201 =="
+          config='{
+            "groom": {"name":"김씨아이","firstName":"씨아이","relation":"장남"},
+            "bride": {"name":"박스모크","firstName":"스모크","relation":"장녀"},
+            "datetime": "2027-05-15T12:30:00+09:00",
+            "durationMinutes": 90,
+            "venue": {"name":"테스트웨딩홀","hall":"1층","address":"서울특별시 중구 세종대로 110","lat":37.5662952,"lng":126.9779451,"transport":[]},
+            "greeting": {"title":"초대합니다","body":["스모크 테스트입니다"]},
+            "gallery": [],
+            "accounts": {"groomSide":[],"brideSide":[]},
+            "share": {"title":"김씨아이 ♥ 박스모크 결혼합니다","description":"2027년 5월 15일 · 테스트웨딩홀"}
+          }'
+          body=$(jq -n --arg slug "$slug" --arg pw "$admin_pw" --argjson config "$config" '{slug:$slug, password:$pw, config:$config}')
+          code=$(curl -s -o /tmp/created.json -w '%{http_code}' -X POST "$base/api/weddings" \
+            -H 'Content-Type: application/json' -d "$body")
+          echo "create status=$code"
+          jq -c 'del(.token)' /tmp/created.json || cat /tmp/created.json
+          test "$code" = "201"
+          jq -e --arg slug "$slug" '.wedding.slug == $slug and (.token | type == "string")' /tmp/created.json
+
+          echo "== slug is now taken; duplicate create → 409 =="
+          curl -sf "$base/api/weddings/$slug/availability" | jq -e '.available == false'
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$base/api/weddings" \
+            -H 'Content-Type: application/json' -d "$body")
+          test "$code" = "409"
+
+          echo "== GET /api/weddings/<slug> (public, no password data) =="
+          curl -sf "$base/api/weddings/$slug" > /tmp/wedding.json
+          jq -e '.config.groom.name == "김씨아이"' /tmp/wedding.json
+          if grep -qiE 'pw_hash|pw_salt|password' /tmp/wedding.json; then echo 'password data leaked'; exit 1; fi
+
+          echo "== GET /w/<slug> → og:title has the couple names =="
+          ct=$(curl -sf -o /tmp/page.html -w '%{content_type}' "$base/w/$slug")
+          echo "content-type: $ct"
+          echo "$ct" | grep -qi 'text/html'
+          grep -o '<meta property="og:title"[^>]*>' /tmp/page.html | tee /tmp/ogtitle.txt
+          test "$(wc -l < /tmp/ogtitle.txt)" -eq 1
+          grep -q '김씨아이' /tmp/ogtitle.txt
+          grep -q '박스모크' /tmp/ogtitle.txt
+          grep -q "<meta property=\"og:url\" content=\"http://localhost:8080/w/$slug\">" /tmp/page.html
+          grep -q '<div id="root">' /tmp/page.html
+          # 템플릿 주석(<!-- <title> … -->)을 태그로 착각해 앱 script/CSS 를 지우면 안 된다.
+          test "$(grep -cE '<title>[^<]*</title>' /tmp/page.html)" -eq 1
+          grep -q '<script type="module"[^>]* src="/assets/' /tmp/page.html
+          grep -q '<link rel="stylesheet"[^>]* href="/assets/' /tmp/page.html
+          test "$(grep -o '<!--' /tmp/page.html | wc -l)" -eq "$(grep -o -- '-->' /tmp/page.html | wc -l)"
+
+          echo "== GET /w/<slug>/edit → 200, unknown slug → 404 with SPA shell =="
+          curl -sf "$base/w/$slug/edit" | grep -q '김씨아이'
+          code=$(curl -s -o /tmp/missing.html -w '%{http_code}' "$base/w/no-such-wedding")
+          test "$code" = "404"
+          grep -q '<div id="root">' /tmp/missing.html
+
+          echo "== GET /w/<slug>/wedding.ics (text/calendar) =="
+          ct=$(curl -sf -o /tmp/wedding.ics -w '%{content_type}' "$base/w/$slug/wedding.ics")
+          echo "content-type: $ct"
+          echo "$ct" | grep -qi 'text/calendar'
+          grep -q 'BEGIN:VCALENDAR' /tmp/wedding.ics
+          grep -q 'DTSTART:20270515T033000Z' /tmp/wedding.ics
+
+          echo "== login: wrong password → 403, right password → token =="
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$base/api/weddings/$slug/login" \
+            -H 'Content-Type: application/json' -d '{"password":"wrong-password"}')
+          test "$code" = "403"
+          token=$(curl -sf -X POST "$base/api/weddings/$slug/login" \
+            -H 'Content-Type: application/json' -d "{\"password\":\"$admin_pw\"}" | jq -r '.token')
+          test -n "$token" && test "$token" != "null"
+
+          echo "== upload a tiny PNG and GET it back =="
+          echo 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==' \
+            | base64 -d > /tmp/tiny.png
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$base/api/weddings/$slug/photos" \
+            -H 'Content-Type: image/png' --data-binary @/tmp/tiny.png)
+          echo "upload without token status=$code"
+          test "$code" = "401"
+          photo=$(curl -sf -X POST "$base/api/weddings/$slug/photos" \
+            -H "Authorization: Bearer $token" -H 'Content-Type: image/png' --data-binary @/tmp/tiny.png | jq -r '.url')
+          echo "photo url=$photo"
+          echo "$photo" | grep -Eq "^/uploads/$slug/[0-9a-f]{32}\.png$"
+          curl -sf -D /tmp/photo.headers -o /tmp/back.png "$base$photo"
+          cmp /tmp/tiny.png /tmp/back.png
+          grep -qi '^content-type: image/png' /tmp/photo.headers
+          grep -qi '^cache-control: public, max-age=31536000, immutable' /tmp/photo.headers
+          grep -qi '^x-content-type-options: nosniff' /tmp/photo.headers
+
+          echo "== use the photo as cover → og:image points at it =="
+          jq --arg photo "$photo" '{config: (.config + {coverImage: $photo, gallery: [$photo]})}' /tmp/wedding.json > /tmp/update.json
+          curl -sf -X PUT "$base/api/weddings/$slug" -H "Authorization: Bearer $token" \
+            -H 'Content-Type: application/json' -d @/tmp/update.json | jq -e --arg photo "$photo" '.config.coverImage == $photo'
+          curl -sf "$base/w/$slug" | grep -q "<meta property=\"og:image\" content=\"http://localhost:8080$photo\">"
+
+          echo "== guestbook: post + list + owner delete =="
           payload='{"name":"CI봇","message":"스모크 테스트입니다","side":"groom","appearance":{"skin":0,"hairStyle":1,"hairColor":2,"outfit":3,"outfitColor":4,"accessory":0},"password":"ci-test-pass"}'
-          id=$(curl -sf -X POST "$base/api/guests" -H 'Content-Type: application/json' -d "$payload" | jq -r '.id')
+          id=$(curl -sf -X POST "$base/api/weddings/$slug/guests" -H 'Content-Type: application/json' -d "$payload" | jq -r '.id')
           echo "created id=$id"
           test -n "$id" && test "$id" != "null"
-
-          echo "== GET /api/guests contains new entry =="
-          curl -sf "$base/api/guests" | jq -e --arg id "$id" 'any(.[]; .id == $id)'
-
-          echo "== DELETE with password → 204 =="
-          code=$(curl -s -o /dev/null -w '%{http_code}' -X DELETE "$base/api/guests/$id" \
-            -H 'Content-Type: application/json' -d '{"password":"ci-test-pass"}')
-          echo "delete status=$code"
+          curl -sf "$base/api/weddings/$slug/guests" | jq -e --arg id "$id" 'any(.[]; .id == $id)'
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X DELETE "$base/api/weddings/$slug/guests/$id" \
+            -H 'Content-Type: application/json' -d '{"password":"wrong-pass"}')
+          echo "delete with wrong guest password status=$code"
+          test "$code" = "403"
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X DELETE "$base/api/weddings/$slug/guests/$id" \
+            -H "Authorization: Bearer $token")
+          echo "owner delete status=$code"
           test "$code" = "204"
+          curl -sf "$base/api/weddings/$slug/guests" | jq -e --arg id "$id" 'all(.[]; .id != $id)'
 
-          echo "== entry is gone =="
-          curl -sf "$base/api/guests" | jq -e --arg id "$id" 'all(.[]; .id != $id)'
+          echo "== SSE endpoint answers with text/event-stream =="
+          ct=$(curl -s -o /dev/null -m 2 -w '%{content_type}' "$base/api/weddings/$slug/events" || true)
+          echo "content-type: $ct"
+          echo "$ct" | grep -qi 'text/event-stream'
+
+          echo "== old un-scoped routes are gone =="
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$base/api/guests")
+          test "$code" = "404"
+
+          echo "== delete the wedding → everything is gone =="
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X DELETE "$base/api/weddings/$slug" \
+            -H "Authorization: Bearer $token")
+          test "$code" = "204"
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$base/api/weddings/$slug")
+          test "$code" = "404"
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$base$photo")
+          test "$code" = "404"
 
           echo "all smoke checks passed"
 
