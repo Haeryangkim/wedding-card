@@ -2,12 +2,27 @@
  * 방문자 개인 기기에만 저장하는 보조 상태.
  *  - 내가 만든 캐릭터 id 목록("내 캐릭터" 배지, 삭제 권한 UI 노출용)
  *  - 작성 중이던 임시 저장(draft) — 시트를 실수로 닫아도 복구
+ * 두 값 모두 "청첩장별" 로 나눠 저장합니다(scope). 한 청첩장에서 쓰다 만 글이 다른 청첩장의 작성 화면에
+ * 채워지면 안 되기 때문입니다.
  * 모든 접근은 try/catch 로 감싸 시크릿 모드/차단 상황에서도 앱이 깨지지 않습니다.
  */
 import type { Appearance, Side } from '../types'
 
 const MY_IDS_KEY = 'wc.myids.v1'
 const DRAFT_KEY = 'wc.draft.v1'
+
+/** 저장 범위: 어느 청첩장의 방명록인가. storageScope() 로 만든다 */
+export type StorageScope = string
+
+const DEMO_PREFIX = 'demo:'
+
+/** 청첩장 하나를 가리키는 저장 범위 ("demo:<slug>" | "api:<slug>") */
+export function storageScope(slug: string, isDemo: boolean): StorageScope {
+  return `${isDemo ? DEMO_PREFIX : 'api:'}${slug}`
+}
+
+const myIdsKey = (scope: StorageScope) => `${MY_IDS_KEY}:${scope}`
+const draftKey = (scope: StorageScope) => `${DRAFT_KEY}:${scope}`
 
 export interface JoinDraft {
   name: string
@@ -43,8 +58,9 @@ function safeRemove(key: string): void {
   }
 }
 
-export function loadMyIds(): Set<string> {
-  const raw = safeGet(MY_IDS_KEY)
+export function loadMyIds(scope: StorageScope): Set<string> {
+  // 청첩장별로 나누기 전의 키는 데모(이 기기에만 저장되는 방명록)에서만 한 번 이어받는다
+  const raw = safeGet(myIdsKey(scope)) ?? (scope.startsWith(DEMO_PREFIX) ? safeGet(MY_IDS_KEY) : null)
   if (!raw) return new Set()
   try {
     const arr = JSON.parse(raw)
@@ -55,12 +71,12 @@ export function loadMyIds(): Set<string> {
   return new Set()
 }
 
-export function saveMyIds(ids: Set<string>): void {
-  safeSet(MY_IDS_KEY, JSON.stringify(Array.from(ids)))
+export function saveMyIds(scope: StorageScope, ids: Set<string>): void {
+  safeSet(myIdsKey(scope), JSON.stringify(Array.from(ids)))
 }
 
-export function loadDraft(): JoinDraft | null {
-  const raw = safeGet(DRAFT_KEY)
+export function loadDraft(scope: StorageScope): JoinDraft | null {
+  const raw = safeGet(draftKey(scope))
   if (!raw) return null
   try {
     const d = JSON.parse(raw)
@@ -73,10 +89,12 @@ export function loadDraft(): JoinDraft | null {
   return null
 }
 
-export function saveDraft(draft: JoinDraft): void {
-  safeSet(DRAFT_KEY, JSON.stringify(draft))
+export function saveDraft(scope: StorageScope, draft: JoinDraft): void {
+  safeSet(draftKey(scope), JSON.stringify(draft))
 }
 
-export function clearDraft(): void {
+export function clearDraft(scope: StorageScope): void {
+  safeRemove(draftKey(scope))
+  // 청첩장별로 나누기 전에 남은 임시 저장은 어느 청첩장의 것인지 알 수 없으므로 함께 버린다
   safeRemove(DRAFT_KEY)
 }

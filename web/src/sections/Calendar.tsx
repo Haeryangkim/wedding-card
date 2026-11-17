@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { wedding } from '../config/wedding'
+import { useWedding } from '../platform/WeddingContext'
 import { SectionHeading } from '../components/SectionHeading'
 import { BottomSheet } from '../components/BottomSheet'
 import {
@@ -15,13 +15,14 @@ import {
   preferredCalendarTarget,
   weddingEvent,
 } from '../lib/calendar'
-import { siteUrl } from '../lib/share'
+import { weddingUrl } from '../lib/share'
 import './Calendar.css'
 
 const WEEKDAY_HEADERS = ['일', '월', '화', '수', '목', '금', '토']
 
 export function Calendar() {
-  const date = useMemo(() => new Date(wedding.datetime), [])
+  const { slug, isDemo, config: wedding } = useWedding()
+  const date = useMemo(() => new Date(wedding.datetime), [wedding.datetime])
   const parts = useMemo(() => kstParts(date), [date])
   const grid = useMemo(() => monthGrid(parts.year, parts.month), [parts.year, parts.month])
 
@@ -38,11 +39,11 @@ export function Calendar() {
   const recommended = preferredCalendarTarget()
 
   const handleGoogle = () => {
-    openGoogleCalendar(weddingEvent(wedding, siteUrl()))
+    openGoogleCalendar(weddingEvent(wedding, weddingUrl(slug)))
     setSheetOpen(false)
   }
   const handleDevice = () => {
-    openDeviceCalendar()
+    openDeviceCalendar(slug, isDemo)
     setSheetOpen(false)
   }
 

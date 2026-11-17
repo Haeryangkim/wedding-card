@@ -1,13 +1,16 @@
-import { wedding } from '../config/wedding'
+import { useWedding } from '../platform/WeddingContext'
+import { Link } from '../platform/router'
 import { useToast } from '../components/Toast'
 import { copyText } from '../lib/clipboard'
-import { canNativeShare, nativeShare, siteUrl } from '../lib/share'
+import { canNativeShare, nativeShare, shareText, weddingUrl } from '../lib/share'
 import './ShareFooter.css'
 
 export function ShareFooter() {
   const toast = useToast()
-  const url = siteUrl()
-  const { groom, bride, share } = wedding
+  const { slug, config } = useWedding()
+  const url = weddingUrl(slug)
+  const { groom, bride } = config
+  const share = shareText(config)
 
   const copyLink = async () => {
     const ok = await copyText(url)
@@ -58,6 +61,9 @@ export function ShareFooter() {
         {groom.name} · {bride.name}
       </p>
       <p className="share__copy">Thank you for celebrating with us</p>
+      <Link className="share__made" to="/">
+        픽셀 청첩장으로 만들었어요
+      </Link>
     </footer>
   )
 }

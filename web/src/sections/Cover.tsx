@@ -1,8 +1,7 @@
-import { wedding } from '../config/wedding'
+import { useWedding } from '../platform/WeddingContext'
+import { getApi } from '../platform/api'
 import { formatLatinDate, formatKoreanDate } from '../lib/date'
 import './Cover.css'
-
-const asset = (p: string) => import.meta.env.BASE_URL + p.replace(/^\/+/, '')
 
 /** config 좌표 없이도 완성도 있게 보이도록 하는 원본 보태니컬 아치 (CSS/SVG). */
 function BotanicalArch() {
@@ -68,14 +67,14 @@ function BotanicalArch() {
 }
 
 export function Cover() {
-  const { groom, bride, datetime, venue, coverImage } = wedding
+  const { groom, bride, datetime, venue, coverImage } = useWedding().config
   const date = new Date(datetime)
 
   return (
     <header className="cover">
       {coverImage ? (
         <div className="cover__photo-wrap">
-          <img className="cover__photo" src={asset(coverImage)} alt="" width={430} height={560} />
+          <img className="cover__photo" src={getApi().assetUrl(coverImage)} alt="" width={430} height={560} />
           <div className="cover__photo-veil" />
         </div>
       ) : (
@@ -99,7 +98,7 @@ export function Cover() {
           <p className="cover__date-latin">{formatLatinDate(date)}</p>
           <p className="cover__date-ko">{formatKoreanDate(date)}</p>
           <p className="cover__venue">
-            {venue.name} · {venue.hall}
+            {[venue.name, venue.hall].filter(Boolean).join(' · ')}
           </p>
         </div>
       </div>

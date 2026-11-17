@@ -8,23 +8,28 @@ import { CharacterCreator } from './CharacterCreator'
 import { CharacterPreview } from './CharacterPreview'
 import { sideLabel } from './format'
 import { clearDraft, loadDraft, saveDraft } from './storage'
+import type { StorageScope } from './storage'
 import './fields.css'
 import './JoinFlow.css'
 
 export interface JoinFlowProps {
   /** store.add 를 호출하는 쪽. 성공 시 resolve, 실패 시 reject(한국어 메시지) */
   onSubmit: (input: NewGuestInput) => Promise<void>
+  /** 임시 저장 범위 — 청첩장마다 따로 (storageScope) */
+  scope: StorageScope
 }
 
-export function JoinFlow({ onSubmit }: JoinFlowProps) {
+export function JoinFlow({ onSubmit, scope }: JoinFlowProps) {
   const initial = useMemo(() => {
-    const d = loadDraft()
+    const d = loadDraft(scope)
     return {
       name: d?.name ?? '',
       side: (d?.side ?? 'groom') as Side,
       message: d?.message ?? '',
       appearance: d?.appearance ?? randomAppearance(),
     }
+    // 시트를 여는 순간의 임시 저장만 읽는다 (청첩장이 바뀌면 방명록 전체가 새로 마운트된다)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const [step, setStep] = useState<1 | 2>(1)
@@ -38,9 +43,13 @@ export function JoinFlow({ onSubmit }: JoinFlowProps) {
   const [submitting, setSubmitting] = useState(false)
 
   // 작성 중 임시 저장(비밀번호 제외) — 시트를 실수로 닫아도 복구
+  // 열기만 하고 아무것도 바꾸지 않았다면 저장하지 않는다
   useEffect(() => {
-    saveDraft({ name, side, message, appearance })
-  }, [name, side, message, appearance])
+    if (name === initial.name && side === initial.side && message === initial.message && appearance === initial.appearance) {
+      return
+    }
+    saveDraft(scope, { name, side, message, appearance })
+  }, [scope, initial, name, side, message, appearance])
 
   const msgLen = charLen(message)
   const overMax = msgLen > LIMITS.message
@@ -57,7 +66,7 @@ export function JoinFlow({ onSubmit }: JoinFlowProps) {
     setSubmitting(true)
     try {
       await onSubmit({ name, message, side, appearance, password })
-      clearDraft()
+      clearDraft(scope)
     } catch (err) {
       setGeneralError(err instanceof Error ? err.message : '등록에 실패했어요. 다시 시도해 주세요.')
       setSubmitting(false)

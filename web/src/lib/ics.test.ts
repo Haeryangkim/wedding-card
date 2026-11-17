@@ -23,6 +23,12 @@ const ev: CalendarEvent = {
 }
 
 describe('weddingEvent', () => {
+  it('홀·주소가 비어 있으면 장소에 빈 조각이나 쉼표가 남지 않는다', () => {
+    const e = weddingEvent({ ...wedding, venue: { ...wedding.venue, name: '예식 장소 미정', hall: '', address: '' } })
+    expect(e.location).toBe('예식 장소 미정')
+    expect(e.description?.endsWith('예식 장소 미정')).toBe(true)
+  })
+
   it('설정값에서 제목/장소/시간을 구성한다', () => {
     const e = weddingEvent(wedding, 'https://haeryangkim.github.io/wedding-card/')
     expect(e.title).toBe('김신랑 ♥ 박신부 결혼식')

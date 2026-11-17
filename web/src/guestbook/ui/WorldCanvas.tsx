@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import type { GuestEntry } from '../types'
-import { wedding } from '../../config/wedding'
 import { getSprite, SPRITE_H } from '../character'
 import { LOGICAL_W, MAX_STEPS_PER_FRAME, SIM_DT } from '../world/constants'
 import { computeLayout, type WorldLayout } from '../world/layout'
@@ -21,6 +20,9 @@ export interface WorldCanvasProps {
   focusSeq?: number
   /** 최초 목록 로드가 끝났는지. 생략하면 첫 비어있지 않은 목록을 최초 로드로 본다. */
   loaded?: boolean
+  /** 식장 가운데 서 있는 두 사람의 이름표 (생략하면 "신랑"·"신부") */
+  groomName?: string
+  brideName?: string
   /** 캐릭터를 탭했을 때 */
   onSelect?: (entry: GuestEntry) => void
   className?: string
@@ -65,6 +67,8 @@ class WorldEngine {
   private initialized = false
   private focusId: string | null = null
   private onSelect: ((e: GuestEntry) => void) | undefined
+  private groomName = '신랑'
+  private brideName = '신부'
 
   private cssW = 320
   private dpr = 1
@@ -145,6 +149,13 @@ class WorldEngine {
   }
 
   // ── 외부(props) 연동 ────────────────────────────────────────
+  setNames(groomName: string, brideName: string): void {
+    if (groomName === this.groomName && brideName === this.brideName) return
+    this.groomName = groomName
+    this.brideName = brideName
+    if (this.reduced) this.draw()
+  }
+
   setEntries(entries: GuestEntry[], loaded?: boolean): void {
     this.entryById = new Map(entries.map((e) => [e.id, e]))
     this.pool = entries.map((e) => ({ id: e.id, message: e.message }))
@@ -276,8 +287,8 @@ class WorldEngine {
       bubbles: this.reduced ? [] : this.bubbles.list(),
       particles: this.reduced ? [] : this.effects.list(),
       focusId: this.focusId,
-      groomName: wedding.groom.name,
-      brideName: wedding.bride.name,
+      groomName: this.groomName,
+      brideName: this.brideName,
       time: this.reduced ? 0 : this.time,
       fontReady: this.fontReady,
       fallback: this.fallback,
@@ -379,7 +390,16 @@ class WorldEngine {
   }
 }
 
-export function WorldCanvas({ entries, focusId, focusSeq, loaded, onSelect, className }: WorldCanvasProps) {
+export function WorldCanvas({
+  entries,
+  focusId,
+  focusSeq,
+  loaded,
+  groomName,
+  brideName,
+  onSelect,
+  className,
+}: WorldCanvasProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<WorldEngine | null>(null)
@@ -396,6 +416,10 @@ export function WorldCanvas({ entries, focusId, focusSeq, loaded, onSelect, clas
       engineRef.current = null
     }
   }, [])
+
+  useEffect(() => {
+    engineRef.current?.setNames(groomName?.trim() || '신랑', brideName?.trim() || '신부')
+  }, [groomName, brideName])
 
   useEffect(() => {
     engineRef.current?.setEntries(entries, loaded)

@@ -1,0 +1,129 @@
+/* /new — 새 청첩장 만들기 (입력·카드 스타일은 editor/editor.css) */
+
+.new {
+  display: grid;
+  gap: 14px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.new__head {
+  padding: 12px 4px 8px;
+  text-align: center;
+}
+
+.new__eyebrow {
+  color: var(--accent);
+  font-family: var(--font-serif);
+  font-size: 0.74rem;
+  letter-spacing: 0.32em;
+}
+
+.new__title {
+  margin-top: 6px;
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.new__lead {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+.new__card {
+  display: grid;
+  gap: 14px;
+  padding: 18px 18px 20px;
+}
+
+.new__step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.new__step span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+}
+
+.new__card > .btn {
+  justify-self: start;
+}
+
+.new__url {
+  display: grid;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--paper-2);
+}
+
+.new__url-text {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.new__url-text strong {
+  color: var(--ink);
+}
+
+.new__avail {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.new__avail--ok {
+  color: #47603d;
+}
+
+.new__submit {
+  display: grid;
+  gap: 14px;
+  margin-top: 6px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.new__submit .btn {
+  min-height: 54px;
+  font-size: 1rem;
+}
+
+.new__foot {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.new__foot code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--paper-2);
+  font-size: 0.86em;
+}
+
+.new__foot a {
+  color: var(--accent);
+  font-weight: 600;
+}

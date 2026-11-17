@@ -31,6 +31,14 @@ test('weddingEvent: 설정값에서 제목/장소/시간을 구성한다', () =>
   assert.ok(e.description?.includes('https://our.wedding/w/our-wedding'))
 })
 
+test('weddingEvent: 홀·주소가 비어 있으면 장소에 빈 조각이나 쉼표가 남지 않는다', () => {
+  const e = weddingEvent({ ...wedding, venue: { ...wedding.venue, name: '예식 장소 미정', hall: '', address: '' } })
+  assert.equal(e.location, '예식 장소 미정')
+  assert.ok(e.description?.endsWith('예식 장소 미정'))
+  const onlyAddress = weddingEvent({ ...wedding, venue: { ...wedding.venue, hall: '' } })
+  assert.equal(onlyAddress.location, '예시웨딩홀, 서울특별시 중구 세종대로 110')
+})
+
 test('weddingEvent: siteUrl 이 없으면 url 과 링크가 포함되지 않는다', () => {
   const e = weddingEvent(wedding)
   assert.equal(e.url, undefined)

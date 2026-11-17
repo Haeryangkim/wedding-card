@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import type { GuestbookStore, GuestEntry, NewGuestInput } from './types'
 import { getStore } from './store'
+import { useWedding } from '../platform/WeddingContext'
 import { WorldCanvas } from './ui/WorldCanvas'
 import { BottomSheet } from './ui/BottomSheet'
 import { JoinFlow } from './ui/JoinFlow'
 import { GuestList } from './ui/GuestList'
 import { GuestCard } from './ui/GuestCard'
-import { loadMyIds, saveMyIds } from './ui/storage'
+import { loadMyIds, saveMyIds, storageScope } from './ui/storage'
 import './PixelGuestbook.css'
 
 type SheetKind = 'none' | 'join' | 'list'
@@ -18,6 +19,7 @@ function upsertEntry(list: GuestEntry[], entry: GuestEntry): GuestEntry[] {
 }
 
 export function PixelGuestbook() {
+  const { slug, isDemo, config } = useWedding()
   const storeRef = useRef<GuestbookStore | null>(null)
   const [mode, setMode] = useState<'local' | 'api'>('local')
   const [entries, setEntries] = useState<GuestEntry[]>([])
@@ -31,10 +33,12 @@ export function PixelGuestbook() {
   const mountedRef = useRef(false)
   const [selected, setSelected] = useState<GuestEntry | null>(null)
   const [sheet, setSheet] = useState<SheetKind>('none')
-  const [myIds, setMyIds] = useState<Set<string>>(() => loadMyIds())
+  // 내 캐릭터 목록·임시 저장은 청첩장별로 따로 둔다
+  const scope = storageScope(slug, isDemo)
+  const [myIds, setMyIds] = useState<Set<string>>(() => loadMyIds(scope))
 
   useEffect(() => {
-    const store = getStore()
+    const store = getStore(slug, isDemo)
     storeRef.current = store
     setMode(store.mode)
     let active = true
@@ -65,7 +69,7 @@ export function PixelGuestbook() {
       mountedRef.current = false
       unsub()
     }
-  }, [])
+  }, [slug, isDemo])
 
   // 선택한 캐릭터가 (다른 탭 등에서) 사라지면 카드 닫기
   useEffect(() => {
@@ -101,7 +105,7 @@ export function PixelGuestbook() {
     setMyIds((prev) => {
       const next = new Set(prev)
       next.add(entry.id)
-      saveMyIds(next)
+      saveMyIds(scope, next)
       return next
     })
     setSheet('none')
@@ -119,7 +123,7 @@ export function PixelGuestbook() {
       if (!prev.has(id)) return prev
       const next = new Set(prev)
       next.delete(id)
-      saveMyIds(next)
+      saveMyIds(scope, next)
       return next
     })
     if (selected?.id === id) setSelected(null)
@@ -154,6 +158,8 @@ export function PixelGuestbook() {
           focusId={focusId}
           focusSeq={focusSeq}
           loaded={!loading}
+          groomName={config.groom.name}
+          brideName={config.bride.name}
           onSelect={(entry) => setSelected(entry)}
           className="pg-world"
         />
@@ -169,7 +175,7 @@ export function PixelGuestbook() {
       </div>
 
       <BottomSheet open={sheet === 'join'} onClose={() => setSheet('none')} title="축하 남기기">
-        <JoinFlow onSubmit={handleAdd} />
+        <JoinFlow onSubmit={handleAdd} scope={scope} />
       </BottomSheet>
 
       <BottomSheet

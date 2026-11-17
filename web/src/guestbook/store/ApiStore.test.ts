@@ -53,36 +53,36 @@ function lastUrl(): string {
 describe('ApiStore URL 빌드', () => {
   it('base "" 는 같은 오리진(/api/...) 으로 요청한다', async () => {
     fetchMock.mockResolvedValue(resp(200, [sampleEntry]))
-    await new ApiStore('').list()
-    expect(lastUrl()).toBe('/api/guests')
+    await new ApiStore('', 'our-day').list()
+    expect(lastUrl()).toBe('/api/weddings/our-day/guests')
   })
 
   it('절대 base 는 {base}/api/... 로 요청한다', async () => {
     fetchMock.mockResolvedValue(resp(200, []))
-    await new ApiStore('https://api.example.com').list()
-    expect(lastUrl()).toBe('https://api.example.com/api/guests')
+    await new ApiStore('https://api.example.com', 'our-day').list()
+    expect(lastUrl()).toBe('https://api.example.com/api/weddings/our-day/guests')
   })
 
   it('base 의 끝 슬래시는 제거된다', async () => {
     fetchMock.mockResolvedValue(resp(200, []))
-    await new ApiStore('https://api.example.com///').list()
-    expect(lastUrl()).toBe('https://api.example.com/api/guests')
+    await new ApiStore('https://api.example.com///', 'our-day').list()
+    expect(lastUrl()).toBe('https://api.example.com/api/weddings/our-day/guests')
   })
 
-  it('add 는 POST /api/guests, remove 는 DELETE /api/guests/:id', async () => {
+  it('add 는 POST .../guests, remove 는 DELETE .../guests/:id', async () => {
     fetchMock.mockResolvedValue(resp(201, sampleEntry))
-    await new ApiStore('').add(input)
+    await new ApiStore('', 'our-day').add(input)
     let call = fetchMock.mock.calls[0]
-    expect(call[0]).toBe('/api/guests')
+    expect(call[0]).toBe('/api/weddings/our-day/guests')
     expect(call[1].method).toBe('POST')
     const sent = JSON.parse(call[1].body)
     expect(sent.name).toBe('테스터')
     expect(sent.password).toBe('pw1234')
 
     fetchMock.mockResolvedValue(resp(204))
-    await new ApiStore('').remove('a b/c', 'pw1234')
+    await new ApiStore('', 'our-day').remove('a b/c', 'pw1234')
     call = fetchMock.mock.calls[fetchMock.mock.calls.length - 1]
-    expect(call[0]).toBe('/api/guests/a%20b%2Fc')
+    expect(call[0]).toBe('/api/weddings/our-day/guests/a%20b%2Fc')
     expect(call[1].method).toBe('DELETE')
   })
 })
@@ -90,7 +90,7 @@ describe('ApiStore URL 빌드', () => {
 describe('ApiStore 응답 처리', () => {
   it('list 는 신뢰 불가 항목을 걸러낸다', async () => {
     fetchMock.mockResolvedValue(resp(200, [sampleEntry, { id: '' }, null, { bogus: 1 }]))
-    const list = await new ApiStore('').list()
+    const list = await new ApiStore('', 'our-day').list()
     expect(list.map((e) => e.id)).toEqual(['srv1'])
   })
 })
@@ -98,22 +98,22 @@ describe('ApiStore 응답 처리', () => {
 describe('ApiStore 오류 매핑', () => {
   it('네트워크 오류는 읽기 쉬운 한국어 메시지', async () => {
     fetchMock.mockRejectedValue(new TypeError('Failed to fetch'))
-    await expect(new ApiStore('').list()).rejects.toThrow('네트워크')
+    await expect(new ApiStore('', 'our-day').list()).rejects.toThrow('네트워크')
   })
 
   it('429 는 요청 과다 메시지', async () => {
     fetchMock.mockResolvedValue(resp(429, { error: 'rate' }))
-    await expect(new ApiStore('').list()).rejects.toThrow('요청이 너무 많')
+    await expect(new ApiStore('', 'our-day').list()).rejects.toThrow('요청이 너무 많')
   })
 
   it('4xx 는 서버 {error} 문자열을 그대로 쓴다', async () => {
     fetchMock.mockResolvedValue(resp(403, { error: '비밀번호가 올바르지 않습니다.' }))
-    await expect(new ApiStore('').remove('srv1', 'bad')).rejects.toThrow('비밀번호가 올바르지 않습니다.')
+    await expect(new ApiStore('', 'our-day').remove('srv1', 'bad')).rejects.toThrow('비밀번호가 올바르지 않습니다.')
   })
 
   it('5xx 는 일반 서버 오류 메시지', async () => {
     fetchMock.mockResolvedValue(resp(500))
-    await expect(new ApiStore('').list()).rejects.toThrow('서버에 문제')
+    await expect(new ApiStore('', 'our-day').list()).rejects.toThrow('서버에 문제')
   })
 })
 
@@ -174,7 +174,7 @@ describe('ApiStore.subscribe 의 EventSource 수명', () => {
     vi.stubGlobal('document', doc)
     const net = deferredFetch()
 
-    const unsub = new ApiStore('').subscribe(() => {})
+    const unsub = new ApiStore('', 'our-day').subscribe(() => {})
     setHidden(true)
     net.resolveAll() // 숨겨진 동안 초기 GET 이 끝남
     await flush()
@@ -196,7 +196,7 @@ describe('ApiStore.subscribe 의 EventSource 수명', () => {
     vi.stubGlobal('document', doc)
     const net = deferredFetch()
 
-    const unsub = new ApiStore('').subscribe(() => {})
+    const unsub = new ApiStore('', 'our-day').subscribe(() => {})
     setHidden(true)
     setHidden(false) // 여기서 SSE 가 열린다
     expect(open()).toHaveLength(1)
@@ -215,7 +215,7 @@ describe('ApiStore.subscribe 의 EventSource 수명', () => {
     vi.stubGlobal('document', doc)
     fetchMock.mockResolvedValue(resp(200, [sampleEntry]))
 
-    const unsub = new ApiStore('').subscribe(() => {})
+    const unsub = new ApiStore('', 'our-day').subscribe(() => {})
     await flush()
     for (let i = 0; i < 3; i++) {
       setHidden(true)

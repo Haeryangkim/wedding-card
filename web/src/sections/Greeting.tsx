@@ -1,5 +1,5 @@
 import type { Person } from '../config/wedding'
-import { wedding } from '../config/wedding'
+import { useWedding } from '../platform/WeddingContext'
 import { SectionHeading } from '../components/SectionHeading'
 import './Greeting.css'
 
@@ -16,13 +16,15 @@ function ParentsLine({ person, sideLabel }: { person: Person; sideLabel: string 
 
   return (
     <div className="greeting__person">
-      <p className="greeting__parents">
-        {parents && <span className="greeting__parents-names">{parents}</span>}
-        {parents && <span className="greeting__of"> 의 {person.relation}</span>}
-      </p>
+      {parents && (
+        <p className="greeting__parents">
+          <span className="greeting__parents-names">{parents}</span>
+          <span className="greeting__of"> 의 {person.relation || (sideLabel === '신랑' ? '아들' : '딸')}</span>
+        </p>
+      )}
       <p className="greeting__child">
         <span className="greeting__side">{sideLabel}</span>
-        <span className="greeting__child-name">{person.firstName}</span>
+        <span className="greeting__child-name">{person.firstName || person.name}</span>
       </p>
       {telDigits && (
         <div className="greeting__contact">
@@ -51,7 +53,7 @@ function ParentsLine({ person, sideLabel }: { person: Person; sideLabel: string 
 }
 
 export function Greeting() {
-  const { greeting, groom, bride } = wedding
+  const { greeting, groom, bride } = useWedding().config
 
   return (
     <section className="section greeting" aria-labelledby="greeting-title">

@@ -1,0 +1,45 @@
+.status-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.status-page__body {
+  width: 100%;
+  padding: 56px var(--gutter) calc(56px + env(safe-area-inset-bottom));
+  text-align: center;
+}
+.status-page__art {
+  display: block;
+  margin: 0 auto 26px;
+  image-rendering: pixelated;
+}
+.status-page__title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink);
+  word-break: keep-all;
+}
+.status-page__msg {
+  margin-top: 12px;
+  font-size: 0.94rem;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  word-break: keep-all;
+}
+.status-page__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 280px;
+  margin: 30px auto 0;
+}
+
+.route-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+}

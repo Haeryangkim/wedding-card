@@ -1,6 +1,7 @@
 /**
  * 카카오 JavaScript SDK 지연 로딩 + 초기화.
  * 카카오내비 공식 길안내(Kakao.Navi.start)는 JS SDK 와 JavaScript 키가 필요합니다.
+ * 키는 청첩장별 설정이 아니라 서비스(빌드) 설정입니다: VITE_KAKAO_JS_KEY.
  * 키가 설정된 경우에만 사용하며, SDK 스크립트는 최초 1회만 삽입합니다.
  * (브라우저 전용 — DOM 참조. 빌드(vite.config.ts)나 순수 로직에서 import 하지 않습니다.)
  */
@@ -32,6 +33,12 @@ declare global {
  * (현 시점에 검증된 해시가 없어 생략 — 잘못된 해시는 로드를 완전히 막습니다).
  */
 const SDK_URL = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js'
+
+/** 빌드 시 지정한 카카오 JavaScript 키 (없으면 undefined → 키 없이 동작하는 방식으로 대체) */
+export function kakaoJsKey(): string | undefined {
+  const key = ((import.meta.env.VITE_KAKAO_JS_KEY as string | undefined) ?? '').trim()
+  return key || undefined
+}
 
 let loadPromise: Promise<KakaoStatic> | null = null
 

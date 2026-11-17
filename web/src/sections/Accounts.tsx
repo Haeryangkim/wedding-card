@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Account } from '../config/wedding'
-import { wedding } from '../config/wedding'
+import { useWedding } from '../platform/WeddingContext'
 import { SectionHeading } from '../components/SectionHeading'
 import { useToast } from '../components/Toast'
 import { copyText } from '../lib/clipboard'
@@ -69,8 +69,13 @@ function SideAccordion({
 }
 
 export function Accounts() {
-  const { groomSide, brideSide } = wedding.accounts
-  const [openSide, setOpenSide] = useState<'groom' | 'bride' | null>('groom')
+  const { config } = useWedding()
+  const groomSide = config.accounts?.groomSide ?? []
+  const brideSide = config.accounts?.brideSide ?? []
+  const [openSide, setOpenSide] = useState<'groom' | 'bride' | null>(groomSide.length > 0 ? 'groom' : 'bride')
+
+  // 계좌를 하나도 적지 않은 청첩장에서는 섹션 전체를 숨긴다
+  if (groomSide.length === 0 && brideSide.length === 0) return null
 
   return (
     <section className="section accounts" aria-labelledby="accounts-title">

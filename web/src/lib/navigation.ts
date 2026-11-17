@@ -1,7 +1,6 @@
 /** 길안내 딥링크. (계약: 아래 export 시그니처는 sections/Location.tsx 가 사용 — 변경 금지) */
-import { wedding } from '../config/wedding.ts'
 import { isAndroid, isIOS } from './platform.ts'
-import { loadKakao } from './kakao.ts'
+import { kakaoJsKey, loadKakao } from './kakao.ts'
 
 export type NavApp = 'kakaonavi' | 'navermap' | 'tmap'
 
@@ -121,7 +120,7 @@ function detectNavEnv(): NavEnv {
   if (isIOS(ua, mtp)) platform = 'ios'
   else if (isAndroid(ua)) platform = 'android'
   const origin = typeof window !== 'undefined' ? window.location.href : ''
-  return { platform, origin, kakaoJsKey: wedding.kakaoJsKey }
+  return { platform, origin, kakaoJsKey: kakaoJsKey() }
 }
 
 /** iOS 에서 스킴 실행 후 앱이 열렸는지 판단하기까지 기다리는 시간 */

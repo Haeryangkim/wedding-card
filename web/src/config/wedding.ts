@@ -1,6 +1,6 @@
 /**
- * 청첩장의 모든 내용은 이 파일 하나에서 수정합니다.
- * (이름, 날짜, 장소, 계좌, 사진 등 — 현재 값은 전부 예시(placeholder)입니다)
+ * 청첩장 내용의 형태(WeddingConfig)와, 프론트에 번들되는 데모 청첩장(/w/demo)의 예시 값.
+ * 실제 청첩장의 내용은 서버에 저장되고 /w/<주소>/edit 에서 수정합니다.
  */
 export interface Person {
   name: string
@@ -45,8 +45,6 @@ export interface WeddingConfig {
   gallery: string[]
   accounts: { groomSide: Account[]; brideSide: Account[] }
   share: { title: string; description: string }
-  /** 선택: 카카오 JavaScript 키 (카카오톡 공유/카카오내비 SDK). 없으면 키 없이 동작하는 방식으로 대체 */
-  kakaoJsKey?: string
 }
 
 export const wedding: WeddingConfig = {
@@ -73,8 +71,9 @@ export const wedding: WeddingConfig = {
     hall: '3층 그랜드홀',
     address: '서울특별시 중구 세종대로 110',
     tel: '02-000-0000',
-    lat: 37.5662952,
-    lng: 126.9779451,
+    // 서울시청. 편집기의 "위치 미정" 자리표시 좌표(lib/venue.ts DEFAULT_COORDS)와 겹치지 않게 한다
+    lat: 37.5665851,
+    lng: 126.9782038,
     transport: [
       { title: '지하철', lines: ['1·2호선 시청역 5번 출구 도보 3분'] },
       { title: '버스', lines: ['시청앞·덕수궁 정류장 하차'] },
@@ -101,5 +100,4 @@ export const wedding: WeddingConfig = {
     title: '김신랑 ♥ 박신부 결혼합니다',
     description: '2027년 5월 15일 토요일 오후 12시 30분 · 예시웨딩홀',
   },
-  kakaoJsKey: undefined,
 }

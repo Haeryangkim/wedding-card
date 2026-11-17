@@ -1,9 +1,10 @@
 /**
  * ApiStore — docker 서버의 REST API + SSE 실시간을 쓰는 저장소.
- * REST 계약은 types.ts 참고.
+ * 청첩장(slug)마다 하나씩 만들어집니다. REST 계약은 platform/contract.ts 참고.
  *  - base: 끝 슬래시를 제거한 값. "" 이면 같은 오리진(/api/...), 절대 URL 이면 {base}/api/...
+ *  - 경로: {base}/api/weddings/<slug>/guests , /events
  *  - fetch 는 타임아웃 + 읽기 쉬운 한국어 오류 메시지
- *  - subscribe 는 EventSource(/api/events) → 실패/부재 시 폴링 폴백, 탭 숨김 시 일시정지
+ *  - subscribe 는 EventSource(.../events) → 실패/부재 시 폴링 폴백, 탭 숨김 시 일시정지
  */
 import type { GuestbookStore, GuestEntry, NewGuestInput } from '../types'
 import {
@@ -20,18 +21,18 @@ const MAX_SSE_FAILURES = 3
 
 export class ApiStore implements GuestbookStore {
   readonly mode = 'api' as const
-  private readonly base: string
+  private readonly root: string
 
-  constructor(base: string) {
-    this.base = base.replace(/\/+$/, '')
+  constructor(base: string, slug: string) {
+    this.root = `${base.replace(/\/+$/, '')}/api/weddings/${encodeURIComponent(slug)}`
   }
 
   private apiUrl(path: string): string {
-    return `${this.base}/api${path}`
+    return `${this.root}${path}`
   }
 
   private eventsUrl(): string {
-    return `${this.base}/api/events`
+    return `${this.root}/events`
   }
 
   private async request(

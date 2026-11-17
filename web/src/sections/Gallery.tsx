@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { lockScroll } from '../lib/scrollLock'
-import { wedding } from '../config/wedding'
+import { useWedding } from '../platform/WeddingContext'
+import { getApi } from '../platform/api'
 import { SectionHeading } from '../components/SectionHeading'
 import './Gallery.css'
 
-const asset = (p: string) => import.meta.env.BASE_URL + p.replace(/^\/+/, '')
+const asset = (p: string) => getApi().assetUrl(p)
 
 function PlaceholderTile({ i }: { i: number }) {
   return (
@@ -22,7 +23,8 @@ function PlaceholderTile({ i }: { i: number }) {
 }
 
 export function Gallery() {
-  const photos = wedding.gallery
+  const { config, isDemo } = useWedding()
+  const photos = config.gallery ?? []
   const hasPhotos = photos.length > 0
   const [open, setOpen] = useState(false)
   const [index, setIndex] = useState(0)
@@ -61,6 +63,9 @@ export function Gallery() {
     touchX.current = null
   }
 
+  // 실제 청첩장에 사진이 없으면 섹션을 숨긴다 (자리표시 그림은 데모에서만)
+  if (!hasPhotos && !isDemo) return null
+
   return (
     <section className="section gallery" aria-labelledby="gallery-title">
       <SectionHeading eyebrow="GALLERY" title="우리의 순간들" />
@@ -69,7 +74,7 @@ export function Gallery() {
         {hasPhotos
           ? photos.map((src, i) => (
               <button
-                key={src}
+                key={`${src}-${i}`}
                 type="button"
                 className="gallery__item"
                 onClick={() => {

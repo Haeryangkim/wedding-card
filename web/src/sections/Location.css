@@ -162,3 +162,31 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+.location__pending {
+  margin: 4px auto 0;
+  max-width: 22em;
+  padding: 18px 16px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  word-break: keep-all;
+}
+
+/* 지도 위치를 고르지 않은 청첩장: 좌표 대신 이름·주소 검색 링크 */
+.location__navs--search {
+  margin-top: 0;
+  grid-template-columns: repeat(2, 1fr);
+}
+a.location__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  text-align: center;
+  text-decoration: none;
+}

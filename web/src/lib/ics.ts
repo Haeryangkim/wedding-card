@@ -20,10 +20,12 @@ export function weddingEvent(w: WeddingConfig, siteUrl?: string): CalendarEvent 
   const start = new Date(w.datetime)
   const end = new Date(start.getTime() + w.durationMinutes * 60_000)
   const title = `${w.groom.name} ♥ ${w.bride.name} 결혼식`
-  const location = `${w.venue.name} ${w.venue.hall}, ${w.venue.address}`
+  // 홀·주소는 비어 있을 수 있다 → 빈 조각과 남는 쉼표가 생기지 않게 있는 것만 잇는다
+  const place = [w.venue.name, w.venue.hall].map((s) => (s ?? '').trim()).filter(Boolean).join(' ')
+  const location = [place, (w.venue.address ?? '').trim()].filter(Boolean).join(', ')
   const description = [
     `${w.groom.name} ♥ ${w.bride.name}의 결혼식에 초대합니다.`,
-    `${w.venue.name} ${w.venue.hall}`,
+    place,
     ...(siteUrl ? [`청첩장 보기: ${siteUrl}`] : []),
   ].join('\n')
   return { title, description, location, start, end, url: siteUrl }

@@ -46,7 +46,10 @@
 wedding-card/
 ├─ web/                     # 프론트엔드 (Vite + React + TypeScript)
 │  ├─ src/
-│  │  ├─ platform/          # 플랫폼 계약(contract.ts)·API 클라이언트·만들기/관리 화면
+│  │  ├─ platform/          # 플랫폼 계약(contract.ts)·API 클라이언트·라우터
+│  │  ├─ pages/             # 랜딩·청첩장·만들기(/new)·관리(/edit) 화면
+│  │  ├─ editor/            # 관리 화면의 폼·검증·사진 업로드
+│  │  ├─ sections/          # 청첩장 본문 섹션 (표지·인사말·달력·갤러리·오시는 길 …)
 │  │  ├─ config/wedding.ts  # WeddingConfig 타입 + 데모 청첩장(김신랑 ♥ 박신부) 내용
 │  │  ├─ guestbook/         # 픽셀 방명록 (캐릭터 생성·맵·저장소)
 │  │  ├─ lib/               # 길안내·캘린더·ics 유틸
