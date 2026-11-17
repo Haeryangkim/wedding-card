@@ -116,3 +116,115 @@ describe('ApiStore 오류 매핑', () => {
     await expect(new ApiStore('').list()).rejects.toThrow('서버에 문제')
   })
 })
+
+describe('ApiStore.subscribe 의 EventSource 수명', () => {
+  class FakeEventSource {
+    static instances: FakeEventSource[] = []
+    closed = false
+    onopen: (() => void) | null = null
+    onerror: (() => void) | null = null
+    readonly url: string
+    constructor(url: string) {
+      this.url = url
+      FakeEventSource.instances.push(this)
+    }
+    addEventListener(): void {}
+    close(): void {
+      this.closed = true
+    }
+  }
+
+  function makeDocument() {
+    const listeners = new Set<() => void>()
+    const doc = {
+      hidden: false,
+      addEventListener: (_type: string, fn: () => void) => void listeners.add(fn),
+      removeEventListener: (_type: string, fn: () => void) => void listeners.delete(fn),
+    }
+    const setHidden = (hidden: boolean) => {
+      doc.hidden = hidden
+      for (const fn of [...listeners]) fn()
+    }
+    return { doc, setHidden, listeners }
+  }
+
+  /** 테스트가 원하는 시점에 응답하는 fetch */
+  function deferredFetch() {
+    const pending: ((r: MockResponse) => void)[] = []
+    fetchMock.mockImplementation(() => new Promise<MockResponse>((resolve) => pending.push(resolve)))
+    return {
+      resolveAll: () => {
+        for (const r of pending.splice(0)) r(resp(200, [sampleEntry]))
+      },
+    }
+  }
+
+  const flush = async () => {
+    for (let i = 0; i < 10; i++) await Promise.resolve()
+  }
+  const open = () => FakeEventSource.instances.filter((e) => !e.closed)
+
+  beforeEach(() => {
+    FakeEventSource.instances = []
+    vi.stubGlobal('EventSource', FakeEventSource)
+  })
+
+  it('초기 적재 중 숨겨졌다가(응답 도착) 다시 보여도 EventSource 는 하나뿐이다', async () => {
+    const { doc, setHidden, listeners } = makeDocument()
+    vi.stubGlobal('document', doc)
+    const net = deferredFetch()
+
+    const unsub = new ApiStore('').subscribe(() => {})
+    setHidden(true)
+    net.resolveAll() // 숨겨진 동안 초기 GET 이 끝남
+    await flush()
+    expect(open()).toHaveLength(0) // 숨겨진 탭에서는 열지 않는다
+
+    setHidden(false)
+    net.resolveAll()
+    await flush()
+    expect(FakeEventSource.instances).toHaveLength(1)
+    expect(open()).toHaveLength(1)
+
+    unsub()
+    expect(open()).toHaveLength(0)
+    expect(listeners.size).toBe(0)
+  })
+
+  it('초기 적재가 진행 중일 때 숨김→보임이 일어나도 EventSource 는 하나뿐이다', async () => {
+    const { doc, setHidden } = makeDocument()
+    vi.stubGlobal('document', doc)
+    const net = deferredFetch()
+
+    const unsub = new ApiStore('').subscribe(() => {})
+    setHidden(true)
+    setHidden(false) // 여기서 SSE 가 열린다
+    expect(open()).toHaveLength(1)
+
+    net.resolveAll() // 이제 초기 GET 완료 → startSse 가 다시 불린다
+    await flush()
+    expect(FakeEventSource.instances).toHaveLength(1)
+    expect(open()).toHaveLength(1)
+
+    unsub()
+    expect(open()).toHaveLength(0)
+  })
+
+  it('숨김/보임을 반복해도 열린 연결은 항상 최대 하나', async () => {
+    const { doc, setHidden } = makeDocument()
+    vi.stubGlobal('document', doc)
+    fetchMock.mockResolvedValue(resp(200, [sampleEntry]))
+
+    const unsub = new ApiStore('').subscribe(() => {})
+    await flush()
+    for (let i = 0; i < 3; i++) {
+      setHidden(true)
+      expect(open()).toHaveLength(0)
+      setHidden(false)
+      await flush()
+      expect(open()).toHaveLength(1)
+    }
+    unsub()
+    expect(open()).toHaveLength(0)
+  })
+})

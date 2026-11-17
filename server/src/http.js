@@ -121,19 +121,28 @@ export function readBody(req, limit) {
   })
 }
 
+/** @param {string | string[] | undefined} v 헤더가 여러 번 오면 마지막(프록시가 쓴) 값 */
+function lastHeader(v) {
+  return Array.isArray(v) ? v[v.length - 1] : v
+}
+
 /**
- * 요청자의 IP. TRUST_PROXY 일 때만 X-Forwarded-For 의 첫 주소를 신뢰한다.
+ * 요청자의 IP. TRUST_PROXY 일 때만 프록시 헤더를 신뢰한다.
+ * 클라이언트가 보낸 값이 섞일 수 있는 X-Forwarded-For 의 "첫" 주소는 절대 쓰지 않는다.
+ * - X-Real-IP: 바로 앞 프록시(nginx)가 덮어쓴 피어 주소 → 우선 사용
+ * - X-Forwarded-For: 바로 앞 프록시가 덧붙인 "마지막" 주소만 사용
  * @param {import('node:http').IncomingMessage} req
  * @param {boolean} trustProxy
  * @returns {string}
  */
 export function clientIp(req, trustProxy) {
   if (trustProxy) {
-    const xff = req.headers['x-forwarded-for']
-    const raw = Array.isArray(xff) ? xff[0] : xff
+    const real = lastHeader(req.headers['x-real-ip'])?.trim()
+    if (real) return real
+    const raw = lastHeader(req.headers['x-forwarded-for'])
     if (raw) {
-      const first = raw.split(',')[0]?.trim()
-      if (first) return first
+      const last = raw.split(',').pop()?.trim()
+      if (last) return last
     }
   }
   return req.socket.remoteAddress ?? 'unknown'

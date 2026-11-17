@@ -18,7 +18,10 @@
  * @property {number} maxGuests
  * @property {boolean} trustProxy
  * @property {number} bodyLimit 요청 본문 최대 바이트
- * @property {RateLimitConfig} rateLimit
+ * @property {RateLimitConfig} rateLimit IP별 방명록 등록 제한 (검증을 통과한 POST 만 차감)
+ * @property {RateLimitConfig} deleteRateLimit IP+항목별 삭제 비밀번호 실패 제한
+ * @property {number} sseMaxClients 동시 SSE 연결 전체 상한
+ * @property {number} sseMaxPerIp IP별 동시 SSE 연결 상한
  */
 
 /** @param {string | undefined} v @param {number} dflt */
@@ -64,7 +67,14 @@ export function loadConfig(env = process.env) {
     bodyLimit: int(env.BODY_LIMIT, 8 * 1024),
     rateLimit: {
       windowMs: int(env.RATE_WINDOW_MS, 10 * 60 * 1000),
-      max: int(env.RATE_MAX, 10),
+      // 예식장 Wi-Fi·통신사 CGNAT 처럼 하객 여러 명이 한 IP 를 쓰므로 넉넉하게 둔다.
+      max: int(env.RATE_MAX, 40),
     },
+    deleteRateLimit: {
+      windowMs: int(env.DELETE_RATE_WINDOW_MS, 10 * 60 * 1000),
+      max: int(env.DELETE_RATE_MAX, 5),
+    },
+    sseMaxClients: int(env.SSE_MAX_CLIENTS, 500),
+    sseMaxPerIp: int(env.SSE_MAX_PER_IP, 30),
   }
 }

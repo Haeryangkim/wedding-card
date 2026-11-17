@@ -101,23 +101,31 @@ export interface Countdown {
   hours: number
   minutes: number
   seconds: number
-  /** 올림한 남은 일수 (D-day 문구용) */
+  /** 한국 날짜(KST 달력) 기준 남은 일수 — 예식 당일 0, 전날 1 (D-day 문구용) */
   totalDays: number
 }
 
-/** 목표 시각까지 남은 시간. now 기본값은 현재. (절대 순간 차이라 시간대 비의존) */
+/**
+ * 목표 시각까지 남은 시간. now 기본값은 현재. (절대 순간 차이라 시간대 비의존)
+ * totalDays 만은 24시간 단위가 아니라 KST 달력 날짜 차이다(하객이 기대하는 D-day).
+ */
 export function countdown(target: Date, now: number = Date.now()): Countdown {
   const diff = target.getTime() - now
   if (diff <= 0) {
     return { done: true, days: 0, hours: 0, minutes: 0, seconds: 0, totalDays: 0 }
   }
   const sec = Math.floor(diff / 1000)
+  const t = kstParts(target)
+  const n = kstParts(new Date(now))
+  const totalDays = Math.round(
+    (Date.UTC(t.year, t.month - 1, t.day) - Date.UTC(n.year, n.month - 1, n.day)) / 86400000,
+  )
   return {
     done: false,
     days: Math.floor(sec / 86400),
     hours: Math.floor((sec % 86400) / 3600),
     minutes: Math.floor((sec % 3600) / 60),
     seconds: sec % 60,
-    totalDays: Math.ceil(diff / 86400000),
+    totalDays,
   }
 }

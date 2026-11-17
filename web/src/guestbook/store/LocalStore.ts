@@ -3,7 +3,8 @@
  * GitHub Pages 데모가 서버 호스팅 전까지 사용합니다.
  *  - 샘플 하객은 삭제 불가
  *  - 방문자가 추가한 글만 저장(삭제 비밀번호는 비암호 해시로만 저장)
- *  - localStorage 접근 실패(시크릿 모드 등)/손상 JSON 은 인메모리로 폴백
+ *  - localStorage 접근 실패(시크릿 모드 등)는 인메모리로 폴백
+ *  - 손상 JSON 은 빈 목록으로 시작하고 다음 저장 때 정상 값으로 덮어씀, 쓰기 실패는 다음 저장 때 재시도
  *  - 'storage' 이벤트로 다른 탭과 동기화
  */
 import type { GuestbookStore, GuestEntry, NewGuestInput } from '../types'
@@ -89,8 +90,16 @@ export class LocalStore implements GuestbookStore {
 
   private load(): void {
     if (!this.storage) return
+    let raw: string | null
     try {
-      const raw = this.storage.getItem(STORAGE_KEY)
+      raw = this.storage.getItem(STORAGE_KEY)
+    } catch {
+      // 저장소 접근 자체가 막힘 → 인메모리 폴백
+      this.useMemory = true
+      this.added = []
+      return
+    }
+    try {
       if (!raw) {
         this.added = []
         return
@@ -112,8 +121,8 @@ export class LocalStore implements GuestbookStore {
       }
       this.added = out
     } catch {
-      // 손상 JSON 또는 접근 예외 → 인메모리 폴백
-      this.useMemory = true
+      // 손상된 JSON → 빈 목록으로 시작. 저장은 계속 켜 두어 다음 persist() 가 손상된 값을
+      // 정상 페이로드로 덮어쓰게 한다(인메모리로 굳히면 이후 방문마다 새로고침 시 전부 사라진다).
       this.added = []
     }
   }
@@ -124,7 +133,7 @@ export class LocalStore implements GuestbookStore {
       const payload: StoredPayload = { version: STORAGE_VERSION, entries: this.added }
       this.storage.setItem(STORAGE_KEY, JSON.stringify(payload))
     } catch {
-      this.useMemory = true
+      // 일시적 실패(용량 등)일 수 있다 → 굳히지 않고 다음 add/remove 때 전체를 다시 쓴다.
     }
   }
 

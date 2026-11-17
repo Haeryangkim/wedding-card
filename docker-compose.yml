@@ -14,7 +14,16 @@ services:
       CORS_ORIGIN: ${CORS_ORIGIN:-}
       ADMIN_TOKEN: ${ADMIN_TOKEN:-}
       MAX_GUESTS: ${MAX_GUESTS:-1000}
-      # nginx 뒤에 있으므로 X-Forwarded-For 를 신뢰해 IP별 레이트리밋
+      # IP별 방명록 등록 한도 (검증을 통과한 등록만 차감)
+      RATE_MAX: ${RATE_MAX:-40}
+      RATE_WINDOW_MS: ${RATE_WINDOW_MS:-600000}
+      # (IP, 항목)별 삭제 비밀번호 실패 한도
+      DELETE_RATE_MAX: ${DELETE_RATE_MAX:-5}
+      DELETE_RATE_WINDOW_MS: ${DELETE_RATE_WINDOW_MS:-600000}
+      # 동시 SSE 연결 상한 (전체 / IP별)
+      SSE_MAX_CLIENTS: ${SSE_MAX_CLIENTS:-500}
+      SSE_MAX_PER_IP: ${SSE_MAX_PER_IP:-30}
+      # nginx 뒤에 있으므로 nginx 가 덮어쓴 X-Real-IP / X-Forwarded-For 를 신뢰해 IP별 레이트리밋
       TRUST_PROXY: "1"
     volumes:
       - guestbook-data:/data

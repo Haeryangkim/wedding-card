@@ -19,6 +19,11 @@ export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCar
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
+  // onClose 는 부모 렌더마다 새 클로저일 수 있다 → ref 로 보관해 포커스 effect 는 마운트 시 1회만.
+  const onCloseRef = useRef(onClose)
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
 
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null
@@ -26,7 +31,7 @@ export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCar
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation()
-        onClose()
+        onCloseRef.current()
       }
     }
     document.addEventListener('keydown', onKey, true)
@@ -35,7 +40,7 @@ export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCar
       document.removeEventListener('keydown', onKey, true)
       prev?.focus?.()
     }
-  }, [onClose])
+  }, [])
 
   const confirmDelete = async () => {
     if (busy) return

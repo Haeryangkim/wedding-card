@@ -10,12 +10,17 @@ import { renderWorld } from '../world/render'
 import { BubbleManager, type BubbleEntry } from '../world/bubbles'
 import { Effects } from '../world/effects'
 import { clearLabelCache } from '../world/labels'
+import { scrollTopForAgent } from '../world/scroll'
 import './WorldCanvas.css'
 
 export interface WorldCanvasProps {
   entries: GuestEntry[]
   /** 방금 등록한 내 캐릭터 등 강조할 하객 id — 카메라가 해당 캐릭터로 이동하고 말풍선을 띄움 */
   focusId?: string | null
+  /** 포커스 "요청" 번호. 값이 바뀌면 같은 focusId 라도 다시 이동·말풍선을 실행한다. */
+  focusSeq?: number
+  /** 최초 목록 로드가 끝났는지. 생략하면 첫 비어있지 않은 목록을 최초 로드로 본다. */
+  loaded?: boolean
   /** 캐릭터를 탭했을 때 */
   onSelect?: (entry: GuestEntry) => void
   className?: string
@@ -37,6 +42,9 @@ function spritesAreBlank(): boolean {
     return true
   }
 }
+
+/** 한 번의 동기화에서 이보다 많은 하객이 새로 나타나면 반짝임을 생략한다 */
+const MAX_SPARKLE_ARRIVALS = 5
 
 /** 결혼식장 맵 + 돌아다니는 하객 캐릭터 엔진(명령형). React 는 얇은 래퍼. */
 class WorldEngine {
@@ -137,7 +145,7 @@ class WorldEngine {
   }
 
   // ── 외부(props) 연동 ────────────────────────────────────────
-  setEntries(entries: GuestEntry[]): void {
+  setEntries(entries: GuestEntry[], loaded?: boolean): void {
     this.entryById = new Map(entries.map((e) => [e.id, e]))
     this.pool = entries.map((e) => ({ id: e.id, message: e.message }))
     const ids = entries.map((e) => e.id)
@@ -150,16 +158,17 @@ class WorldEngine {
     }
     this.sim.sync(ids)
 
-    // 최초 로드 이후 새로 등장한 하객엔 반짝임
+    // 최초 로드 이후 새로 등장한 하객엔 반짝임. (한꺼번에 많이 들어온 경우는 "새 하객"이
+    // 아니라 목록 재적재이므로 생략)
     if (this.initialized) {
-      for (const a of this.sim.list()) {
-        if (!this.knownIds.has(a.id) && a.life === 'spawn') {
-          this.effects.spawnSparkle(a.x, a.y - 10, 7)
-        }
+      const fresh = this.sim.list().filter((a) => !this.knownIds.has(a.id) && a.life === 'spawn')
+      if (fresh.length <= MAX_SPARKLE_ARRIVALS) {
+        for (const a of fresh) this.effects.spawnSparkle(a.x, a.y - 10, 7)
       }
     }
     this.knownIds = new Set(ids)
-    this.initialized = true
+    // 로드 전의 빈 목록 동기화로 initialized 가 켜지면 첫 실제 목록 전체가 "새 하객"이 된다.
+    if (loaded ?? entries.length > 0) this.initialized = true
 
     if (this.reduced) {
       this.settle()
@@ -167,10 +176,10 @@ class WorldEngine {
     }
   }
 
+  /** 포커스 요청. 같은 id 로 다시 불려도 매번 말풍선 + 스크롤을 실행한다. */
   setFocus(id: string | null): void {
-    const changed = id !== this.focusId
     this.focusId = id
-    if (id && changed) {
+    if (id) {
       const entry = this.entryById.get(id)
       if (entry) this.bubbles.showNow({ id, message: entry.message })
       this.scrollToAgent(id)
@@ -364,14 +373,13 @@ class WorldEngine {
     if (!a) return
     const r = this.canvas.getBoundingClientRect()
     const unit = r.width / LOGICAL_W
-    const screenY = r.top + window.scrollY + a.y * unit
-    const target = screenY - window.innerHeight / 2
-    if (r.height <= window.innerHeight + 40) return // 이미 다 보임
-    window.scrollTo({ top: Math.max(0, target), behavior: this.reduced ? 'auto' : 'smooth' })
+    const top = scrollTopForAgent(r.top + a.y * unit, window.scrollY, window.innerHeight)
+    if (top === null) return // 캐릭터가 이미 화면 안에 보임
+    window.scrollTo({ top, behavior: this.reduced ? 'auto' : 'smooth' })
   }
 }
 
-export function WorldCanvas({ entries, focusId, onSelect, className }: WorldCanvasProps) {
+export function WorldCanvas({ entries, focusId, focusSeq, loaded, onSelect, className }: WorldCanvasProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<WorldEngine | null>(null)
@@ -390,12 +398,12 @@ export function WorldCanvas({ entries, focusId, onSelect, className }: WorldCanv
   }, [])
 
   useEffect(() => {
-    engineRef.current?.setEntries(entries)
-  }, [entries])
+    engineRef.current?.setEntries(entries, loaded)
+  }, [entries, loaded])
 
   useEffect(() => {
     engineRef.current?.setFocus(focusId ?? null)
-  }, [focusId])
+  }, [focusId, focusSeq])
 
   useEffect(() => {
     engineRef.current?.setOnSelect(onSelect)

@@ -107,7 +107,12 @@ npm test               # node --test (외부 의존성 없음)
 | `CORS_ORIGIN` | 허용 오리진(쉼표 구분, `*` 가능). 비우면 같은 오리진만 | (빈 값) |
 | `ADMIN_TOKEN` | 설정 시 `Authorization: Bearer <토큰>` 으로 비번 없이 삭제 | (없음) |
 | `MAX_GUESTS` | 최대 방명록 수(초과 시 409) | `1000` |
-| `TRUST_PROXY` | nginx 뒤에서 `X-Forwarded-For` 로 IP 판별(레이트리밋용) | `0` |
+| `RATE_MAX` / `RATE_WINDOW_MS` | IP별 방명록 등록 한도(검증을 통과한 등록만 차감) | `40` / `600000` |
+| `DELETE_RATE_MAX` / `DELETE_RATE_WINDOW_MS` | (IP, 항목)별 삭제 비밀번호 실패 한도 | `5` / `600000` |
+| `SSE_MAX_CLIENTS` / `SSE_MAX_PER_IP` | 동시 실시간(SSE) 연결 상한(전체 / IP별). 초과 시 503 → 폴링 | `500` / `30` |
+| `TRUST_PROXY` | 프록시 뒤에서 IP 판별(레이트리밋용). `X-Real-IP`, 없으면 `X-Forwarded-For` 의 **마지막** 주소를 쓴다 | `0` |
+
+> **`TRUST_PROXY` 주의** — 동봉된 `web/nginx.conf` 는 `X-Real-IP`/`X-Forwarded-For` 를 nginx 가 본 피어 주소로 **덮어써서** 클라이언트가 헤더를 위조해 한도를 우회하지 못하게 합니다. 이 스택 앞에 호스트 리버스 프록시나 TLS 종단(Caddy, Traefik, 클라우드 LB 등)을 한 겹 더 두면 nginx 가 보는 주소가 전부 그 프록시가 되어 **모든 하객이 한 IP 로 묶입니다**. 그때는 `web/nginx.conf` 상단의 `set_real_ip_from <프록시 대역>; real_ip_header X-Forwarded-For; real_ip_recursive on;` 주석을 켜세요.
 
 ### docker compose
 

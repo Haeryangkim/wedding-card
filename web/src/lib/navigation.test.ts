@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { Destination, NavEnv } from './navigation.ts'
-import { buildNavTargets } from './navigation.ts'
+import { buildNavTargets, IOS_APP_OPEN_TIMEOUT_MS, onNavAppMissing, openNavigation } from './navigation.ts'
 
 // 위도(lat)와 경도(lng)가 뚜렷이 다른 값 → 좌표 순서 뒤바뀜을 잡아낸다
 const dest: Destination = { name: '예시 웨딩홀 & 그랜드,홀', lat: 37.5662952, lng: 126.9779451 }
@@ -99,5 +99,129 @@ describe('좌표 순서 회귀 방지 (lat vs lng)', () => {
     expect(m.scheme).toContain('goalx=126.9779451')
     // 카카오맵: ep=위도,경도
     expect(k.scheme).toContain('ep=37.5662952,126.9779451')
+  })
+})
+
+describe('iOS 스킴 실행 후 앱 미설치 폴백 (openNavigation)', () => {
+  const IPHONE_UA =
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1'
+  const STORE = 'https://apps.apple.com/app/id311867728'
+
+  /** node 환경용 최소 window/document 대역 */
+  function setup() {
+    const docListeners = new Map<string, Set<() => void>>()
+    const winListeners = new Map<string, Set<() => void>>()
+    const on = (m: Map<string, Set<() => void>>) => (type: string, fn: () => void) => {
+      if (!m.has(type)) m.set(type, new Set())
+      m.get(type)!.add(fn)
+    }
+    const off = (m: Map<string, Set<() => void>>) => (type: string, fn: () => void) => {
+      m.get(type)?.delete(fn)
+    }
+    const fire = (m: Map<string, Set<() => void>>, type: string) => {
+      for (const fn of [...(m.get(type) ?? [])]) fn()
+    }
+    const hrefs: string[] = []
+    const location = {
+      get href() {
+        return hrefs[hrefs.length - 1] ?? 'https://our.wedding/'
+      },
+      set href(v: string) {
+        hrefs.push(v)
+      },
+    }
+    const doc = {
+      hidden: false,
+      focused: true,
+      hasFocus() {
+        return doc.focused
+      },
+      addEventListener: on(docListeners),
+      removeEventListener: off(docListeners),
+    }
+    vi.stubGlobal('navigator', { userAgent: IPHONE_UA, maxTouchPoints: 5 })
+    vi.stubGlobal('document', doc)
+    vi.stubGlobal('window', {
+      location,
+      addEventListener: on(winListeners),
+      removeEventListener: off(winListeners),
+      open: vi.fn(),
+    })
+    const missing: string[] = []
+    const unsubscribe = onNavAppMissing((url) => missing.push(url))
+    return {
+      hrefs,
+      doc,
+      missing,
+      unsubscribe,
+      fireDoc: (t: string) => fire(docListeners, t),
+      fireWin: (t: string) => fire(winListeners, t),
+    }
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+
+  it('페이지가 계속 보이는 상태였으면 스토어로 이동하지 않고 설치 링크만 알린다', () => {
+    const env = setup()
+    openNavigation('navermap', dest)
+    expect(env.hrefs).toHaveLength(1)
+    expect(env.hrefs[0].startsWith('nmap://route/car?')).toBe(true)
+
+    vi.advanceTimersByTime(IOS_APP_OPEN_TIMEOUT_MS - 1)
+    expect(env.missing).toEqual([])
+    vi.advanceTimersByTime(1)
+    expect(env.missing).toEqual([STORE])
+    // 청첩장 탭 자체는 스토어로 이동하지 않는다
+    expect(env.hrefs).toHaveLength(1)
+    env.unsubscribe()
+  })
+
+  it('페이지가 가려졌으면(앱이 열림) 아무것도 하지 않는다', () => {
+    const env = setup()
+    openNavigation('navermap', dest)
+    env.doc.hidden = true
+    env.fireDoc('visibilitychange')
+    env.doc.hidden = false // 앱에서 돌아옴
+    vi.advanceTimersByTime(IOS_APP_OPEN_TIMEOUT_MS * 2)
+    expect(env.missing).toEqual([])
+    expect(env.hrefs).toHaveLength(1)
+    env.unsubscribe()
+  })
+
+  it('blur / pagehide 로 포커스를 잃었으면 아무것도 하지 않는다', () => {
+    for (const type of ['blur', 'pagehide']) {
+      const env = setup()
+      openNavigation('tmap', dest)
+      env.fireWin(type)
+      vi.advanceTimersByTime(IOS_APP_OPEN_TIMEOUT_MS * 2)
+      expect(env.missing).toEqual([])
+      expect(env.hrefs).toHaveLength(1)
+      env.unsubscribe()
+    }
+  })
+
+  it('타이머 시점에 문서가 포커스를 잃은 상태면 아무것도 하지 않는다', () => {
+    const env = setup()
+    openNavigation('navermap', dest)
+    env.doc.focused = false // 이벤트 없이 포커스만 잃은 경우(확인창 등)
+    vi.advanceTimersByTime(IOS_APP_OPEN_TIMEOUT_MS)
+    expect(env.missing).toEqual([])
+    env.unsubscribe()
+  })
+
+  it('타이머가 한참 늦게 실행되면(페이지가 멈춰 있었음) 아무것도 하지 않는다', () => {
+    const env = setup()
+    openNavigation('navermap', dest)
+    // 타이머는 실행되지 않은 채 시계만 흐른 상황(백그라운드 스로틀링)을 흉내
+    vi.setSystemTime(Date.now() + 10_000)
+    vi.advanceTimersByTime(IOS_APP_OPEN_TIMEOUT_MS)
+    expect(env.missing).toEqual([])
+    env.unsubscribe()
   })
 })

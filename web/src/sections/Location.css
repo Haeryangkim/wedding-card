@@ -148,3 +148,17 @@
   line-height: 1.6;
   color: var(--ink-soft);
 }
+
+/* iOS: 길안내 앱이 열리지 않을 때 보여주는 설치 안내 (페이지를 스토어로 이동시키지 않는다) */
+.location__nav-hint {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  text-align: center;
+  color: var(--ink-soft, inherit);
+}
+.location__nav-hint a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

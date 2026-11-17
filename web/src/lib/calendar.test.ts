@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { preferredCalendarTargetFor } from './calendar.ts'
+import { deviceCalendarHref, preferredCalendarTargetFor } from './calendar.ts'
 
 describe('preferredCalendarTargetFor', () => {
   it('Android 는 google 추천', () => {
@@ -23,5 +23,33 @@ describe('preferredCalendarTargetFor', () => {
       ),
     ).toBe('device')
     expect(preferredCalendarTargetFor('')).toBe('device')
+  })
+})
+
+describe('deviceCalendarHref', () => {
+  const SAFARI =
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1'
+  const KAKAO_IOS =
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 KAKAOTALK 10.8.5'
+  const KAKAO_ANDROID =
+    'Mozilla/5.0 (Linux; Android 14; SM-S921N) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.0.0 Mobile Safari/537.36;KAKAOTALK 2410850'
+
+  it('일반 브라우저는 base 경로의 wedding.ics 로 바로 이동', () => {
+    expect(deviceCalendarHref(SAFARI, '/', 'https://our.wedding')).toBe('/wedding.ics')
+    expect(deviceCalendarHref(SAFARI, '/wedding-card/', 'https://user.github.io')).toBe('/wedding-card/wedding.ics')
+  })
+
+  it('카카오톡 인앱은 외부 브라우저로 절대 URL 을 연다', () => {
+    expect(deviceCalendarHref(KAKAO_IOS, '/wedding-card/', 'https://user.github.io')).toBe(
+      'kakaotalk://web/openExternal?url=' +
+        encodeURIComponent('https://user.github.io/wedding-card/wedding.ics'),
+    )
+    expect(deviceCalendarHref(KAKAO_ANDROID, '/', 'https://our.wedding')).toBe(
+      'kakaotalk://web/openExternal?url=' + encodeURIComponent('https://our.wedding/wedding.ics'),
+    )
+  })
+
+  it('오리진을 알 수 없으면 상대 경로로 폴백', () => {
+    expect(deviceCalendarHref(KAKAO_IOS, '/', '')).toBe('/wedding.ics')
   })
 })

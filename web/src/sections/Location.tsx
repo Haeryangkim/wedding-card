@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { wedding } from '../config/wedding'
 import { SectionHeading } from '../components/SectionHeading'
 import { useToast } from '../components/Toast'
 import { copyText } from '../lib/clipboard'
 import { useReveal } from '../lib/useReveal'
 import { loadKakao } from '../lib/kakao'
-import { NAV_APPS, openNavigation, type Destination } from '../lib/navigation'
+import { NAV_APPS, onNavAppMissing, openNavigation, type Destination } from '../lib/navigation'
 import './Location.css'
 
 const NAV_TINT: Record<string, string> = {
@@ -25,6 +25,10 @@ export function Location() {
     const key = wedding.kakaoJsKey
     if (key) void loadKakao(key).catch(() => {})
   }, [])
+
+  // iOS 에서 앱이 열리지 않은 것 같을 때: 페이지를 스토어로 보내지 않고 설치 링크만 보여준다.
+  const [storeUrl, setStoreUrl] = useState<string | null>(null)
+  useEffect(() => onNavAppMissing(setStoreUrl), [])
 
   const dest: Destination = { name: venue.name, lat: venue.lat, lng: venue.lng }
   const d = 0.0042
@@ -83,12 +87,24 @@ export function Location() {
             key={app.id}
             type="button"
             className={`location__nav ${NAV_TINT[app.id] ?? ''}`}
-            onClick={() => openNavigation(app.id, dest)}
+            onClick={() => {
+              setStoreUrl(null)
+              openNavigation(app.id, dest)
+            }}
           >
             {app.label}
           </button>
         ))}
       </div>
+
+      {storeUrl && (
+        <p className="location__nav-hint" role="status">
+          앱이 열리지 않나요?{' '}
+          <a href={storeUrl} target="_blank" rel="noreferrer">
+            App Store 에서 설치하기
+          </a>
+        </p>
+      )}
 
       <div className="location__transport">
         {venue.transport.map((t) => (

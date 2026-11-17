@@ -114,6 +114,41 @@ describe('LocalStore', () => {
     expect(list.length).toBeGreaterThanOrEqual(12)
   })
 
+  it('손상된 JSON 은 다음 저장 때 정상 값으로 덮어써져, 새로고침 후에도 글이 남는다', async () => {
+    const corrupt = makeStorage({ 'wc.guestbook.v1': '{bad' })
+    const store = new LocalStore(corrupt)
+    const entry = await store.add(input)
+
+    const raw = corrupt.map.get('wc.guestbook.v1') as string
+    expect(raw).not.toBe('{bad')
+    expect(JSON.parse(raw).entries.map((e: { id: string }) => e.id)).toEqual([entry.id])
+
+    // 페이지 새로고침 모사
+    const reloaded = new LocalStore(corrupt)
+    expect((await reloaded.list()).some((e) => e.id === entry.id)).toBe(true)
+  })
+
+  it('setItem 이 한 번 실패해도 저장을 포기하지 않고 다음 add 때 둘 다 저장한다', async () => {
+    let failOnce = true
+    const realSet = storage.setItem
+    storage.setItem = (k: string, v: string) => {
+      if (failOnce) {
+        failOnce = false
+        throw new Error('QuotaExceeded')
+      }
+      realSet(k, v)
+    }
+    const store = new LocalStore(storage)
+    const first = await store.add(input)
+    expect(storage.map.has('wc.guestbook.v1')).toBe(false)
+    const second = await store.add({ ...input, name: '두번째' })
+
+    const reloaded = new LocalStore(storage)
+    const ids = (await reloaded.list()).map((e) => e.id)
+    expect(ids).toContain(first.id)
+    expect(ids).toContain(second.id)
+  })
+
   it('storage 가 null 이면 인메모리로 동작한다', async () => {
     const store = new LocalStore(null)
     const entry = await store.add(input)

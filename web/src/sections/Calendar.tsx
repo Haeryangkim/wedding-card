@@ -109,7 +109,15 @@ export function Calendar() {
         <>
           <p className="calendar__dday">
             {wedding.groom.firstName}님과 {wedding.bride.firstName}님의 결혼식이{' '}
-            <strong>{cd.totalDays}일</strong> 남았습니다
+            {cd.totalDays === 0 ? (
+              <>
+                <strong>오늘</strong>입니다
+              </>
+            ) : (
+              <>
+                <strong>{cd.totalDays}일</strong> 남았습니다
+              </>
+            )}
           </p>
           <div className="calendar__count" aria-label="예식까지 남은 시간">
             {[

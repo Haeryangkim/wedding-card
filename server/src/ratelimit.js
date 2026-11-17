@@ -1,5 +1,6 @@
 /**
- * IP별 슬라이딩 윈도 쓰기 제한 (메모리 기반). POST/DELETE 에만 적용.
+ * 키별 슬라이딩 윈도 제한 (메모리 기반).
+ * 방명록 등록은 IP, 삭제 비밀번호 실패는 `IP:id` 를 키로 쓴다.
  */
 export class RateLimiter {
   /** @param {{ windowMs: number, max: number }} opts */
@@ -11,6 +12,20 @@ export class RateLimiter {
     // 오래된 항목 주기적 정리
     this.timer = setInterval(() => this.sweep(), this.windowMs)
     if (typeof this.timer.unref === 'function') this.timer.unref()
+  }
+
+  /**
+   * 기록하지 않고 이미 한도에 도달했는지만 확인한다.
+   * @param {string} key
+   * @returns {boolean} 한도 초과 상태면 true
+   */
+  isLimited(key) {
+    const list = this.hits.get(key)
+    if (!list) return false
+    const cutoff = Date.now() - this.windowMs
+    let n = 0
+    for (const t of list) if (t > cutoff) n++
+    return n >= this.max
   }
 
   /**

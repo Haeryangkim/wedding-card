@@ -154,23 +154,29 @@ export class ApiStore implements GuestbookStore {
     }
 
     const startSse = () => {
-      if (closed) return
+      // 이미 연결이 있으면 다시 열지 않는다(초기 적재 완료와 visibilitychange 가 겹치면
+      // 두 번 불려, 추적되지 않는 EventSource 가 영구히 남는다).
+      if (closed || es) return
+      // 숨겨진 탭에서는 열지 않는다 → 다시 보일 때 onVisibility 가 연다.
+      if (typeof document !== 'undefined' && document.hidden) return
       if (typeof EventSource === 'undefined') {
         startPolling()
         return
       }
+      let src: EventSource
       try {
-        es = new EventSource(this.eventsUrl())
+        src = new EventSource(this.eventsUrl())
       } catch {
         startPolling()
         return
       }
-      es.onopen = () => {
+      es = src
+      src.onopen = () => {
         failures = 0
         stopPolling()
         void refetch() // 재연결 시 놓친 변경 보정
       }
-      es.addEventListener('added', (ev: Event) => {
+      src.addEventListener('added', (ev: Event) => {
         try {
           const entry = sanitizeEntry(JSON.parse((ev as MessageEvent).data))
           if (entry) upsert(entry)
@@ -178,7 +184,7 @@ export class ApiStore implements GuestbookStore {
           /* 잘못된 페이로드 무시 */
         }
       })
-      es.addEventListener('removed', (ev: Event) => {
+      src.addEventListener('removed', (ev: Event) => {
         try {
           const data = JSON.parse((ev as MessageEvent).data) as { id?: unknown }
           if (typeof data.id === 'string') removeById(data.id)
@@ -186,7 +192,12 @@ export class ApiStore implements GuestbookStore {
           /* 무시 */
         }
       })
-      es.onerror = () => {
+      src.onerror = () => {
+        if (es !== src) {
+          // 이미 교체/정리된 연결의 뒤늦은 오류: 이 인스턴스만 닫는다.
+          src.close()
+          return
+        }
         failures += 1
         if (failures >= MAX_SSE_FAILURES) {
           stopSse()

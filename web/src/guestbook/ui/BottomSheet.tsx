@@ -19,6 +19,12 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
   const panelRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
   const restoreFocusRef = useRef<HTMLElement | null>(null)
+  // 부모가 매 렌더마다 새 onClose 클로저를 넘겨도 아래 effect 가 다시 돌지 않도록 ref 로 보관.
+  // (effect 가 재실행되면 포커스를 트리거 버튼 → 패널로 옮겨 입력 중인 필드의 포커스/키보드를 빼앗는다)
+  const onCloseRef = useRef(onClose)
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
 
   useEffect(() => {
     if (!open) return
@@ -36,7 +42,7 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation()
-        onClose()
+        onCloseRef.current()
         return
       }
       if (e.key !== 'Tab' || !panel) return
@@ -67,7 +73,7 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
       body.style.overflow = prevOverflow
       restoreFocusRef.current?.focus?.()
     }
-  }, [open, onClose])
+  }, [open])
 
   if (!open) return null
 

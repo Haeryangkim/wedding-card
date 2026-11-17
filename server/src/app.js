@@ -48,7 +48,10 @@ export function createApp(overrides = {}) {
   const db = openDb(config.dbPath)
   const broker = new Broker()
   const limiter = new RateLimiter(config.rateLimit)
-  const deps = { config, db, broker, limiter, log }
+  const deleteLimiter = new RateLimiter(config.deleteRateLimit)
+  /** @type {Map<string, number>} IP별 열린 SSE 연결 수 */
+  const sseByIp = new Map()
+  const deps = { config, db, broker, limiter, deleteLimiter, sseByIp, log }
 
   const server = http.createServer((req, res) => {
     const started = Date.now()
@@ -78,17 +81,18 @@ export function createApp(overrides = {}) {
   async function close() {
     broker.closeAll()
     limiter.stop()
+    deleteLimiter.stop()
     await new Promise((resolve) => server.close(() => resolve(undefined)))
     db.close()
   }
 
-  return { server, config, db, broker, limiter, close }
+  return { server, config, db, broker, limiter, deleteLimiter, close }
 }
 
 /**
  * @param {import('node:http').IncomingMessage} req
  * @param {import('node:http').ServerResponse} res
- * @param {{ config: import('./config.js').Config, db: import('./db.js').Db, broker: Broker, limiter: RateLimiter, log: (l: string) => void }} deps
+ * @param {{ config: import('./config.js').Config, db: import('./db.js').Db, broker: Broker, limiter: RateLimiter, deleteLimiter: RateLimiter, sseByIp: Map<string, number>, log: (l: string) => void }} deps
  */
 async function handle(req, res, deps) {
   const { config } = deps
@@ -131,6 +135,11 @@ function methodNotAllowed(res, cors) {
   return send(res, 405, { error: '허용되지 않은 메서드입니다.' }, { ...cors, Allow: 'GET, POST, DELETE, OPTIONS' })
 }
 
+/** @param {import('node:http').ServerResponse} res @param {Record<string,string>} cors */
+function tooMany(res, cors) {
+  return send(res, 429, { error: '요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요.' }, cors)
+}
+
 /**
  * @param {import('node:http').IncomingMessage} req
  * @param {import('node:http').ServerResponse} res
@@ -140,9 +149,8 @@ function methodNotAllowed(res, cors) {
 async function handlePost(req, res, deps, cors) {
   const { config, db, broker, limiter } = deps
   const ip = clientIp(req, config.trustProxy)
-  if (!limiter.take(ip)) {
-    return send(res, 429, { error: '요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요.' }, cors)
-  }
+  // 이미 한도에 도달한 IP 는 본문을 읽기 전에 거절한다(차감 없음).
+  if (limiter.isLimited(ip)) return tooMany(res, cors)
 
   const body = await readBody(req, config.bodyLimit)
   if (!body.ok) {
@@ -165,6 +173,9 @@ async function handlePost(req, res, deps, cors) {
     return send(res, 409, { error: '방명록이 가득 찼습니다.' }, cors)
   }
 
+  // 검증을 통과해 실제로 등록될 요청만 한도에서 차감한다(400/409/413 은 무료).
+  if (!limiter.take(ip)) return tooMany(res, cors)
+
   const secret = await hashPassword(result.value.password)
   const entry = db.insert(result.value, secret)
   broker.broadcast('added', entry)
@@ -179,11 +190,7 @@ async function handlePost(req, res, deps, cors) {
  * @param {string} id
  */
 async function handleDelete(req, res, deps, cors, id) {
-  const { config, db, broker, limiter } = deps
-  const ip = clientIp(req, config.trustProxy)
-  if (!limiter.take(ip)) {
-    return send(res, 429, { error: '요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요.' }, cors)
-  }
+  const { config, db, broker, deleteLimiter } = deps
 
   const secret = db.findSecret(id)
   if (!secret) return send(res, 404, { error: '방명록을 찾을 수 없습니다.' }, cors)
@@ -218,8 +225,16 @@ async function handleDelete(req, res, deps, cors, id) {
   const password = extractPassword(parsed)
   if (!password) return send(res, 400, { error: '비밀번호가 필요합니다.' }, cors)
 
+  // 비밀번호 대입 방지: (IP, 항목) 단위로 "틀린 시도"만 센다. 등록 한도와는 별개이고
+  // 관리자 토큰 삭제·성공한 삭제는 차감하지 않는다.
+  const attemptKey = `${clientIp(req, config.trustProxy)}:${id}`
+  if (deleteLimiter.isLimited(attemptKey)) return tooMany(res, cors)
+
   const ok = await verifyPassword(password, secret.pw_hash, secret.pw_salt)
-  if (!ok) return send(res, 403, { error: '비밀번호가 일치하지 않습니다.' }, cors)
+  if (!ok) {
+    deleteLimiter.take(attemptKey)
+    return send(res, 403, { error: '비밀번호가 일치하지 않습니다.' }, cors)
+  }
 
   db.delete(id)
   broker.broadcast('removed', { id })
@@ -233,6 +248,25 @@ async function handleDelete(req, res, deps, cors, id) {
  * @param {Record<string,string>} cors
  */
 function handleSse(req, res, deps, cors) {
+  const { config, broker, sseByIp } = deps
+  // 연결 수 상한: 전체 + IP별. 초과하면 503 → 웹 클라이언트는 폴링으로 내려간다.
+  const ip = clientIp(req, config.trustProxy)
+  const mine = sseByIp.get(ip) ?? 0
+  if (broker.size >= config.sseMaxClients || mine >= config.sseMaxPerIp) {
+    return send(res, 503, { error: '실시간 연결이 많습니다. 잠시 후 다시 시도해 주세요.' }, { ...cors, 'Retry-After': '30' })
+  }
+  sseByIp.set(ip, mine + 1)
+  let released = false
+  const release = () => {
+    if (released) return
+    released = true
+    const n = (sseByIp.get(ip) ?? 1) - 1
+    if (n <= 0) sseByIp.delete(ip)
+    else sseByIp.set(ip, n)
+  }
+  res.on('close', release)
+  res.on('error', release)
+
   res.writeHead(200, {
     ...securityHeaders,
     ...cors,
@@ -244,5 +278,5 @@ function handleSse(req, res, deps, cors) {
   if (typeof res.flushHeaders === 'function') res.flushHeaders()
   req.socket.setTimeout(0)
   if (typeof res.socket?.setNoDelay === 'function') res.socket.setNoDelay(true)
-  deps.broker.add(res)
+  broker.add(res)
 }

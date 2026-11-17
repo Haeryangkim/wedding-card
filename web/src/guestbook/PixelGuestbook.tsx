@@ -24,6 +24,11 @@ export function PixelGuestbook() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [focusId, setFocusId] = useState<string | null>(null)
+  // 같은 하객을 다시 "위치 보기" 해도 동작하도록, 포커스는 (id, 요청 번호) 쌍으로 전달한다.
+  const [focusSeq, setFocusSeq] = useState(0)
+  // list() 요청 순번: 더 최신 데이터(구독/재요청)가 반영된 뒤 도착한 늦은 응답은 버린다.
+  const loadSeqRef = useRef(0)
+  const mountedRef = useRef(false)
   const [selected, setSelected] = useState<GuestEntry | null>(null)
   const [sheet, setSheet] = useState<SheetKind>('none')
   const [myIds, setMyIds] = useState<Set<string>>(() => loadMyIds())
@@ -33,23 +38,31 @@ export function PixelGuestbook() {
     storeRef.current = store
     setMode(store.mode)
     let active = true
+    mountedRef.current = true
+    const seq = ++loadSeqRef.current
     store
       .list()
       .then((list) => {
-        if (!active) return
+        if (!active || seq !== loadSeqRef.current) return
         setEntries(list)
         setLoading(false)
       })
       .catch((err: unknown) => {
-        if (!active) return
+        if (!active || seq !== loadSeqRef.current) return
         setError(err instanceof Error ? err.message : '방명록을 불러오지 못했어요.')
         setLoading(false)
       })
     const unsub = store.subscribe((list) => {
-      if (active) setEntries(list)
+      if (!active) return
+      // 구독이 데이터를 전달했다면 최초 로드 실패/로딩 상태는 더 이상 유효하지 않다.
+      loadSeqRef.current++
+      setEntries(list)
+      setError(null)
+      setLoading(false)
     })
     return () => {
       active = false
+      mountedRef.current = false
       unsub()
     }
   }, [])
@@ -64,13 +77,17 @@ export function PixelGuestbook() {
     if (!store) return
     setLoading(true)
     setError(null)
+    const seq = ++loadSeqRef.current
+    const stale = () => !mountedRef.current || seq !== loadSeqRef.current
     store
       .list()
       .then((list) => {
+        if (stale()) return
         setEntries(list)
         setLoading(false)
       })
       .catch((err: unknown) => {
+        if (stale()) return
         setError(err instanceof Error ? err.message : '방명록을 불러오지 못했어요.')
         setLoading(false)
       })
@@ -90,6 +107,7 @@ export function PixelGuestbook() {
     setSheet('none')
     setSelected(null)
     setFocusId(entry.id)
+    setFocusSeq((n) => n + 1)
   }
 
   const handleDelete = async (id: string, password: string) => {
@@ -112,6 +130,7 @@ export function PixelGuestbook() {
     setSheet('none')
     setSelected(null)
     setFocusId(id)
+    setFocusSeq((n) => n + 1)
   }
 
   const guestCount = entries.length
@@ -133,6 +152,8 @@ export function PixelGuestbook() {
         <WorldCanvas
           entries={entries}
           focusId={focusId}
+          focusSeq={focusSeq}
+          loaded={!loading}
           onSelect={(entry) => setSelected(entry)}
           className="pg-world"
         />
