@@ -104,7 +104,7 @@ export function GuestList({
               <li key={entry.id} className="glist-item">
                 <div className="glist-main">
                   <span className="glist-thumb">
-                    <CharacterPreview kind={entry.appearance} scale={2} dir="down" />
+                    <CharacterPreview kind={entry.appearance} scale={2} rows={24} dir="down" />
                   </span>
                   <div className="glist-lines">
                     <div className="glist-top">

@@ -6,7 +6,7 @@ import type { Appearance } from '../src/guestbook/types'
 import { getSprite, PART_DEFS, randomAppearance, SPRITE_H, SPRITE_W } from '../src/guestbook/character'
 import type { Dir, SpriteKind } from '../src/guestbook/character'
 
-const S = 6 // 확대 배율
+const S = 4 // 확대 배율
 const DIRS: Dir[] = ['down', 'left', 'right', 'up']
 const FRAMES = [0, 1, 2] as const
 
@@ -174,10 +174,10 @@ if (location.hash === '#zoom') {
     { kind: 'groom', dir: 'down', frame: 0, label: 'groom' },
     { kind: 'bride', dir: 'down', frame: 0, label: 'bride' },
     { kind: 'bride', dir: 'up', frame: 0, label: 'bride up' },
-    { kind: { ...base, hairStyle: 0 }, dir: 'down', frame: 0, label: '단발' },
-    { kind: { ...base, hairStyle: 1 }, dir: 'down', frame: 0, label: '보브' },
-    { kind: { ...base, hairStyle: 6 }, dir: 'down', frame: 0, label: '가르마' },
-    { kind: { ...base, hairStyle: 3 }, dir: 'down', frame: 0, label: '포니' },
+    { kind: { ...base, hairStyle: 0 }, dir: 'down', frame: 0, label: labelOf('hairStyle', 0) },
+    { kind: { ...base, hairStyle: 1 }, dir: 'down', frame: 0, label: labelOf('hairStyle', 1) },
+    { kind: { ...base, hairStyle: 6 }, dir: 'down', frame: 0, label: labelOf('hairStyle', 6) },
+    { kind: { ...base, hairStyle: 3 }, dir: 'down', frame: 0, label: labelOf('hairStyle', 3) },
   ]
   const cw = SPRITE_W * ZS + 14
   const ch = SPRITE_H * ZS + 22

@@ -11,6 +11,9 @@
     calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
   background: rgba(40, 34, 28, 0.42);
   backdrop-filter: blur(2px);
+  cursor: pointer;
+  overscroll-behavior: contain;
+  touch-action: none;
   animation: card-fade 0.16s ease-out;
 }
 
@@ -19,7 +22,11 @@
   width: 100%;
   max-width: 340px;
   max-height: 86vh;
+  max-height: 86dvh;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  cursor: auto;
+  touch-action: pan-y;
   background: var(--card);
   color: var(--ink);
   border-radius: var(--radius);

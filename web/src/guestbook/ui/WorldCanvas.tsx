@@ -361,7 +361,7 @@ class WorldEngine {
     let best: { id: string; y: number } | null = null
     for (const a of agents) {
       if (a.life === 'despawn') continue
-      const withinX = Math.abs(lx - a.x) <= 8
+      const withinX = Math.abs(lx - a.x) <= 10
       const withinY = ly <= a.y + 2 && ly >= a.y - SPRITE_H - 2
       if (withinX && withinY && (!best || a.y > best.y)) best = { id: a.id, y: a.y }
     }

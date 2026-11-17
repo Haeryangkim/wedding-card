@@ -24,6 +24,8 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
   // 부모가 매 렌더마다 새 onClose 클로저를 넘겨도 아래 effect 가 다시 돌지 않도록 ref 로 보관.
   // (effect 가 재실행되면 포커스를 트리거 버튼 → 패널로 옮겨 입력 중인 필드의 포커스/키보드를 빼앗는다)
   const onCloseRef = useRef(onClose)
+  // 배경에서 시작해 배경에서 끝난 탭만 닫기로 인정 (패널 안에서 시작한 드래그가 배경에서 끝나도 닫히지 않게)
+  const downOnBackdropRef = useRef(false)
   useEffect(() => {
     onCloseRef.current = onClose
   }, [onClose])
@@ -37,7 +39,7 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
 
     // 첫 포커스는 다이얼로그 패널 자체 (닫기 버튼에 포커스 링이 바로 뜨지 않도록)
     const panel = panelRef.current
-    const raf = requestAnimationFrame(() => panel?.focus())
+    const raf = requestAnimationFrame(() => panel?.focus({ preventScroll: true }))
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -71,7 +73,8 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
       cancelAnimationFrame(raf)
       document.removeEventListener('keydown', onKeyDown, true)
       unlock()
-      restoreFocusRef.current?.focus?.()
+      // preventScroll: 닫힌 뒤 페이지가 트리거 버튼으로 튀거나 '찾기' 스크롤을 끊지 않도록
+      restoreFocusRef.current?.focus?.({ preventScroll: true })
     }
   }, [open])
 
@@ -79,7 +82,17 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
 
   // 조상에 transform/will-change 가 있으면 position: fixed 가 뷰포트가 아닌 그 조상 기준이 되므로 body 로 포털
   return createPortal(
-    <div className="sheet-backdrop" onMouseDown={onClose}>
+    <div
+      className="sheet-backdrop"
+      onPointerDown={(e) => {
+        downOnBackdropRef.current = e.target === e.currentTarget
+      }}
+      onClick={(e) => {
+        const ok = downOnBackdropRef.current && e.target === e.currentTarget
+        downOnBackdropRef.current = false
+        if (ok) onClose()
+      }}
+    >
       <div
         ref={panelRef}
         className="sheet-panel"
@@ -87,7 +100,6 @@ export function BottomSheet({ open, onClose, title, children, headerExtra }: Bot
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="sheet-header">
           <span className="sheet-grab" aria-hidden="true" />

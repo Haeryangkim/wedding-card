@@ -1,45 +1,42 @@
 /**
- * 레이어 조립 + 색 해석 → RGBA 버퍼. DOM 없는 순수 코어(테스트 가능).
+ * 층 조립 + 색 해석 → RGBA 버퍼. DOM 없는 순수 코어(테스트 가능).
  * randomAppearance / normalizeAppearance / PART_DEFS 도 여기서.
+ *
+ * 조립: 다리(lower) 와 상체(upper: 머리·몸통·팔·치마·머리카락·액세서리)를 따로 그린 뒤,
+ * 걷기 프레임에서는 upper 를 통째로 1px 내려 합친다 → 머리는 흔들림 없이 몸과 함께 bob.
  */
 import type { Appearance } from '../types'
-import type { Dir, Frame, PartDef, SpriteKind } from './dims'
+import type { Dir, Frame, PartDef, SpriteKind, View } from './dims'
 import { SPRITE_H, SPRITE_W } from './dims'
+import { ACCESSORIES, drawAccessory } from './accessories'
 import {
-  BLUSH_HEX,
-  EYE_HEX,
-  GOLD_HEX,
-  HAIR_COLORS,
-  LIGHT_HEX,
-  M,
-  MOUTH_HEX,
-  OUTFIT_COLORS,
-  OUTLINE_HEX,
-  SHOE_HEX,
-  SKINS,
-  darken,
-  hexToRgb,
-  lighten,
-  type RGB,
-  type RGBA,
-} from './palette'
+  castHairShadow,
+  drawArmSideFar,
+  drawArmSideNear,
+  drawArmsFront,
+  drawFace,
+  drawHead,
+  drawLegs,
+  drawNeck,
+  drawTorsoSkin,
+} from './body'
+import { blit, makeGrid, makeLut, setColor, setRamp, toRGBA, type Grid, type Lut } from './grid'
+import { HAIRS, drawHairOver, drawHairUnder } from './hair'
+import { OUTFITS, drawSkirt, drawTorso, type OutfitDef } from './outfits'
+import { FIXED, HAIR_COLORS, OUTFIT_COLORS, SKINS, hexToRgb, mix, ramp, type RGB, type Ramp } from './palette'
 import {
-  ACC_LABELS,
-  COUNTS,
-  HAIR_LABELS,
-  OUTFIT_LABELS,
-  drawBride,
-  drawGroom,
-  drawVeilBack,
-  drawVeilFront,
-  layerAccessory,
-  layerBody,
-  layerFace,
-  layerHairBack,
-  layerHairFront,
-  layerOutfit,
-} from './parts'
-import { autoOutline, makeGrid, mirrorX, toRGBA, type Grid } from './grid'
+  BRIDE_COLORS,
+  BRIDE_VEIL,
+  BRIDE_WHITE,
+  GROOM_COLORS,
+  GROOM_HAIR,
+  TUXEDO,
+  drawBrideBody,
+  drawBrideHair,
+  drawBrideOver,
+  drawBrideSkirt,
+  drawBrideUnder,
+} from './special'
 
 export interface PixelBuffer {
   w: number
@@ -47,148 +44,203 @@ export interface PixelBuffer {
   data: Uint8ClampedArray // RGBA, 길이 w*h*4
 }
 
-/* ── 액세서리 고정색 (Appearance 엔 accessoryColor 없음) ──────────── */
-const ACC_COLORS: { acc: string; acc2: string }[] = [
-  { acc: '#000000', acc2: '#000000' }, // 0 없음
-  { acc: '#39343a', acc2: '#bcd6e6' }, // 1 안경
-  { acc: '#2a2730', acc2: '#1c1b24' }, // 2 선글라스
-  { acc: '#c24a5e', acc2: '#8f3346' }, // 3 리본
-  { acc: '#e08aa0', acc2: '#b85f7d' }, // 4 꽃
-  { acc: '#4b4f5b', acc2: '#6c7180' }, // 5 베레모
-  { acc: '#3a456e', acc2: '#283156' }, // 6 보타이
-  { acc: '#4b4f5b', acc2: '#e08aa0' }, // 7 헤드폰
-]
+const COUNTS = {
+  skin: SKINS.length,
+  hairStyle: HAIRS.length,
+  hairColor: HAIR_COLORS.length,
+  outfit: OUTFITS.length,
+  outfitColor: OUTFIT_COLORS.length,
+  accessory: ACCESSORIES.length,
+} as const
 
-function a(c: RGB): RGBA {
-  return [c[0], c[1], c[2], 255]
+/* ── 색 해석표 ───────────────────────────────────────────── */
+interface LutOpts {
+  skin: RGB
+  hair: RGB
+  cloth: RGB
+  e: RGB
+  t: RGB
+  q: RGB
+  shoe: RGB
+  acc?: RGB
+  acc2?: RGB
+  /** 신부 전용: 흰 천(W)·제4색(1234 = 베일) 램프를 직접 지정 */
+  whiteRamp?: Ramp
+  qRamp?: Ramp
 }
 
-/** 외형 → 재질별 RGBA LUT. */
-function buildLut(opts: {
-  skin: string
-  hair: string
-  cloth: string
-  acc: string
-  acc2: string
-}): Record<number, RGBA> {
-  const skin = hexToRgb(opts.skin)
-  const hair = hexToRgb(opts.hair)
-  const cloth = hexToRgb(opts.cloth)
-  const cloth2 = darken(cloth, 0.62)
-  const light = hexToRgb(LIGHT_HEX)
-  const acc = hexToRgb(opts.acc)
-  const acc2 = hexToRgb(opts.acc2)
-  const shoe = hexToRgb(SHOE_HEX)
-  const lut: Record<number, RGBA> = {}
-  lut[M.OUTLINE] = a(hexToRgb(OUTLINE_HEX))
-  lut[M.SKIN] = a(skin)
-  lut[M.SKIN_SH] = a(darken(skin, 0.86))
-  lut[M.SKIN_HI] = a(lighten(skin, 0.22))
-  lut[M.HAIR] = a(hair)
-  lut[M.HAIR_SH] = a(darken(hair, 0.72))
-  lut[M.HAIR_HI] = a(lighten(hair, 0.28))
-  lut[M.CLOTH] = a(cloth)
-  lut[M.CLOTH_SH] = a(darken(cloth, 0.78))
-  lut[M.CLOTH_HI] = a(lighten(cloth, 0.2))
-  lut[M.CLOTH2] = a(cloth2)
-  lut[M.CLOTH2_SH] = a(darken(cloth2, 0.78))
-  lut[M.LIGHT] = a(light)
-  lut[M.LIGHT_SH] = a(darken(light, 0.9))
-  lut[M.EYE] = a(hexToRgb(EYE_HEX))
-  lut[M.MOUTH] = a(hexToRgb(MOUTH_HEX))
-  lut[M.BLUSH] = a(hexToRgb(BLUSH_HEX))
-  lut[M.SHOE] = a(shoe)
-  lut[M.SHOE_SH] = a(darken(shoe, 0.78))
-  lut[M.ACC] = a(acc)
-  lut[M.ACC_SH] = a(darken(acc, 0.72))
-  lut[M.ACC2] = a(acc2)
-  lut[M.LENS] = a(hexToRgb('#bcd6e6'))
-  lut[M.GOLD] = a(hexToRgb(GOLD_HEX))
+function buildLut(o: LutOpts): Lut {
+  const lut = makeLut()
+  const sk = ramp(o.skin)
+  // 피부 음영은 부드럽게 (얼굴이 얼룩져 보이지 않도록)
+  const skin = [sk[0], sk[1], mix(sk[1], sk[2], 0.72), sk[3]] as const
+  setRamp(lut, 'KkjJ', skin)
+  setRamp(lut, 'HhgG', ramp(o.hair))
+  setRamp(lut, 'CcbB', ramp(o.cloth))
+  setRamp(lut, 'EedD', ramp(o.e))
+  setRamp(lut, 'TtrR', ramp(o.t))
+  const q = o.qRamp ?? ramp(o.q)
+  // 베일은 외곽선을 한 톤 옅게 (가볍고 비치는 느낌)
+  setRamp(lut, '1234', q, o.qRamp ? mix(q[2], q[3], 0.6) : q[3])
+  const white = ramp(FIXED.white)
+  setRamp(lut, 'WwvV', o.whiteRamp ?? [FIXED.eyeWhite, white[1], white[2], white[3]])
+  setRamp(lut, 'OonN', ramp(o.shoe))
+  if (o.acc) setRamp(lut, 'AazZ', ramp(o.acc))
+  if (o.acc2) setRamp(lut, 'QqpP', ramp(o.acc2))
+  const gold = ramp(FIXED.gold)
+  setColor(lut, 'Y', gold[0], gold[3])
+  setColor(lut, 'y', gold[1], gold[3])
+  setColor(lut, '&', gold[2], gold[3])
+  const fl = ramp(FIXED.flower)
+  setColor(lut, 'F', fl[0], fl[3])
+  setColor(lut, 'f', fl[1], fl[3])
+  setColor(lut, '*', fl[2], fl[3])
+  const leaf = ramp(FIXED.leaf)
+  setColor(lut, 'L', leaf[0], leaf[3])
+  setColor(lut, 'l', leaf[1], leaf[3])
+  // 얼굴
+  setColor(lut, 'x', mix(FIXED.eye, skin[3], 0.15), skin[3])
+  setColor(lut, 'X', FIXED.eyeWhite, skin[3])
+  setColor(lut, 'u', mix(o.skin, hexToRgb('#ee7f86'), 0.42), skin[3])
+  setColor(lut, 'm', mix(sk[2], hexToRgb('#b0444c'), 0.6), skin[3])
   return lut
 }
 
 /* ── 조립 ───────────────────────────────────────────────── */
-/** right 를 그린 뒤 left 는 좌우반전으로 통일(얼굴/머리 방향 일관). */
-function baseDir(dir: Dir): Dir {
-  return dir === 'left' ? 'right' : dir
+function viewOf(dir: Dir): View {
+  return dir === 'down' ? 'front' : dir === 'up' ? 'back' : 'side'
 }
 
-function composeGuest(app: Appearance, dir: Dir, frame: Frame): Grid {
-  const g = makeGrid()
-  layerHairBack(g, dir, app.hairStyle)
-  layerBody(g, dir, frame)
-  layerOutfit(g, dir, frame, app.outfit)
-  // 치마 의상은 drawBodyBase 의 맨다리를 그대로 노출 → 추가 처리 불필요
-  layerFace(g, dir)
-  layerHairFront(g, dir, app.hairStyle)
-  layerAccessory(g, dir, app.accessory)
-  return g
+function merge(lower: Grid, upper: Grid, frame: Frame): Grid {
+  blit(lower, upper, frame === 0 ? 0 : 1)
+  return lower
 }
 
-function composeGroom(dir: Dir, frame: Frame): Grid {
-  const g = makeGrid()
-  layerBody(g, dir, frame)
-  drawGroom(g, dir, frame)
-  layerFace(g, dir)
-  layerHairFront(g, dir, 7) // 숏컷
-  return g
+/** 한복 바지 대님: 신발 바로 위 바짓단 한 줄을 주색 띠로 바꾼다 (모든 방향·프레임 공통). */
+function tieAnkles(g: Grid): void {
+  const isShoe = (v: number) => v === 111 || v === 110 || v === 79 || v === 78 // o n O N
+  for (let y = 0; y < g.h - 1; y++) {
+    for (let x = 0; x < g.w; x++) {
+      const v = g.data[y * g.w + x]
+      if (!isShoe(g.data[(y + 1) * g.w + x])) continue
+      if (v === 101) g.data[y * g.w + x] = 99 // e → c
+      else if (v === 100 || v === 68) g.data[y * g.w + x] = 98 // d D → b
+    }
+  }
 }
 
-function composeBride(dir: Dir, frame: Frame): Grid {
-  const g = makeGrid()
-  drawVeilBack(g, dir)
-  layerBody(g, dir, frame)
-  drawBride(g, dir, frame)
-  layerFace(g, dir)
-  layerHairFront(g, dir, 4) // 올림머리
-  drawVeilFront(g, dir)
-  return g
+function composeFigure(
+  view: View,
+  frame: Frame,
+  hair: number,
+  def: OutfitDef,
+  accessory: number,
+): Grid {
+  const lower = makeGrid()
+  const upper = makeGrid()
+  drawLegs(lower, view, frame, def.legs, def.legRemap)
+  if (def.ankleTie) tieAnkles(lower)
+
+  if (view !== 'back') drawHairUnder(upper, view, hair)
+  drawTorsoSkin(upper, view)
+  if (view === 'side') drawArmSideFar(upper, frame, def.sleeve)
+  drawNeck(upper, view)
+  drawSkirt(upper, view, frame, def)
+  drawTorso(upper, view, def)
+  if (view === 'side') drawArmSideNear(upper, frame, def.sleeve)
+  else drawArmsFront(upper, frame, def.sleeve, view === 'back')
+  drawHead(upper, view)
+  drawHairOver(upper, view, hair)
+  castHairShadow(upper)
+  drawFace(upper, view)
+  drawAccessory(upper, view, accessory)
+  return merge(lower, upper, frame)
 }
 
-function lutFor(kind: SpriteKind): Record<number, RGBA> {
+function composeBride(view: View, frame: Frame): Grid {
+  const lower = makeGrid()
+  const upper = makeGrid()
+  drawBrideUnder(upper, view)
+  drawTorsoSkin(upper, view)
+  drawNeck(upper, view)
+  drawBrideSkirt(lower, view, frame)
+  drawBrideBody(upper, view)
+  drawHead(upper, view)
+  drawBrideHair(upper, view)
+  castHairShadow(upper)
+  drawFace(upper, view)
+  drawBrideOver(upper, view)
+  return merge(lower, upper, frame)
+}
+
+function lutFor(kind: SpriteKind): Lut {
   if (kind === 'groom') {
-    return buildLut({
-      skin: SKINS[1].hex,
-      hair: '#2b2630',
-      cloth: '#2f3038', // 턱시도
-      acc: '#d98fa2', // 부토니에
-      acc2: '#b85f7d',
-    })
+    const c = TUXEDO.colors(GROOM_COLORS.cloth)
+    return buildLut({ skin: GROOM_COLORS.skin, hair: GROOM_COLORS.hair, cloth: GROOM_COLORS.cloth, ...c })
   }
   if (kind === 'bride') {
     return buildLut({
-      skin: SKINS[1].hex,
-      hair: '#45342a',
-      cloth: LIGHT_HEX,
-      acc: '#e08aa0', // 부케
-      acc2: '#b85f7d',
+      skin: BRIDE_COLORS.skin,
+      hair: BRIDE_COLORS.hair,
+      cloth: FIXED.white,
+      e: FIXED.white,
+      t: FIXED.gold,
+      q: FIXED.white,
+      whiteRamp: BRIDE_WHITE,
+      qRamp: BRIDE_VEIL,
+      shoe: FIXED.white,
     })
   }
-  const acc = ACC_COLORS[kind.accessory] ?? ACC_COLORS[0]
+  const primary = hexToRgb(OUTFIT_COLORS[kind.outfitColor].hex)
+  const c = OUTFITS[kind.outfit].colors(primary)
+  const acc = ACCESSORIES[kind.accessory]
   return buildLut({
-    skin: SKINS[kind.skin]?.hex ?? SKINS[0].hex,
-    hair: HAIR_COLORS[kind.hairColor]?.hex ?? HAIR_COLORS[0].hex,
-    cloth: OUTFIT_COLORS[kind.outfitColor]?.hex ?? OUTFIT_COLORS[0].hex,
-    acc: acc.acc,
-    acc2: acc.acc2,
+    skin: hexToRgb(SKINS[kind.skin].hex),
+    hair: hexToRgb(HAIR_COLORS[kind.hairColor].hex),
+    cloth: c.c ?? primary,
+    e: c.e,
+    t: c.t,
+    q: c.q,
+    shoe: c.shoe,
+    acc: acc.a,
+    acc2: acc.q,
   })
 }
 
-function composeGrid(kind: SpriteKind, dir: Dir, frame: Frame): Grid {
-  const bdir = baseDir(dir)
-  let g: Grid
-  if (kind === 'groom') g = composeGroom(bdir, frame)
-  else if (kind === 'bride') g = composeBride(bdir, frame)
-  else g = composeGuest(normalizeAppearance(kind), bdir, frame)
-  if (dir === 'left') g = mirrorX(g)
-  autoOutline(g)
-  return g
+function mirrorRGBA(src: Uint8ClampedArray, w: number, h: number): Uint8ClampedArray {
+  const out = new Uint8ClampedArray(src.length)
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const s = (y * w + x) * 4
+      const d = (y * w + (w - 1 - x)) * 4
+      out[d] = src[s]
+      out[d + 1] = src[s + 1]
+      out[d + 2] = src[s + 2]
+      out[d + 3] = src[s + 3]
+    }
+  }
+  return out
 }
 
-/** DOM 없는 RGBA 버퍼 (테스트/오프스크린 렌더 공용). */
+/** DOM 없는 RGBA 버퍼 (테스트/오프스크린 렌더 공용). left 는 right 의 좌우 반전. */
 export function buildBuffer(kind: SpriteKind, dir: Dir, frame: Frame): PixelBuffer {
-  const g = composeGrid(kind, dir, frame)
-  return { w: SPRITE_W, h: SPRITE_H, data: toRGBA(g, lutFor(kind)) }
+  const view = viewOf(dir)
+  let g: Grid
+  let lut: Lut
+  if (kind === 'groom') {
+    g = composeFigure(view, frame, GROOM_HAIR, TUXEDO, 0)
+    lut = lutFor(kind)
+  } else if (kind === 'bride') {
+    g = composeBride(view, frame)
+    lut = lutFor(kind)
+  } else {
+    const a = normalizeAppearance(kind)
+    g = composeFigure(view, frame, a.hairStyle, OUTFITS[a.outfit], a.accessory)
+    lut = lutFor(a)
+  }
+  const data = toRGBA(g, lut)
+  // left 는 색까지 해석한 right 를 통째로 좌우 반전 (외곽선 명암도 함께 뒤집혀 정확한 거울상)
+  return { w: SPRITE_W, h: SPRITE_H, data: dir === 'left' ? mirrorRGBA(data, SPRITE_W, SPRITE_H) : data }
 }
 
 /* ── 랜덤 / 보정 ─────────────────────────────────────────── */
@@ -197,8 +249,8 @@ function randInt(rand: () => number, n: number): number {
 }
 
 export function randomAppearance(rand: () => number = Math.random): Appearance {
-  // 액세서리는 35% 확률로 '없음'(0) → 과하지 않은 조합
-  const accessory = rand() < 0.35 ? 0 : randInt(rand, COUNTS.accessory - 1) + 1
+  // 액세서리는 40% 확률로 '없음'(0) → 과하지 않은 조합
+  const accessory = rand() < 0.4 ? 0 : randInt(rand, COUNTS.accessory - 1) + 1
   return {
     skin: randInt(rand, COUNTS.skin),
     hairStyle: randInt(rand, COUNTS.hairStyle),
@@ -210,7 +262,7 @@ export function randomAppearance(rand: () => number = Math.random): Appearance {
 }
 
 function clampIndex(v: unknown, max: number): number {
-  const n = typeof v === 'number' ? v : Number(v)
+  const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() !== '' ? Number(v) : NaN
   if (Number.isNaN(n)) return 0
   const i = Math.round(n)
   if (!(i >= 0)) return 0 // 음수·-Infinity → 0
@@ -233,18 +285,18 @@ export function normalizeAppearance(input: unknown): Appearance {
 
 /* ── 캐릭터 만들기 UI 용 파츠 정의 ─────────────────────────────── */
 export const PART_DEFS: PartDef[] = [
-  { key: 'hairStyle', label: '머리 모양', options: HAIR_LABELS.map((label) => ({ label })) },
+  { key: 'hairStyle', label: '머리 모양', options: HAIRS.map((h) => ({ label: h.label })) },
   {
     key: 'hairColor',
     label: '머리 색',
     options: HAIR_COLORS.map((c) => ({ label: c.label, swatch: c.hex })),
   },
-  { key: 'outfit', label: '의상', options: OUTFIT_LABELS.map((label) => ({ label })) },
+  { key: 'outfit', label: '의상', options: OUTFITS.map((o) => ({ label: o.label })) },
   {
     key: 'outfitColor',
     label: '의상 색',
     options: OUTFIT_COLORS.map((c) => ({ label: c.label, swatch: c.hex })),
   },
-  { key: 'accessory', label: '액세서리', options: ACC_LABELS.map((label) => ({ label })) },
+  { key: 'accessory', label: '액세서리', options: ACCESSORIES.map((a) => ({ label: a.label })) },
   { key: 'skin', label: '피부', options: SKINS.map((c) => ({ label: c.label, swatch: c.hex })) },
 ]

@@ -91,7 +91,7 @@ export function JoinFlow({ onSubmit }: JoinFlowProps) {
       {step === 2 && (
         <div className="join-step">
           <div className="join-whoami">
-            <CharacterPreview kind={appearance} scale={3} animate />
+            <CharacterPreview kind={appearance} scale={2} animate />
             <p className="join-lead">축하 메시지를 남겨 주세요.</p>
           </div>
 

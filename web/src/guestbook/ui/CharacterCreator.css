@@ -38,8 +38,8 @@
   left: 50%;
   bottom: 6px;
   transform: translateX(-50%);
-  width: 56px;
-  height: 12px;
+  width: 60px;
+  height: 13px;
   border-radius: 50%;
   background: rgba(59, 51, 43, 0.16);
   z-index: 0;
@@ -154,6 +154,7 @@
   flex: 0 0 auto;
   appearance: none;
   min-width: 56px;
+  justify-content: flex-end;
   border-radius: 12px;
   border: 2px solid var(--line);
   background: var(--card);

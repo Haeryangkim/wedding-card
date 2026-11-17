@@ -1,4 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { ACCESSORIES } from './accessories'
+import { HAIRS } from './hair'
+import { OUTFITS } from './outfits'
 import type { Appearance } from '../types'
 import type { Dir, Frame, SpriteKind } from './index'
 import {
@@ -193,6 +196,84 @@ describe('buildBuffer', () => {
         const ri = (y * w + (w - 1 - x)) * 4
         for (let c = 0; c < 4; c++) expect(L[li + c]).toBe(R[ri + c])
       }
+    }
+  })
+})
+
+describe('옵션 구성', () => {
+  it('요구 개수 이상의 옵션을 제공', () => {
+    expect(counts.skin).toBeGreaterThanOrEqual(6)
+    expect(counts.hairStyle).toBeGreaterThanOrEqual(10)
+    expect(counts.hairColor).toBeGreaterThanOrEqual(9)
+    expect(counts.outfit).toBeGreaterThanOrEqual(9)
+    expect(counts.outfitColor).toBeGreaterThanOrEqual(9)
+    expect(counts.accessory).toBeGreaterThanOrEqual(9) // 0 없음 + 8종 이상
+    expect(SPRITE_W).toBeGreaterThanOrEqual(16)
+    expect(SPRITE_W).toBeLessThanOrEqual(24)
+    expect(SPRITE_H).toBeGreaterThanOrEqual(28)
+    expect(SPRITE_H).toBeLessThanOrEqual(36)
+  })
+
+  it('모든 옵션이 정면에서 서로 다른 그림', () => {
+    for (const part of PART_DEFS) {
+      const seen = new Set<string>()
+      for (let i = 0; i < part.options.length; i++) {
+        const buf = buildBuffer({ ...BASE, [part.key]: i }, 'down', 0)
+        seen.add(Array.from(buf.data).join(','))
+      }
+      expect(seen.size, part.key).toBe(part.options.length)
+    }
+  })
+
+  it('모든 템플릿 행은 스프라이트 폭과 같다', () => {
+    const layers: { rows: string[] }[] = []
+    for (const h of HAIRS)
+      for (const v of [h.front, h.side, h.back]) {
+        layers.push(v.over)
+        if (v.under) layers.push(v.under)
+      }
+    for (const o of OUTFITS)
+      for (const v of ['front', 'side', 'back'] as const) {
+        layers.push(o.torso[v])
+        if (o.skirt) layers.push(o.skirt[v])
+      }
+    for (const a of ACCESSORIES) for (const l of [a.front, a.side, a.back]) if (l) layers.push(l)
+    for (const l of layers) for (const r of l.rows) expect(r.length, r).toBe(SPRITE_W)
+  })
+})
+
+describe('걷기 애니메이션', () => {
+  const DIRS: Dir[] = ['down', 'left', 'right', 'up']
+  /** 머리 영역(위 14행)만 잘라 비교 */
+  const headRows = (d: Uint8ClampedArray, y0: number) => d.slice(y0 * SPRITE_W * 4, (y0 + 14) * SPRITE_W * 4)
+
+  it('머리는 걷기 프레임끼리 동일하고(흔들림 없음), 정지 대비 정확히 1px 아래(bob)', () => {
+    const kinds: SpriteKind[] = [BASE, { ...BASE, hairStyle: 4, outfit: 7, accessory: 5 }, 'groom', 'bride']
+    for (const kind of kinds) {
+      for (const dir of DIRS) {
+        const f0 = buildBuffer(kind, dir, 0).data
+        const f1 = buildBuffer(kind, dir, 1).data
+        const f2 = buildBuffer(kind, dir, 2).data
+        expect(equalBytes(headRows(f1, 1), headRows(f2, 1))).toBe(true)
+        expect(equalBytes(headRows(f0, 0), headRows(f1, 1))).toBe(true)
+      }
+    }
+  })
+
+  it('걷기 프레임은 모든 방향에서 서로 다르다 (다리 교차)', () => {
+    for (const dir of DIRS) {
+      const f1 = buildBuffer(BASE, dir, 1).data
+      const f2 = buildBuffer(BASE, dir, 2).data
+      expect(equalBytes(f1, f2)).toBe(false)
+    }
+  })
+
+  it('발바닥은 캔버스 맨 아래에 닿고 잘리지 않는다', () => {
+    for (const frame of [0, 1, 2] as Frame[]) {
+      const { data } = buildBuffer(BASE, 'down', frame)
+      let bottom = 0
+      for (let x = 0; x < SPRITE_W; x++) if (data[((SPRITE_H - 1) * SPRITE_W + x) * 4 + 3]) bottom++
+      expect(bottom).toBeGreaterThan(0)
     }
   })
 })

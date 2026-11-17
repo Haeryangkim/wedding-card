@@ -11,6 +11,8 @@ export interface CharacterCreatorProps {
 }
 
 const DIR_CYCLE: Dir[] = ['down', 'right', 'up', 'left']
+/** 머리 모양·액세서리 썸네일은 상반신만 크게 (의상은 전신) */
+const BUST_ROWS = 21
 
 /** 파츠별 선택 UI + 큰 미리보기 + 랜덤 버튼. 바텀시트(약 360~430px) 안에서 동작. */
 export function CharacterCreator({ value, onChange }: CharacterCreatorProps) {
@@ -30,7 +32,7 @@ export function CharacterCreator({ value, onChange }: CharacterCreatorProps) {
           aria-label="캐릭터 방향 돌리기"
         >
           <span className="cc-shadow" aria-hidden="true" />
-          <CharacterPreview kind={value} dir={dir} scale={5} animate />
+          <CharacterPreview kind={value} dir={dir} scale={4} animate />
         </button>
         <div className="cc-stage-row">
           <span className="cc-hint">탭하면 방향이 바뀌어요</span>
@@ -72,7 +74,16 @@ export function CharacterCreator({ value, onChange }: CharacterCreatorProps) {
                     title={opt.label}
                     onClick={() => pick(part.key, i)}
                   >
-                    <CharacterPreview kind={{ ...value, [part.key]: i }} dir="down" scale={3} />
+                    {part.key === 'outfit' ? (
+                      <CharacterPreview kind={{ ...value, [part.key]: i }} dir="down" scale={2} />
+                    ) : (
+                      <CharacterPreview
+                        kind={{ ...value, [part.key]: i }}
+                        dir="down"
+                        scale={3}
+                        rows={BUST_ROWS}
+                      />
+                    )}
                     <span className="cc-thumb-label">{opt.label}</span>
                   </button>
                 )

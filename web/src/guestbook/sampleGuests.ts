@@ -18,18 +18,18 @@ const SAMPLE_BASE = Date.UTC(2026, 10, 1, 1, 0, 0) // 2026-11-01
 const HOUR = 60 * 60 * 1000
 
 const SEEDS: SampleSeed[] = [
-  { name: '민준', message: '두 사람의 앞날을 진심으로 축하해! 언제나 지금처럼 행복하길.', side: 'groom', appearance: [0, 0, 0, 0, 0, 0] },
-  { name: '서연', message: '세상에서 제일 잘 어울리는 커플 💕 결혼 축하해요!', side: 'bride', appearance: [1, 1, 2, 1, 1, 1] },
-  { name: '도윤', message: '친구야 장가간다니 실감이 안 난다 ㅋㅋ 정말 축하한다!', side: 'groom', appearance: [2, 2, 1, 2, 2, 0] },
-  { name: '지우', message: '예쁜 신부님, 결혼 축하해! 오래오래 사랑하며 살자.', side: 'bride', appearance: [0, 2, 0, 1, 0, 2] },
-  { name: '현우', message: '결혼 축하드립니다! 두 분 늘 건강하고 행복하세요.', side: 'groom', appearance: [1, 0, 1, 0, 2, 0] },
-  { name: '하은', message: '드디어 결혼이네요! 꽃길만 걷기를 응원할게요 🌸', side: 'bride', appearance: [2, 1, 0, 2, 1, 1] },
-  { name: '시우', message: '백년해로 하세요! 멀리서도 늘 응원하고 있어요.', side: 'groom', appearance: [0, 1, 2, 1, 2, 0] },
-  { name: '수아', message: '신부가 세상에서 제일 예뻐요 ✨ 행복하게 잘 살아요!', side: 'bride', appearance: [1, 2, 1, 0, 0, 2] },
-  { name: '주원', message: '좋은 소식 너무 기쁘다! 두 사람 결혼 진심으로 축하해.', side: 'groom', appearance: [2, 0, 0, 2, 1, 0] },
-  { name: '예은', message: '늘 다정한 두 사람, 변함없이 아끼며 지내길 바랄게요.', side: 'bride', appearance: [0, 0, 1, 1, 2, 1] },
-  { name: '건우', message: '형, 결혼 축하해요! 제수씨랑 행복하게 사세요 😄', side: 'groom', appearance: [1, 1, 2, 2, 0, 0] },
-  { name: '채원', message: '사랑스러운 신부님 결혼 축하해요. 늘 꽃처럼 환하게!', side: 'bride', appearance: [2, 2, 0, 0, 1, 2] },
+  { name: '민준', message: '두 사람의 앞날을 진심으로 축하해! 언제나 지금처럼 행복하길.', side: 'groom', appearance: [1, 0, 0, 0, 1, 0] },
+  { name: '서연', message: '세상에서 제일 잘 어울리는 커플 💕 결혼 축하해요!', side: 'bride', appearance: [0, 3, 1, 4, 7, 4] },
+  { name: '도윤', message: '친구야 장가간다니 실감이 안 난다 ㅋㅋ 정말 축하한다!', side: 'groom', appearance: [2, 1, 0, 1, 0, 1] },
+  { name: '지우', message: '예쁜 신부님, 결혼 축하해! 오래오래 사랑하며 살자.', side: 'bride', appearance: [1, 6, 2, 7, 10, 0] },
+  { name: '현우', message: '결혼 축하드립니다! 두 분 늘 건강하고 행복하세요.', side: 'groom', appearance: [3, 10, 0, 2, 3, 0] },
+  { name: '하은', message: '드디어 결혼이네요! 꽃길만 걷기를 응원할게요 🌸', side: 'bride', appearance: [0, 4, 3, 5, 8, 7] },
+  { name: '시우', message: '백년해로 하세요! 멀리서도 늘 응원하고 있어요.', side: 'groom', appearance: [1, 7, 1, 3, 2, 8] },
+  { name: '수아', message: '신부가 세상에서 제일 예뻐요 ✨ 행복하게 잘 살아요!', side: 'bride', appearance: [1, 9, 0, 6, 9, 3] },
+  { name: '주원', message: '좋은 소식 너무 기쁘다! 두 사람 결혼 진심으로 축하해.', side: 'groom', appearance: [4, 8, 0, 8, 1, 0] },
+  { name: '예은', message: '늘 다정한 두 사람, 변함없이 아끼며 지내길 바랄게요.', side: 'bride', appearance: [0, 11, 7, 9, 4, 10] },
+  { name: '건우', message: '형, 결혼 축하해요! 제수씨랑 행복하게 사세요 😄', side: 'groom', appearance: [2, 0, 2, 0, 6, 6] },
+  { name: '채원', message: '사랑스러운 신부님 결혼 축하해요. 늘 꽃처럼 환하게!', side: 'bride', appearance: [1, 2, 5, 4, 5, 5] },
 ]
 
 export function buildSampleGuests(): GuestEntry[] {

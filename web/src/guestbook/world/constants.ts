@@ -10,16 +10,16 @@ export const LOGICAL_W = 192
 export const BACKDROP_H = 76
 
 /** 바닥 가장자리 여백(발 기준) */
-export const FLOOR_PAD_X = 12
+export const FLOOR_PAD_X = 14
 export const FLOOR_PAD_BOTTOM = 14
 
 /** 신랑·신부와 하객 영역 사이 간격 */
-export const COUPLE_FLOOR_GAP = 16
+export const COUPLE_FLOOR_GAP = 28
 
 /** 걷기 영역 높이: 기본값 + 하객 수 비례, 상한으로 한 덩어리 방지 */
-export const WALK_H_MIN = 96
-export const WALK_H_MAX = 520
-export const WALK_H_PER_GUEST = 2.9
+export const WALK_H_MIN = 132
+export const WALK_H_MAX = 640
+export const WALK_H_PER_GUEST = 3.8
 
 /** 시뮬레이션 고정 타임스텝(초) */
 export const SIM_DT = 1 / 60
@@ -37,7 +37,7 @@ export const WALK_MIN = 1.2
 export const WALK_MAX = 3.4
 
 /** 이웃 분리(겹침 방지) 반경과 세기 */
-export const SEPARATION_RADIUS = 16
+export const SEPARATION_RADIUS = 21
 export const SEPARATION_FORCE = 32
 
 /** 목적지 도착 판정 거리 */

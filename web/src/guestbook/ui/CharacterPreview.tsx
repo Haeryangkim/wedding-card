@@ -10,6 +10,8 @@ export interface CharacterPreviewProps {
   dir?: Dir
   /** true 면 제자리 걷기 애니메이션 */
   animate?: boolean
+  /** 위에서부터 이 행 수만 보여 준다 (상반신 썸네일용). 생략하면 전신 */
+  rows?: number
   className?: string
 }
 
@@ -23,6 +25,7 @@ export function CharacterPreview({
   scale = 4,
   dir = 'down',
   animate = false,
+  rows,
   className,
 }: CharacterPreviewProps) {
   const ref = useRef<HTMLCanvasElement>(null)
@@ -37,7 +40,8 @@ export function CharacterPreview({
       if (!ctx) return
       const dpr = Math.min(window.devicePixelRatio || 1, 3)
       const cssW = SPRITE_W * scale
-      const cssH = SPRITE_H * scale
+      const srcH = Math.max(1, Math.min(SPRITE_H, Math.round(rows ?? SPRITE_H)))
+      const cssH = srcH * scale
       const bw = Math.round(cssW * dpr)
       const bh = Math.round(cssH * dpr)
       if (cv.width !== bw || cv.height !== bh) {
@@ -49,11 +53,11 @@ export function CharacterPreview({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.imageSmoothingEnabled = false
       ctx.clearRect(0, 0, cssW, cssH)
-      ctx.drawImage(getSprite(kind, dir, frame), 0, 0, cssW, cssH)
+      ctx.drawImage(getSprite(kind, dir, frame), 0, 0, SPRITE_W, srcH, 0, 0, cssW, cssH)
     }
     // kindKey 로 내용 동일성 비교 (kind 참조 변경 무시)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kindKey, dir, scale])
+  }, [kindKey, dir, scale, rows])
 
   // 정지 상태 그리기
   useEffect(() => {

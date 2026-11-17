@@ -7,6 +7,11 @@
   align-items: flex-end;
   background: rgba(40, 34, 28, 0.42);
   backdrop-filter: blur(2px);
+  /* iOS: 위임된 click 이 비대화형 div 에서도 발생하도록 */
+  cursor: pointer;
+  /* 시트 밖/끝에서의 스크롤이 뒤 페이지로 이어지지 않게 */
+  overscroll-behavior: contain;
+  touch-action: none;
   animation: sheet-fade 0.18s ease-out;
 }
 
@@ -14,6 +19,9 @@
   width: 100%;
   max-width: var(--page-max);
   max-height: min(88vh, 760px);
+  max-height: min(88dvh, 760px);
+  cursor: auto;
+  touch-action: pan-y;
   display: flex;
   flex-direction: column;
   background: var(--card);
@@ -86,6 +94,7 @@
 .sheet-body {
   flex: 1 1 auto;
   overflow-y: auto;
+  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   padding: var(--gutter);
 }

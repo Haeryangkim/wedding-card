@@ -1,117 +1,167 @@
 /**
- * 재질(material) id, 기본 색 팔레트, 색 연산.
- * 파츠 그리기 함수는 "재질 id" 를 찍고, 마지막에 외형에 맞는 색으로 해석(resolve)한다.
- * 음영/하이라이트는 기본색에서 자동 유도 → 색 하나만 고르면 조화로운 명암이 따라온다.
+ * 팔레트 + 색 램프.
+ * 템플릿의 한 글자 = 재질 톤. 각 재질군은 4톤(하이라이트/기본/음영/딥) 램프를 가지며
+ * 기본색 하나에서 유도한다. 음영은 보라·남색 쪽으로, 하이라이트는 노란 쪽으로 색조를 밀어
+ * (hue shift) 평면적인 명도 변화가 아닌 도트 특유의 풍부한 색감을 만든다.
+ * 외곽선은 검정이 아니라 인접 재질의 딥 톤(컬러 아웃라인).
  */
 
-/** 재질 id. 0 = 투명. (enum 금지 → const 객체) */
-export const M = {
-  NONE: 0,
-  OUTLINE: 1,
-  SKIN: 2,
-  SKIN_SH: 3,
-  SKIN_HI: 4,
-  HAIR: 5,
-  HAIR_SH: 6,
-  HAIR_HI: 7,
-  CLOTH: 8, // 주 의상색
-  CLOTH_SH: 9,
-  CLOTH_HI: 10,
-  CLOTH2: 11, // 보조 의상(바지·치마·트림)
-  CLOTH2_SH: 12,
-  LIGHT: 13, // 셔츠·드레스·베일 등 밝은 천
-  LIGHT_SH: 14,
-  EYE: 15,
-  MOUTH: 16,
-  BLUSH: 17,
-  SHOE: 18,
-  SHOE_SH: 19,
-  ACC: 20, // 액세서리 주색
-  ACC_SH: 21,
-  ACC2: 22, // 액세서리 보조색
-  LENS: 23, // 안경 렌즈
-  GOLD: 24, // 금속·장식
-} as const
-export type Mat = (typeof M)[keyof typeof M]
-
 export type RGB = readonly [number, number, number]
-export type RGBA = readonly [number, number, number, number]
 
-/* ── 기본 팔레트 (Appearance 인덱스와 1:1) ───────────────────────── */
-
-/** 피부 (>=5) */
+/* ── 옵션 팔레트 (Appearance 인덱스와 1:1) ─────────────────────── */
 export const SKINS: { label: string; hex: string }[] = [
-  { label: '밝은 톤', hex: '#ffe0c2' },
-  { label: '복숭아', hex: '#f6c69c' },
-  { label: '웜 베이지', hex: '#e7ac82' },
-  { label: '올리브', hex: '#cf8f63' },
-  { label: '브라운', hex: '#a9683f' },
-  { label: '딥 브라운', hex: '#7c4a2c' },
+  { label: '밝은 톤', hex: '#fde4d0' },
+  { label: '복숭아', hex: '#f3c9a0' },
+  { label: '웜 베이지', hex: '#e0aa7c' },
+  { label: '허니', hex: '#c68c5e' },
+  { label: '브라운', hex: '#9c6642' },
+  { label: '딥 브라운', hex: '#70452e' },
 ]
 
-/** 머리 색 (>=8) */
 export const HAIR_COLORS: { label: string; hex: string }[] = [
-  { label: '자연 흑', hex: '#2b2630' },
-  { label: '다크 브라운', hex: '#45342a' },
-  { label: '브라운', hex: '#6d4a30' },
-  { label: '밤색', hex: '#8a4f2e' },
-  { label: '애쉬', hex: '#8f8a86' },
-  { label: '다크 골드', hex: '#b08a4a' },
-  { label: '금발', hex: '#e0bb6f' },
-  { label: '복숭아 핑크', hex: '#d98fa2' },
-  { label: '와인', hex: '#6f2f44' },
+  { label: '자연 흑', hex: '#3a3340' },
+  { label: '다크 브라운', hex: '#57392c' },
+  { label: '브라운', hex: '#84532f' },
+  { label: '밤색', hex: '#a8643a' },
+  { label: '애쉬 그레이', hex: '#9a958f' },
+  { label: '허니 블론드', hex: '#d9a94e' },
+  { label: '금발', hex: '#efd27a' },
+  { label: '로즈 핑크', hex: '#e58fa3' },
+  { label: '와인', hex: '#8a3350' },
+  { label: '은발', hex: '#dcd9d6' },
 ]
 
-/** 의상 색 (>=8) */
 export const OUTFIT_COLORS: { label: string; hex: string }[] = [
-  { label: '차콜', hex: '#43454f' },
-  { label: '네이비', hex: '#3a456e' },
-  { label: '세이지', hex: '#6f8a64' },
-  { label: '더스티 블루', hex: '#5d7c99' },
-  { label: '플럼', hex: '#7c5473' },
-  { label: '머스터드', hex: '#c6a24e' },
-  { label: '테라코타', hex: '#b5654a' },
-  { label: '크림', hex: '#ece0c8' },
-  { label: '로즈', hex: '#c88890' },
+  { label: '차콜', hex: '#4d4f5c' },
+  { label: '네이비', hex: '#3c4c80' },
+  { label: '세이지', hex: '#7c9a6c' },
+  { label: '더스티 블루', hex: '#6f93b8' },
+  { label: '플럼', hex: '#8a5a88' },
+  { label: '머스터드', hex: '#d3a744' },
+  { label: '테라코타', hex: '#c06a4c' },
+  { label: '로즈', hex: '#dc8f9c' },
+  { label: '버건디', hex: '#8c3346' },
+  { label: '민트', hex: '#7cc0ae' },
+  { label: '라벤더', hex: '#a99bd6' },
+  { label: '아이보리', hex: '#eadbb6' },
 ]
-
-/* ── 고정 색 ─────────────────────────────────────────────── */
-export const OUTLINE_HEX = '#2a2330'
-export const EYE_HEX = '#352c33'
-export const MOUTH_HEX = '#a05a52'
-export const BLUSH_HEX = '#f0a8a0'
-export const SHOE_HEX = '#4b3a32'
-export const LIGHT_HEX = '#f6efe2' // 흰 셔츠/드레스/베일
-export const GOLD_HEX = '#d7b45e'
 
 /* ── 색 연산 ─────────────────────────────────────────────── */
 export function hexToRgb(hex: string): RGB {
   const h = hex.replace('#', '')
-  return [
-    parseInt(h.slice(0, 2), 16),
-    parseInt(h.slice(2, 4), 16),
-    parseInt(h.slice(4, 6), 16),
-  ]
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]
 }
 
-const clamp255 = (n: number) => (n < 0 ? 0 : n > 255 ? 255 : Math.round(n))
+const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n)
 
-/** f<1 어둡게 (약간 채도/색조 유지). */
-export function darken(c: RGB, f: number): RGB {
-  return [clamp255(c[0] * f), clamp255(c[1] * f), clamp255(c[2] * f)]
+function rgbToHsl(c: RGB): [number, number, number] {
+  const r = c[0] / 255
+  const g = c[1] / 255
+  const b = c[2] / 255
+  const mx = Math.max(r, g, b)
+  const mn = Math.min(r, g, b)
+  const l = (mx + mn) / 2
+  const d = mx - mn
+  if (d === 0) return [0, 0, l]
+  const s = d / (1 - Math.abs(2 * l - 1))
+  let h: number
+  if (mx === r) h = ((g - b) / d) % 6
+  else if (mx === g) h = (b - r) / d + 2
+  else h = (r - g) / d + 4
+  h *= 60
+  if (h < 0) h += 360
+  return [h, s, l]
 }
-/** t(0~1) 만큼 흰색으로. */
-export function lighten(c: RGB, t: number): RGB {
-  return [
-    clamp255(c[0] + (255 - c[0]) * t),
-    clamp255(c[1] + (255 - c[1]) * t),
-    clamp255(c[2] + (255 - c[2]) * t),
-  ]
+
+function hslToRgb(h: number, s: number, l: number): RGB {
+  const c = (1 - Math.abs(2 * l - 1)) * s
+  const hp = (((h % 360) + 360) % 360) / 60
+  const x = c * (1 - Math.abs((hp % 2) - 1))
+  let r = 0
+  let g = 0
+  let b = 0
+  if (hp < 1) [r, g, b] = [c, x, 0]
+  else if (hp < 2) [r, g, b] = [x, c, 0]
+  else if (hp < 3) [r, g, b] = [0, c, x]
+  else if (hp < 4) [r, g, b] = [0, x, c]
+  else if (hp < 5) [r, g, b] = [x, 0, c]
+  else [r, g, b] = [c, 0, x]
+  const m = l - c / 2
+  return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)]
 }
+
+/** 색조 h 를 target 쪽으로 최단 호를 따라 최대 deg 만큼 이동 */
+function hueToward(h: number, target: number, deg: number): number {
+  let d = ((target - h + 540) % 360) - 180
+  if (Math.abs(d) < deg) return target
+  d = d > 0 ? deg : -deg
+  return (h + d + 360) % 360
+}
+
 export function mix(a: RGB, b: RGB, t: number): RGB {
   return [
-    clamp255(a[0] + (b[0] - a[0]) * t),
-    clamp255(a[1] + (b[1] - a[1]) * t),
-    clamp255(a[2] + (b[2] - a[2]) * t),
+    Math.round(a[0] + (b[0] - a[0]) * t),
+    Math.round(a[1] + (b[1] - a[1]) * t),
+    Math.round(a[2] + (b[2] - a[2]) * t),
   ]
 }
+
+const COOL = 262 // 음영이 향하는 색조(남보라)
+const WARM = 48 // 하이라이트가 향하는 색조(따뜻한 노랑)
+
+/** [하이라이트, 기본, 음영, 딥(외곽선)] */
+export type Ramp = readonly [RGB, RGB, RGB, RGB]
+
+const PLUM: RGB = [58, 40, 66] // 외곽선이 수렴하는 어두운 자줏빛
+
+export function ramp(base: RGB): Ramp {
+  const [h, s, l] = rgbToHsl(base)
+  // 무채색에 가까우면 음영에 살짝 보랏빛을 입혀 탁해지지 않게
+  const sat = s < 0.08 ? 0.1 : s
+  // 밝은 색(피부·흰 천)은 HSL 채도가 과하게 높으므로 음영에서 채도를 눌러 준다
+  const calm = l > 0.7 ? 0.62 : l > 0.55 ? 0.82 : 1
+  // 어두운 옷(네이비·차콜)은 명도 차가 작으니 색조를 더 크게 돌려 음영=보라, 하이라이트=따뜻한 회청
+  const dk = l < 0.38 ? 1 : 0
+  const hi = hslToRgb(
+    hueToward(h, WARM, dk ? 16 : 10),
+    clamp01(sat * (dk ? 0.78 : 0.92)),
+    clamp01(l + (1 - l) * (dk ? 0.26 : 0.34) + 0.03),
+  )
+  const sh = hslToRgb(hueToward(h, COOL, dk ? 22 : 12), clamp01(sat * calm * (dk ? 1.12 : 1.04)), clamp01(l * 0.8 - 0.02))
+  const dpRaw = hslToRgb(
+    hueToward(h, COOL, dk ? 30 : 22),
+    clamp01(sat * calm * 0.95),
+    Math.max(0.13, clamp01(l * (l > 0.7 ? 0.42 : 0.52) - 0.02)),
+  )
+  return [hi, base, sh, mix(dpRaw, PLUM, l > 0.7 ? 0.42 : 0.3)]
+}
+
+/** 기본색을 어둡고(혹은 밝고) 살짝 차갑게 — 보조 의상색 유도용 */
+export function shiftTone(base: RGB, lMul: number, sMul = 1, hueDeg = 0): RGB {
+  const [h, s, l] = rgbToHsl(base)
+  return hslToRgb(h + hueDeg, clamp01(s * sMul), clamp01(l * lMul))
+}
+export function withLightness(base: RGB, l: number, sMul = 1): RGB {
+  const [h, s] = rgbToHsl(base)
+  return hslToRgb(h, clamp01(s * sMul), clamp01(l))
+}
+export function lightnessOf(base: RGB): number {
+  return rgbToHsl(base)[2]
+}
+
+/* ── 고정 색 ─────────────────────────────────────────────── */
+export const FIXED = {
+  white: hexToRgb('#f7f1e6'),
+  cream: hexToRgb('#efe2c8'),
+  charcoal: hexToRgb('#474857'),
+  ink: hexToRgb('#34303f'),
+  shoeBrown: hexToRgb('#6b4638'),
+  shoeBlack: hexToRgb('#3b3642'),
+  eye: hexToRgb('#3a2b3a'),
+  eyeWhite: hexToRgb('#fffaf2'),
+  gold: hexToRgb('#e2b54e'),
+  flower: hexToRgb('#ec8fa6'),
+  leaf: hexToRgb('#6f9e5c'),
+  lens: hexToRgb('#cfe6ee'),
+  red: hexToRgb('#c8475c'),
+} as const

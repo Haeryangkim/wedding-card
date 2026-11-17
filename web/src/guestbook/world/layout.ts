@@ -68,18 +68,18 @@ export function computeLayout(guestCount: number): WorldLayout {
   const aisleX = W / 2
   const aisleHalf = 20
 
-  const groomX = Math.round(W / 2 - 17)
-  const brideX = Math.round(W / 2 + 17)
+  const groomX = Math.round(W / 2 - 15)
+  const brideX = Math.round(W / 2 + 15)
 
   const decor: Decor[] = [
     // 무대 양옆 꽃 스탠드
-    { kind: 'flowerStand', x: 26, y: coupleY + 2, avoid: 12 },
-    { kind: 'flowerStand', x: W - 26, y: coupleY + 2, avoid: 12 },
+    { kind: 'flowerStand', x: 24, y: coupleY + 4, avoid: 13 },
+    { kind: 'flowerStand', x: W - 24, y: coupleY + 4, avoid: 13 },
     // 아일 아래쪽 케이크 테이블
-    { kind: 'cakeTable', x: aisleX, y: walkMaxY - 10, avoid: 15 },
+    { kind: 'cakeTable', x: aisleX, y: walkMaxY - 8, avoid: 21 },
     // 좌우 라운드 테이블(장식 + 분산)
-    { kind: 'roundTable', x: 30, y: walkMinY + walkH * 0.45, avoid: 15 },
-    { kind: 'roundTable', x: W - 30, y: walkMinY + walkH * 0.55, avoid: 15 },
+    { kind: 'roundTable', x: 32, y: walkMinY + walkH * 0.45, avoid: 21 },
+    { kind: 'roundTable', x: W - 32, y: walkMinY + walkH * 0.6, avoid: 21 },
   ]
 
   return {
@@ -89,7 +89,7 @@ export function computeLayout(guestCount: number): WorldLayout {
     coupleY,
     groomX,
     brideX,
-    coupleAvoid: 22,
+    coupleAvoid: 34,
     walk: {
       minX: FLOOR_PAD_X,
       maxX: W - FLOOR_PAD_X,

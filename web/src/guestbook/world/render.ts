@@ -66,16 +66,17 @@ export function renderWorld(p: RenderParams): void {
   })
 
   // 하객
+  const crowded = crowdedLabels(agents, p.focusId)
   for (const a of agents) {
     const entry = p.entryById.get(a.id)
     if (!entry) continue
-    items.push({ sortY: a.y, draw: () => drawGuest(p, a, entry) })
+    items.push({ sortY: a.y, draw: () => drawGuest(p, a, entry, !crowded.has(a.id)) })
   }
 
   // 빈 상태 안내 표지판
   if (agents.length === 0) {
     const sx = layout.aisleX
-    const sy = layout.walk.minY + 26
+    const sy = layout.walk.minY + 46
     items.push({ sortY: sy, draw: () => drawSign(ctx, sx, sy) })
   }
 
@@ -110,9 +111,14 @@ function feetToHeadTop(a: Agent): number {
   return a.y - SPRITE_H
 }
 
+/** 걷기 4박자: 왼발 → 모음 → 오른발 → 모음. 모음(0)에서 상체가 1px 올라와 걸음마다 bob 이 생긴다. */
+const WALK_CYCLE: Frame[] = [1, 0, 2, 0]
+/** 한 박자에 해당하는 이동 거리(논리 px) */
+const STEP_LEN = 3.5
+
 function frameFor(a: Agent): Frame {
   if (!a.moving) return 0
-  return Math.floor(a.walkPhase / 5) % 2 === 0 ? 1 : 2
+  return WALK_CYCLE[Math.floor(a.walkPhase / STEP_LEN) % WALK_CYCLE.length]
 }
 
 function spawnYOffset(anim: number): number {
@@ -146,7 +152,29 @@ function guestFb(entry: GuestEntry): Fallback {
   }
 }
 
-function drawGuest(p: RenderParams, a: Agent, entry: GuestEntry): void {
+/**
+ * 이름표가 바로 뒤에 선 다른 하객의 얼굴을 가리게 되는 하객 id 집합.
+ * (키 큰 스프라이트라 붐빌 때 이름표가 얼굴을 덮는다 → 그런 이름표는 숨기고, 탭/목록으로 확인)
+ * 포커스된 하객의 이름표는 항상 보인다.
+ */
+function crowdedLabels(agents: Agent[], focusId: string | null): Set<string> {
+  const out = new Set<string>()
+  const reach = SPRITE_H - 12 // 내 이름표(머리 위)와 겹치는 뒤쪽 하객의 얼굴 높이 범위
+  for (const a of agents) {
+    if (a.id === focusId) continue
+    for (const b of agents) {
+      if (b === a || b.life === 'despawn') continue
+      const dy = a.y - b.y
+      if (dy > 2 && dy < reach && Math.abs(a.x - b.x) < SPRITE_W - 2) {
+        out.add(a.id)
+        break
+      }
+    }
+  }
+  return out
+}
+
+function drawGuest(p: RenderParams, a: Agent, entry: GuestEntry, showLabel: boolean): void {
   const { ctx, time } = p
   let alpha = 1
   let yoff = bob(time, a.bobPhase)
@@ -161,20 +189,20 @@ function drawGuest(p: RenderParams, a: Agent, entry: GuestEntry): void {
 
   ctx.save()
   ctx.globalAlpha = alpha
-  if (a.life !== 'spawn') drawShadow(ctx, a.x, a.y, 6)
+  if (a.life !== 'spawn') drawShadow(ctx, a.x, a.y - 1, 7)
 
   // 포커스 링
   if (p.focusId === a.id) {
     ctx.strokeStyle = PAL.accent
     ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.ellipse(a.x, a.y, 8, 3.4, 0, 0, Math.PI * 2)
+    ctx.ellipse(a.x, a.y - 1, 10, 4, 0, 0, Math.PI * 2)
     ctx.stroke()
   }
 
   drawSprite(p, entry.appearance, a.dir, frameFor(a), a.x, a.y + yoff, guestFb(entry))
 
-  if (p.fontReady) {
+  if (p.fontReady && showLabel) {
     const variant = p.focusId === a.id ? 'focus' : 'normal'
     drawLabel(ctx, entry.name, variant, a.x, a.y + yoff - SPRITE_H - 2, p.layout.W)
   }
@@ -184,7 +212,7 @@ function drawGuest(p: RenderParams, a: Agent, entry: GuestEntry): void {
 function drawCouple(p: RenderParams, kind: 'groom' | 'bride', x: number, y: number, name: string): void {
   const { ctx, time } = p
   const yoff = Math.sin(time * 1.8 + (kind === 'groom' ? 0 : 1.5)) * 0.5
-  drawShadow(ctx, x, y, 7)
+  drawShadow(ctx, x, y - 1, kind === 'bride' ? 10 : 7)
   const fb: Fallback =
     kind === 'groom'
       ? { skin: FB_SKIN[0], hair: FB_HAIR[2], outfit: '#352f2a', shape: 'suit' }
@@ -375,41 +403,65 @@ function roundBox(
 // ── 장식 ──────────────────────────────────────────────────────
 
 function drawDecor(ctx: CanvasRenderingContext2D, d: Decor): void {
-  drawShadow(ctx, d.x, d.y, d.kind === 'flowerStand' ? 5 : 9)
+  drawShadow(ctx, d.x, d.y, d.kind === 'flowerStand' ? 7 : 15)
   const px = (ox: number, oy: number, w: number, h: number, c: string) => {
     ctx.fillStyle = c
     ctx.fillRect(Math.round(d.x + ox), Math.round(d.y + oy), w, h)
   }
   if (d.kind === 'flowerStand') {
-    px(-1, -14, 2, 14, PAL.woodDk) // 기둥
-    px(-4, -1, 8, 2, PAL.wood) // 받침
+    // 하객 어깨 높이의 꽃 스탠드
+    px(-1, -22, 3, 22, PAL.woodDk) // 기둥
+    px(0, -22, 1, 22, PAL.wood)
+    px(-5, -2, 11, 3, PAL.wood) // 받침
+    px(-5, 0, 11, 1, PAL.woodDk)
     // 꽃다발
-    px(-5, -22, 10, 8, PAL.leaf)
-    px(-4, -24, 8, 4, PAL.leafHi)
-    px(-3, -22, 3, 3, PAL.roseA)
-    px(1, -23, 3, 3, PAL.roseB)
-    px(-1, -20, 3, 3, PAL.cream)
-    px(-4, -19, 2, 2, PAL.gold)
+    px(-7, -33, 15, 12, PAL.leaf)
+    px(-6, -35, 13, 4, PAL.leafHi)
+    px(-8, -30, 2, 6, PAL.leaf)
+    px(7, -30, 2, 6, PAL.leaf)
+    px(-5, -32, 4, 4, PAL.roseA)
+    px(1, -34, 4, 4, PAL.roseB)
+    px(-1, -29, 4, 4, PAL.cream)
+    px(3, -28, 3, 3, PAL.roseA)
+    px(-6, -26, 3, 3, PAL.roseB)
+    px(-4, -31, 1, 1, PAL.cream)
+    px(2, -33, 1, 1, PAL.cream)
+    px(-2, -25, 2, 2, PAL.gold)
   } else if (d.kind === 'cakeTable') {
-    px(-9, -6, 18, 8, PAL.cloth)
-    px(-9, 0, 18, 2, PAL.clothSh)
-    // 케이크
-    px(-5, -14, 10, 8, PAL.cream)
-    px(-5, -11, 10, 1, PAL.roseB)
-    px(-5, -7, 10, 1, PAL.carpetEdge)
-    px(-1, -17, 2, 3, PAL.gold)
-    px(-4, -13, 2, 2, PAL.roseA)
-    px(2, -13, 2, 2, PAL.roseA)
+    // 식탁보를 씌운 테이블
+    px(-14, -12, 28, 3, '#ffffffcc')
+    px(-14, -9, 28, 10, PAL.cloth)
+    px(-14, -1, 28, 3, PAL.clothSh)
+    px(-10, -9, 1, 9, PAL.clothSh)
+    px(9, -9, 1, 9, PAL.clothSh)
+    // 3단 케이크
+    px(-8, -19, 16, 7, PAL.cream)
+    px(-8, -14, 16, 1, PAL.roseB)
+    px(-6, -25, 12, 6, PAL.cream)
+    px(-6, -21, 12, 1, PAL.carpetEdge)
+    px(-4, -30, 8, 5, PAL.cream)
+    px(-4, -27, 8, 1, PAL.roseB)
+    px(-1, -34, 2, 4, PAL.gold)
+    px(-7, -18, 2, 2, PAL.roseA)
+    px(5, -18, 2, 2, PAL.roseA)
+    px(-1, -24, 2, 2, PAL.roseA)
   } else {
     // roundTable
-    px(-9, -4, 18, 7, PAL.cloth)
-    px(-9, 1, 18, 2, PAL.clothSh)
-    px(-10, -4, 20, 2, '#ffffffcc')
+    px(-12, -12, 24, 3, '#ffffffcc')
+    px(-14, -10, 28, 2, '#ffffffcc')
+    px(-14, -8, 28, 9, PAL.cloth)
+    px(-14, -1, 28, 3, PAL.clothSh)
+    px(-9, -8, 1, 8, PAL.clothSh)
+    px(8, -8, 1, 8, PAL.clothSh)
     // 센터피스
-    px(-2, -10, 4, 6, PAL.leaf)
-    px(-3, -11, 3, 3, PAL.roseA)
-    px(0, -12, 3, 3, PAL.roseB)
-    px(-1, -9, 2, 2, PAL.gold)
+    px(-3, -19, 6, 8, PAL.leaf)
+    px(-5, -21, 4, 4, PAL.roseA)
+    px(0, -23, 4, 4, PAL.roseB)
+    px(-2, -17, 3, 3, PAL.cream)
+    px(2, -18, 2, 2, PAL.gold)
+    // 접시
+    px(-11, -10, 4, 1, PAL.clothSh)
+    px(7, -10, 4, 1, PAL.clothSh)
   }
 }
 

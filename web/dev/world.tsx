@@ -6,6 +6,7 @@ import { StrictMode, useCallback, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { WorldCanvas } from '../src/guestbook/ui/WorldCanvas'
 import type { Appearance, GuestEntry, Side } from '../src/guestbook/types'
+import { randomAppearance } from '../src/guestbook/character'
 import { hashString, mulberry32 } from '../src/guestbook/world/rng'
 import '../src/styles/tokens.css'
 import '../src/styles/fonts.css'
@@ -31,15 +32,7 @@ const MESSAGES = [
 ]
 
 function makeAppearance(r: () => number): Appearance {
-  const pick = (n: number) => Math.floor(r() * n)
-  return {
-    skin: pick(4),
-    hairStyle: pick(6),
-    hairColor: pick(5),
-    outfit: pick(5),
-    outfitColor: pick(6),
-    accessory: pick(4),
-  }
+  return randomAppearance(r)
 }
 
 function makeEntry(id: string, i: number): GuestEntry {

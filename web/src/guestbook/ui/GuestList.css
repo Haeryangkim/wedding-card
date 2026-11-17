@@ -21,7 +21,8 @@
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 0.95rem;
+  /* 16px 미만이면 iOS Safari 가 포커스 시 페이지를 확대해 버린다 */
+  font-size: 1rem;
   box-sizing: border-box;
 }
 .glist-search-input:focus {
@@ -57,7 +58,7 @@
   width: 44px;
   height: 52px;
   display: grid;
-  place-items: center;
+  place-items: end center;
   background: var(--paper-2);
   border-radius: 10px;
   overflow: hidden;

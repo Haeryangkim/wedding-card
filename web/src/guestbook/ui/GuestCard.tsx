@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import type { GuestEntry } from '../types'
 import { CharacterPreview } from './CharacterPreview'
 import { fullDate, sideLabel } from './format'
+import { lockScroll } from '../../lib/scrollLock'
 import './GuestCard.css'
 
 export interface GuestCardProps {
@@ -22,13 +23,15 @@ export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCar
   const cardRef = useRef<HTMLDivElement>(null)
   // onClose 는 부모 렌더마다 새 클로저일 수 있다 → ref 로 보관해 포커스 effect 는 마운트 시 1회만.
   const onCloseRef = useRef(onClose)
+  const downOnBackdropRef = useRef(false)
   useEffect(() => {
     onCloseRef.current = onClose
   }, [onClose])
 
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null
-    const raf = requestAnimationFrame(() => cardRef.current?.focus())
+    const unlock = lockScroll()
+    const raf = requestAnimationFrame(() => cardRef.current?.focus({ preventScroll: true }))
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation()
@@ -39,7 +42,8 @@ export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCar
     return () => {
       cancelAnimationFrame(raf)
       document.removeEventListener('keydown', onKey, true)
-      prev?.focus?.()
+      unlock()
+      prev?.focus?.({ preventScroll: true })
     }
   }, [])
 
@@ -57,7 +61,17 @@ export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCar
   }
 
   return createPortal(
-    <div className="card-backdrop" onMouseDown={onClose}>
+    <div
+      className="card-backdrop"
+      onPointerDown={(e) => {
+        downOnBackdropRef.current = e.target === e.currentTarget
+      }}
+      onClick={(e) => {
+        const ok = downOnBackdropRef.current && e.target === e.currentTarget
+        downOnBackdropRef.current = false
+        if (ok) onClose()
+      }}
+    >
       <div
         ref={cardRef}
         className="guest-card"
@@ -65,14 +79,13 @@ export function GuestCard({ entry, mine, onClose, onDelete, onLocate }: GuestCar
         aria-modal="true"
         aria-label={`${entry.name}님의 축하 메시지`}
         tabIndex={-1}
-        onMouseDown={(e) => e.stopPropagation()}
       >
         <button type="button" className="card-close" onClick={onClose} aria-label="닫기">
           ✕
         </button>
 
         <div className="card-avatar">
-          <CharacterPreview kind={entry.appearance} scale={4} dir="down" animate />
+          <CharacterPreview kind={entry.appearance} scale={3} dir="down" animate />
         </div>
 
         <div className="card-headline">
