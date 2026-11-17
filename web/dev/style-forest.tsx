@@ -1,13 +1,18 @@
 /**
  * 개발 전용 하네스: "동숲풍" 벡터 스타일 콘택트 시트. 보기: vite 실행 후 /dev/style-forest.html
- * 쿼리: ?only=crowd (군중 줄만), ?zoom=2 (전체 확대), ?bench=1 (150명 성능 측정)
+ * 쿼리: ?only=crowd (군중만) · ?only=row (권장 크기 줄만) · ?mag=3&ox=..&oy=.. (부분 확대) · ?bench=1 (150명 성능 측정)
+ * 해상도는 devicePixelRatio 를 따른다 (headless: --force-device-scale-factor=2).
  */
 import type { Appearance } from '../src/guestbook/types'
-import { FOREST_FOOT_Y, FOREST_H, FOREST_W, getSprite, PART_DEFS, randomAppearance } from '../src/guestbook/styles/forest'
+import { getSprite as getPixelSprite, randomAppearance as randomPixel, SPRITE_H, SPRITE_W } from '../src/guestbook/character'
+import { FOREST_FOOT_Y, FOREST_H, FOREST_W, getSprite, PART_DEFS, randomAppearance, spriteCacheStats, spriteScale, STYLE_INFO } from '../src/guestbook/styles/forest'
 import type { Dir, Frame, SpriteKind } from '../src/guestbook/styles/forest'
 
 const q = new URLSearchParams(location.search)
-const ZOOM = Number(q.get('zoom') ?? 1)
+const MAG = Number(q.get('mag') ?? 1)
+const DPR = Math.min(window.devicePixelRatio || 1, 2)
+/** 시트 좌표 1단위당 기기 픽셀 */
+const ZOOM = MAG * DPR
 const ONLY = q.get('only')
 const W = 1400
 const FONT = "-apple-system, 'Apple SD Gothic Neo', sans-serif"
@@ -29,13 +34,13 @@ const opt = (k: keyof Appearance, i: number) => PART_DEFS.find((p) => p.key === 
 const base: Appearance = { skin: 1, hairStyle: 0, hairColor: 1, outfit: 1, outfitColor: 5, accessory: 0 }
 
 const canvas = document.getElementById('sheet') as HTMLCanvasElement
-const H = ONLY ? 300 : 1960
+const H = ONLY === 'crowd' ? 300 : ONLY === 'row' ? 470 : 2380
 canvas.width = W * ZOOM
 canvas.height = H * ZOOM
-canvas.style.width = `${W}px`
-canvas.style.height = `${H}px`
-canvas.style.marginTop = `-${Number(q.get('oy') ?? 0)}px`
-canvas.style.marginLeft = `-${Number(q.get('ox') ?? 0)}px`
+canvas.style.width = `${W * MAG}px`
+canvas.style.height = `${H * MAG}px`
+canvas.style.marginTop = `-${Number(q.get('oy') ?? 0) * MAG}px`
+canvas.style.marginLeft = `-${Number(q.get('ox') ?? 0) * MAG}px`
 const ctx = canvas.getContext('2d')!
 ctx.scale(ZOOM, ZOOM)
 ctx.fillStyle = '#efe6d6'
@@ -76,6 +81,58 @@ function swatches(k: keyof Appearance, x0: number): void {
     ctx.lineWidth = 1
     ctx.stroke()
   }
+}
+
+/** 권장 인앱 크기(높이 80 CSS px)로, 기존 픽셀 캐릭터와 섞어서 */
+function recommended(): void {
+  const hCss = STYLE_INFO.recommendedCssHeight
+  const k = hCss / FOREST_H
+  title(`0) 권장 인앱 크기 — 높이 ${hCss} CSS px @DPR ${DPR} (spriteScale = ${spriteScale(k, DPR)}), 픽셀 캐릭터(20x36 @2.2x)와 혼합`)
+  const r = rng(4242)
+  const pr = rng(99)
+  const bands: [string, string][] = [['#f7efe2', '#e3cfae'], ['#fdfbf6', '#f3ece0'], ['#cfe3c2', '#a9cf9a'], ['#59606f', '#474d5a']]
+  const guests = Array.from({ length: 6 }, () => randomAppearance(r))
+  const bw = (W - 48) / 2
+  bands.forEach(([sky, floor], bi) => {
+    const x0 = 24 + (bi % 2) * bw
+    const top = y + Math.floor(bi / 2) * 196
+    ctx.fillStyle = sky
+    ctx.fillRect(x0, top, bw, 186)
+    ctx.fillStyle = floor
+    ctx.fillRect(x0, top + 60, bw, 126)
+    const cells: { kind: SpriteKind | 'pixel'; dir: Dir; frame: Frame }[] = []
+    if (bi === 0) {
+      cells.push({ kind: 'groom', dir: 'down', frame: 0 }, { kind: 'bride', dir: 'down', frame: 0 }, { kind: 'pixel', dir: 'down', frame: 0 })
+      cells.push({ kind: guests[0], dir: 'down', frame: 0 }, { kind: guests[1], dir: 'right', frame: 1 }, { kind: 'pixel', dir: 'right', frame: 1 })
+      cells.push({ kind: guests[2], dir: 'left', frame: 2 }, { kind: guests[3], dir: 'up', frame: 0 }, { kind: 'pixel', dir: 'up', frame: 0 }, { kind: guests[4], dir: 'down', frame: 1 }, { kind: guests[5], dir: 'right', frame: 0 })
+    } else if (bi === 1) {
+      for (const d of DIRS) cells.push({ kind: 'bride', dir: d, frame: 0 })
+      for (const d of DIRS) cells.push({ kind: 'groom', dir: d, frame: d === 'down' ? 0 : 1 })
+      cells.push({ kind: 'bride', dir: 'right', frame: 1 }, { kind: 'bride', dir: 'right', frame: 2 }, { kind: 'pixel', dir: 'down', frame: 0 })
+    } else if (bi === 2) {
+      for (const d of ['right', 'down', 'up'] as Dir[]) for (const f of [0, 1, 2] as Frame[]) cells.push({ kind: guests[d === 'right' ? 1 : d === 'down' ? 2 : 4], dir: d, frame: f })
+      cells.push({ kind: 'pixel', dir: 'left', frame: 1 }, { kind: guests[5], dir: 'left', frame: 1 })
+    } else {
+      cells.push({ kind: 'bride', dir: 'down', frame: 0 }, { kind: 'groom', dir: 'down', frame: 0 }, { kind: 'bride', dir: 'left', frame: 1 }, { kind: 'bride', dir: 'up', frame: 0 })
+      guests.slice(0, 5).forEach((g, i) => cells.push({ kind: g, dir: DIRS[i % 4], frame: (i % 3) as Frame }))
+      cells.push({ kind: 'pixel', dir: 'down', frame: 0 }, { kind: 'pixel', dir: 'right', frame: 0 })
+    }
+    cells.forEach((c, i) => {
+      const fx = x0 + 36 + i * ((bw - 72) / 10)
+      const fy = top + 150 + (i % 2) * 14
+      if (c.kind === 'pixel') {
+        const sp = getPixelSprite(randomPixel(pr), c.dir, c.frame)
+        const ps = hCss / SPRITE_H
+        ctx.imageSmoothingEnabled = false
+        ctx.drawImage(sp, Math.round(fx - (SPRITE_W * ps) / 2), Math.round(fy - SPRITE_H * ps), SPRITE_W * ps, SPRITE_H * ps)
+        ctx.imageSmoothingEnabled = true
+      } else {
+        const sp = getSprite(c.kind, c.dir, c.frame, spriteScale(k * MAG, DPR))
+        ctx.drawImage(sp, fx - (FOREST_W * k) / 2, fy - FOREST_FOOT_Y * k, FOREST_W * k, FOREST_H * k)
+      }
+    })
+  })
+  y += 402
 }
 
 function crowd(): void {
@@ -130,7 +187,10 @@ function crowd(): void {
 
 if (ONLY === 'crowd') {
   crowd()
+} else if (ONLY === 'row') {
+  recommended()
 } else {
+  recommended()
   title('1) 머리 모양 (앞)')
   row(Array.from({ length: count('hairStyle') }, (_, i) => ({ kind: { ...base, hairStyle: i, hairColor: i % 5 }, label: opt('hairStyle', i)?.label })), 3.5, 20)
   title('   머리 모양 — 옆 / 뒤')
@@ -213,7 +273,8 @@ if (q.get('bench')) {
   for (let n = 0; n < 60; n++) for (let i = 0; i < 150; i++) o.drawImage(sprites[i], (i % 15) * 80, Math.floor(i / 15) * 200)
   o.getImageData(0, 0, 1, 1)
   const t4 = performance.now()
-  const msg = `bake 150x12 sprites @${k.toFixed(2)}: ${(t1 - t0).toFixed(0)}ms (${((t1 - t0) / 1800).toFixed(2)}ms/sprite) | first-visible 150: ${(t2 - t1).toFixed(0)}ms | blit 150 x60 frames: ${((t4 - t3) / 60).toFixed(2)}ms/frame`
+  const st = spriteCacheStats()
+  const msg = `cache ${st.entries} sprites / ${(st.pixels * 4 / 1048576).toFixed(0)}MB | bake 150x12 sprites @${k.toFixed(2)}: ${(t1 - t0).toFixed(0)}ms (${((t1 - t0) / 1800).toFixed(2)}ms/sprite) | first-visible 150: ${(t2 - t1).toFixed(0)}ms | blit 150 x60 frames: ${((t4 - t3) / 60).toFixed(2)}ms/frame`
   ctx.fillStyle = '#000'
   ctx.font = `14px ${FONT}`
   ctx.textAlign = 'left'

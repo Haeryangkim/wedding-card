@@ -1,13 +1,14 @@
 /** 합성: 외형 → 층 순서대로 그리기, 스케일별 캔버스 캐시, 캐릭터 만들기용 파츠 정의. */
 import type { Appearance } from '../../types'
-import { ACCESSORIES, bow } from './accessories'
+import { ACCESSORIES } from './accessories'
 import { drawArms, drawHead, drawLegs, drawShadow, gait } from './body'
 import type { Dir, Frame, PartDef, SpriteKind, View } from './dims'
-import { DESIGN_PER_UNIT, DESIGN_W, FOREST_H, FOREST_W } from './dims'
-import { ellipse, flat, flower, type C } from './draw'
+import { DESIGN_PER_UNIT, DESIGN_W, FOREST_FOOT_Y, FOREST_H, FOREST_W } from './dims'
+import { ellipse, flat, type C } from './draw'
 import { drawHair, HAIRS } from './hair'
-import { drawTorso, OUTFITS, paletteFor, suitFront, type OutfitDef } from './outfits'
+import { drawTorso, OUTFITS, paletteFor, type OutfitDef } from './outfits'
 import { HAIR_COLORS, OUTFIT_COLORS, SKINS } from './palette'
+import { bouquet, GOWN, tiara, TUXEDO, veil } from './special'
 
 const COUNTS: Record<keyof Appearance, number> = {
   skin: SKINS.length,
@@ -28,40 +29,9 @@ interface Look {
   special?: 'groom' | 'bride'
 }
 
-const TUXEDO: OutfitDef = {
-  label: '턱시도',
-  lower: 'pants',
-  sleeve: 'long',
-  pal: (c) => ({ top: c, bottom: c, sleeve: c, leg: '#3a3a46', shoe: '#33292c', accent: '#3a3a46' }),
-  detail: (ctx, v, p) => suitFront(ctx, v, p, true),
-  trim(ctx, v) {
-    if (v === 'front') {
-      bow(ctx, 0, 68.4, 4.4, 0, '#3a3a46')
-      flat(ctx, ellipse(10.4, 74.8, 2.6, 1.5, 0.7), '#7fae7a')
-      flower(ctx, 8.4, 72.6, 3.2, '#fff6ee')
-    } else if (v === 'side') {
-      bow(ctx, 9.2, 68.4, 3, 0, '#3a3a46')
-    }
-  },
-}
-const GOWN: OutfitDef = {
-  label: '웨딩드레스',
-  lower: 'long',
-  sleeve: 'none',
-  pal: () => ({ top: '#fffaf1', bottom: '#fffaf1', sleeve: '#fffaf1', leg: null, shoe: '#fffaf1', accent: '#f6b9c2' }),
-  detail(ctx) {
-    ctx.strokeStyle = 'rgba(214,178,150,0.9)'
-    ctx.lineWidth = 1.6
-    ctx.beginPath()
-    ctx.moveTo(-14, 76.4)
-    ctx.lineTo(14, 76.4)
-    ctx.stroke()
-  },
-}
-
 function lookOf(kind: SpriteKind): Look {
   if (kind === 'groom') {
-    return { skin: SKINS[1].hex, hairStyle: 10, hairColor: '#3d3134', outfit: TUXEDO, color: '#45454f', accessory: 0, special: 'groom' }
+    return { skin: SKINS[1].hex, hairStyle: 10, hairColor: '#3d3134', outfit: TUXEDO, color: '#3d3f54', accessory: 0, special: 'groom' }
   }
   if (kind === 'bride') {
     return { skin: SKINS[0].hex, hairStyle: 6, hairColor: '#5b4034', outfit: GOWN, color: '#fffaf1', accessory: 0, special: 'bride' }
@@ -75,49 +45,6 @@ function lookOf(kind: SpriteKind): Look {
     color: OUTFIT_COLORS[a.outfitColor].hex,
     accessory: a.accessory,
   }
-}
-
-/* ── 신부 전용: 베일·부케·티아라 ───────────────────────── */
-function veil(ctx: C, view: View, layer: 'under' | 'over'): void {
-  const p = new Path2D()
-  if (view === 'front' && layer === 'under') {
-    p.moveTo(0, 6)
-    p.bezierCurveTo(-30, 8, -36, 50, -31, 92)
-    p.quadraticCurveTo(0, 98, 31, 92)
-    p.bezierCurveTo(36, 50, 30, 8, 0, 6)
-  } else if (view === 'back' && layer === 'over') {
-    p.moveTo(0, 15)
-    p.bezierCurveTo(-24, 15, -36, 50, -31, 92)
-    p.quadraticCurveTo(0, 99, 31, 92)
-    p.bezierCurveTo(36, 50, 24, 15, 0, 15)
-  } else if (view === 'side' && layer === 'under') {
-    p.moveTo(-6, 8)
-    p.bezierCurveTo(-34, 6, -44, 50, -36, 93)
-    p.quadraticCurveTo(-22, 97, -10, 92)
-    p.bezierCurveTo(-10, 60, -8, 30, -6, 8)
-  } else return
-  p.closePath()
-  const g = ctx.createLinearGradient(0, 8, 0, 96)
-  g.addColorStop(0, layer === 'under' ? 'rgba(255,253,248,0.95)' : 'rgba(255,253,248,0.93)')
-  g.addColorStop(1, layer === 'under' ? 'rgba(255,250,242,0.8)' : 'rgba(255,250,242,0.72)')
-  ctx.fillStyle = g
-  ctx.strokeStyle = 'rgba(190,160,150,0.55)'
-  ctx.lineWidth = 1
-  ctx.stroke(p)
-  ctx.fill(p)
-}
-function bouquet(ctx: C, view: View): void {
-  if (view === 'back') return
-  const x = view === 'side' ? 12 : 0
-  const k = view === 'side' ? 0.8 : 1
-  for (const [dx, dy, r] of [[-6, 2, 3.4], [6, 2, 3.4], [0, 5, 3.6]]) flat(ctx, ellipse(x + dx * k, 80 + dy, r, r * 0.8, 0), '#7fae7a')
-  const cols = ['#f7a9b5', '#fff6ee', '#f3c36a', '#fff6ee', '#f29a8a']
-  const pts = [[-4.6, -1.6], [4.6, -1.6], [0, -4.2], [-2.6, 2.4], [2.6, 2.4]]
-  pts.forEach(([dx, dy], i) => flower(ctx, x + dx * k, 80 + dy, 3.3, cols[i]))
-}
-function tiara(ctx: C, view: View): void {
-  const xs = view === 'side' ? [2, 9, 15.5] : view === 'back' ? [] : [-7, 0, 7]
-  xs.forEach((x, i) => flower(ctx, x, view === 'side' ? 17 + i * 1.6 : 19.5 + Math.abs(x) * 0.12, 3.2, i === 1 ? '#f7a9b5' : '#fff6ee'))
 }
 
 function render(ctx: C, look: Look, view: View, frame: Frame): void {
@@ -148,7 +75,7 @@ function render(ctx: C, look: Look, view: View, frame: Frame): void {
     look.outfit.under?.(ctx, view, pal)
     if (view === 'side') drawArms(ctx, view, frame, armLook, 'far', bride)
   })
-  drawLegs(ctx, view, frame, { leg: pal.leg, shoe: pal.shoe, skin: look.skin, wide: look.outfit.wideLegs })
+  drawLegs(ctx, view, frame, { leg: pal.leg, shoe: pal.shoe, skin: look.skin, wide: look.outfit.wideLegs, shine: look.special === 'groom' })
   upper(() => {
     const top = drawTorso(ctx, view, frame, look.outfit, pal)
     // 큰 머리가 몸통에 드리우는 그림자
@@ -168,10 +95,37 @@ function render(ctx: C, look: Look, view: View, frame: Frame): void {
   })
 }
 
-/* ── 캐시된 캔버스 ─────────────────────────────────────── */
-const cache = new Map<string, HTMLCanvasElement>()
-/** 기본 배율: 명목 1단위 = 2px (56x72). 실제 사용 시 (화면 배율 x devicePixelRatio) 를 넘길 것 */
+/* ── 캐시된 캔버스 (LRU) ───────────────────────────────── */
+/** 기본 배율: 명목 1단위 = 2px (56x72). 실제 사용 시 spriteScale(화면 배율) 을 넘길 것 */
 export const DEFAULT_SCALE = 2
+/** 이보다 큰 devicePixelRatio 는 2로 취급 (3x 폰에서 캔버스 메모리가 2.25배로 느는 것을 막음) */
+export const MAX_DPR = 2
+/** getSprite 가 실제로 굽는 배율 상한 (명목 1단위당 픽셀) */
+export const MAX_SCALE = 12
+/** 캐시 상한: 개수와 총 픽셀 수(메모리) 둘 다 지킨다. 넘치면 가장 오래 안 쓴 것부터 버림 */
+export const CACHE_MAX_ENTRIES = 900
+export const CACHE_MAX_PIXELS = 16_000_000
+
+interface Entry {
+  canvas: HTMLCanvasElement
+  px: number
+}
+const cache = new Map<string, Entry>()
+let cachePixels = 0
+
+/**
+ * 화면 배율(명목 1단위당 CSS px) → getSprite 에 넘길 배율. devicePixelRatio 는 MAX_DPR 로 제한한다.
+ * 예) 높이 80 CSS px 로 그릴 때: getSprite(a, dir, f, spriteScale(80 / FOREST_H))
+ */
+export function spriteScale(cssPxPerUnit: number, dpr?: number): number {
+  const d = dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio : 1) ?? 1
+  return quantize(cssPxPerUnit * Math.min(Math.max(d, 1), MAX_DPR))
+}
+/** 캐시 키가 잘게 쪼개지지 않도록 0.05 단위로 맞추고 상·하한을 건다 */
+function quantize(scale: number): number {
+  const s = Number.isFinite(scale) ? scale : DEFAULT_SCALE
+  return Math.min(MAX_SCALE, Math.max(0.25, Math.round(s * 20) / 20))
+}
 
 function keyOf(kind: SpriteKind, dir: Dir, frame: Frame, scale: number): string {
   const tail = `|${dir}|${frame}|${scale}`
@@ -181,14 +135,21 @@ function keyOf(kind: SpriteKind, dir: Dir, frame: Frame, scale: number): string 
 }
 
 /**
- * 스프라이트 캔버스 (FOREST_W*scale x FOREST_H*scale 픽셀). 벡터라 어떤 scale 에서도 선명하다.
- * scale = 명목 1단위당 픽셀 수(소수 둘째 자리로 반올림해 캐시 키로 사용).
+ * 스프라이트 캔버스 (FOREST_W*scale x FOREST_H*scale 픽셀, 올림). 벡터라 어떤 scale 에서도 선명하다.
+ * scale = 명목 1단위당 픽셀 수 — 보통 spriteScale(cssPxPerUnit). 0.05 단위로 반올림, MAX_SCALE 로 제한.
+ * (외형, 방향, 프레임, 배율)별로 LRU 캐시되므로 매 프레임 호출해도 된다.
+ * 'left' 는 'right' 의 좌우 반전이다.
  */
 export function getSprite(kind: SpriteKind, dir: Dir, frame: Frame, scale: number = DEFAULT_SCALE): HTMLCanvasElement {
-  const sc = Math.max(0.25, Math.round(scale * 100) / 100)
+  const sc = quantize(scale)
   const key = keyOf(kind, dir, frame, sc)
   const hit = cache.get(key)
-  if (hit) return hit
+  if (hit) {
+    // 최근 사용으로 갱신 (Map 은 삽입 순서를 유지)
+    cache.delete(key)
+    cache.set(key, hit)
+    return hit.canvas
+  }
   const canvas = document.createElement('canvas')
   canvas.width = Math.ceil(FOREST_W * sc)
   canvas.height = Math.ceil(FOREST_H * sc)
@@ -200,13 +161,37 @@ export function getSprite(kind: SpriteKind, dir: Dir, frame: Frame, scale: numbe
     const view: View = dir === 'down' ? 'front' : dir === 'up' ? 'back' : 'side'
     render(ctx, lookOf(kind), view, frame)
   }
-  cache.set(key, canvas)
+  const px = canvas.width * canvas.height
+  cache.set(key, { canvas, px })
+  cachePixels += px
+  for (const [k, e] of cache) {
+    if (cache.size <= CACHE_MAX_ENTRIES && cachePixels <= CACHE_MAX_PIXELS) break
+    if (k === key) break
+    cache.delete(k)
+    cachePixels -= e.px
+  }
   return canvas
 }
 /** 배율이 바뀌었을 때(리사이즈 등) 이전 배율 캔버스를 비운다 */
 export function clearSpriteCache(): void {
   cache.clear()
+  cachePixels = 0
 }
+/** 캐시 상태 (개발·테스트용) */
+export function spriteCacheStats(): { entries: number; pixels: number } {
+  return { entries: cache.size, pixels: cachePixels }
+}
+
+/** 스타일 등록 정보 (통합 측이 스타일 목록에 올릴 때 사용) */
+export const STYLE_INFO = {
+  id: 'forest',
+  label: '숲속 주민',
+  nominalW: FOREST_W,
+  nominalH: FOREST_H,
+  footY: FOREST_FOOT_Y,
+  pixelated: false,
+  recommendedCssHeight: 80,
+} as const
 
 /* ── 랜덤 / 보정 ─────────────────────────────────────── */
 function randInt(rand: () => number, n: number): number {

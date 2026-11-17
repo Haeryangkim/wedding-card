@@ -36,6 +36,22 @@ export function mat(base: RGB): Mat {
   return m
 }
 
+/** 4톤을 직접 지정한 재질 (웨딩드레스처럼 램프로 만들기 어려운 흰색 계열용) */
+export function mat4(hi: RGB, b: RGB, sh: RGB, ln: RGB): Mat {
+  const key = `m4|${hi.join(',')}|${b.join(',')}|${sh.join(',')}|${ln.join(',')}`
+  const hit = matCache.get(key)
+  if (hit) return hit
+  const m: Mat = { hi: reg(hi), b: reg(b), sh: reg(sh), ln: reg(ln) }
+  lineOf[m.hi] = lineOf[m.b] = lineOf[m.sh] = lineOf[m.ln] = m.ln
+  matCache.set(key, m)
+  return m
+}
+
+/** 한 톤 어둡게 쓴 재질 (3/4 측면의 먼 쪽 팔다리) */
+export function dim(m: Mat): Mat {
+  return { hi: m.b, b: m.sh, sh: m.sh, ln: m.ln }
+}
+
 /** 외곽선 색을 직접 정한 단색 (눈·입 등 세부용) */
 export function flat(c: RGB, line?: RGB): number {
   const key = `f${c.join(',')}|${line ? line.join(',') : ''}`
@@ -132,6 +148,13 @@ export class Layer {
       }
     for (const i of hits) this.d[i] = to
   }
+  /** 지우기 (clip 과 무관) */
+  erase(x: number, y: number): void {
+    x = Math.round(x)
+    y = Math.round(y)
+    if (x < 0 || y < 0 || x >= W || y >= H) return
+    this.d[y * W + x] = 0
+  }
   /** 색 바꾸기 */
   swap(from: number, to: number): void {
     for (let i = 0; i < this.d.length; i++) if (this.d[i] === from) this.d[i] = to
@@ -142,12 +165,14 @@ export class Comp {
   d = new Uint16Array(W * H)
 
   /** 층을 (dx,dy) 만큼 옮겨 찍는다. outline 이면 층 바깥 4방향 이웃에 외곽선을 두른다 */
-  stamp(l: Layer, dx = 0, dy = 0, outline = true): void {
+  stamp(l: Layer, dx = 0, dy = 0, outline = true, tint?: (under: number, c: number) => number | undefined): void {
     const put = (x: number, y: number, c: number) => {
       x += dx
       y += dy
       if (x < 0 || y < 0 || x >= W || y >= H) return
-      this.d[y * W + x] = c
+      // tint: 아래에 깔린 색에 따라 비쳐 보이는 색으로 바꾼다 (베일 너머의 머리카락)
+      const t = tint?.(this.d[y * W + x], c)
+      this.d[y * W + x] = t ?? c
     }
     if (outline)
       for (let y = l.y0; y <= l.y1; y++)

@@ -2,6 +2,7 @@
  * "메이플" 캐릭터 스타일 — 공개 계약 (기존 character/ 모듈과 같은 모양).
  * 모든 스프라이트는 코드로 직접 그리는 오리지널 도트이며 외부 에셋을 쓰지 않는다.
  *
+ * 프로토타입 → 제품 품질로 다듬은 버전. 통합은 STYLE_INFO 로 등록한다.
  * 방향: right = 3/4 측면(기본), left = 좌우 반전, down = 정면, up = 뒷모습. 프레임 0 = 정지, 1·2 = 걷기.
  */
 import type { Dir, Frame, SpriteKind } from './dims'
@@ -12,6 +13,19 @@ export { MAPLE_W, MAPLE_H, FOOT_Y, MAPLE_APP_SCALE } from './dims'
 export type { Appearance, Dir, Frame, SpriteKind, PartDef } from './dims'
 export { PART_DEFS, randomAppearance, normalizeAppearance, buildBuffer } from './sprites'
 export type { PixelBuffer } from './sprites'
+
+/** 스타일 등록 정보 (통합 쪽에서 스타일 목록에 넣을 때 쓴다) */
+export const STYLE_INFO = {
+  id: 'maple',
+  label: '메이플',
+  nominalW: MAPLE_W,
+  nominalH: MAPLE_H,
+  /** 발바닥 행 (스프라이트 위에서부터, 원본 px) */
+  footY: 61,
+  pixelated: true,
+  /** 20×36 기본 픽셀 캐릭터(2.2배 ≈ 80px)와 키가 맞는 표시 높이 = 원본의 1.375배 (인물 실제 키 ≈ 73px) */
+  recommendedCssHeight: 88,
+} as const
 
 const cache = new Map<string, HTMLCanvasElement>()
 

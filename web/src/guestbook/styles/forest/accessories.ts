@@ -1,6 +1,7 @@
 /** 액세서리 (머리·얼굴·몸 위에 얹는 마지막 층). 0 = 없음. */
 import type { View } from './dims'
-import { circle, darken, ellipse, flat, flower, line, shape, type C } from './draw'
+import { FACE34 } from './body'
+import { circle, darken, ellipse, flat, flower, line, quarter, shape, type C } from './draw'
 import { CREAM, INK } from './palette'
 
 export interface AccessoryDef {
@@ -28,22 +29,34 @@ export function bow(ctx: C, x: number, y: number, s: number, rot: number, col: s
 }
 
 function lens(ctx: C, x: number, y: number, rx: number, dark: boolean): void {
-  const p = ellipse(x, y, rx, 6.1)
-  flat(ctx, p, dark ? '#3f3540' : '#ffffff', dark ? 0.92 : 0.28)
-  ctx.strokeStyle = dark ? '#2e2630' : INK
-  ctx.lineWidth = 1.5
+  const p = ellipse(x, y, rx, 6.3)
+  flat(ctx, p, dark ? '#3a303c' : '#ffffff', dark ? 0.94 : 0.34)
+  ctx.strokeStyle = dark ? '#2a222c' : INK
+  ctx.lineWidth = dark ? 1.6 : 1.9
   ctx.stroke(p)
-  if (dark) line(ctx, [x - rx * 0.5, y - 2.6, x - rx * 0.1, y - 3.4], '#ffffff', 1.2, 0.5)
+  if (dark) line(ctx, [x - rx * 0.55, y - 2.4, x - rx * 0.05, y - 3.6], '#ffffff', 1.4, 0.55)
+  else line(ctx, [x - rx * 0.5, y - 2.6, x - rx * 0.15, y - 3.6], '#ffffff', 1.2, 0.8)
 }
 function glasses(dark: boolean) {
   return (ctx: C, view: View) => {
+    const frame = dark ? '#2a222c' : INK
     if (view === 'front') {
-      lens(ctx, -11.5, 45.5, 6.6, dark)
-      lens(ctx, 11.5, 45.5, 6.6, dark)
-      line(ctx, [-4.9, 44.6, 0, 43, 4.9, 44.6], INK, 1.4)
+      lens(ctx, -11.5, 45.5, 6.8, dark)
+      lens(ctx, 11.5, 45.5, 6.8, dark)
+      line(ctx, [-4.7, 44.6, 0, 42.8, 4.7, 44.6], frame, 1.8)
+      line(ctx, [-18.3, 44.6, -25.6, 43.6], frame, 1.6)
+      line(ctx, [18.3, 44.6, 25.6, 43.6], frame, 1.6)
     } else if (view === 'side') {
-      lens(ctx, 16.5, 45.5, 4.6, dark)
-      line(ctx, [12, 44.6, -2, 45.2], INK, 1.4)
+      // 3/4: 가까운 렌즈는 크게, 먼 렌즈는 좁게 + 귀까지 이어지는 다리
+      const { nearEye, farEye, eyeY } = FACE34
+      line(ctx, [nearEye - 6.4, eyeY - 0.8, -14.6, eyeY - 0.4], frame, 2)
+      lens(ctx, farEye, eyeY, 4.9, dark)
+      lens(ctx, nearEye, eyeY, 6.9, dark)
+      line(ctx, [nearEye + 6.7, eyeY - 0.9, (nearEye + farEye) / 2 + 1, eyeY - 2.6, farEye - 4.7, eyeY - 0.9], frame, 1.8)
+    } else {
+      // 뒤: 귀에 걸린 다리 끝만
+      line(ctx, [-27.4, 44.4, -29.6, 46.6], frame, 1.8)
+      line(ctx, [27.4, 44.4, 29.6, 46.6], frame, 1.8)
     }
   }
 }
@@ -58,6 +71,13 @@ function beretPath(m: number): Path2D {
   return p
 }
 
+/** 몸에 다는 것: 3/4 뷰에서는 정면 그림을 몸통 변환에 맞춰 재사용 */
+function onBody(ctx: C, view: View, fn: () => void): void {
+  if (view === 'back') return
+  if (view === 'side') quarter(ctx, fn)
+  else fn()
+}
+
 export const ACCESSORIES: AccessoryDef[] = [
   { label: '없음', draw() {} },
   { label: '안경', draw: glasses(false) },
@@ -65,17 +85,25 @@ export const ACCESSORIES: AccessoryDef[] = [
   {
     label: '리본',
     draw(ctx, v, a) {
-      if (v === 'front') bow(ctx, 17, 17.5, 7.4, 0.35, a)
-      else if (v === 'back') bow(ctx, -17, 17.5, 7.4, -0.35, a)
-      else bow(ctx, -5, 12.5, 7, -0.15, a)
+      if (v === 'front') bow(ctx, 17, 17.5, 7.6, 0.35, a)
+      else if (v === 'back') bow(ctx, -17, 17.5, 7.6, -0.35, a)
+      else bow(ctx, -9, 14, 7.6, -0.3, a)
     },
   },
   {
     label: '꽃핀',
     draw(ctx, v) {
-      if (v === 'front') flower(ctx, -20, 27, 5, '#fff3ee')
-      else if (v === 'back') flower(ctx, 20, 27, 5, '#fff3ee')
-      else flower(ctx, 6, 27, 5, '#fff3ee')
+      const leaf = (x: number, y: number, r: number) => flat(ctx, ellipse(x, y, 3.4, 1.9, r), LEAF)
+      if (v === 'front') {
+        leaf(-23.4, 30.4, 0.9)
+        flower(ctx, -20, 27, 5.4, '#fff3ee')
+      } else if (v === 'back') {
+        leaf(23.4, 30.4, -0.9)
+        flower(ctx, 20, 27, 5.4, '#fff3ee')
+      } else {
+        leaf(-13.6, 30.6, 0.9)
+        flower(ctx, -10, 27.4, 5.4, '#fff3ee')
+      }
     },
   },
   {
@@ -83,54 +111,59 @@ export const ACCESSORIES: AccessoryDef[] = [
     draw(ctx, v) {
       const c = '#b85662'
       const m = v === 'back' ? -1 : 1
-      line(ctx, [m * 4, 2.6, m * 6, -1.2], darken(c, 0.3), 2)
       ctx.save()
-      if (v === 'side') ctx.translate(-3, 0)
+      if (v === 'side') ctx.translate(-2.4, 0)
+      line(ctx, [m * 4, 2.6, m * 6, -1.4], darken(c, 0.3), 2.2)
       shape(ctx, beretPath(m), c, [-20, 0, 20, 26])
+      line(ctx, [m * -22, 20.4, m * -6, 17, m * 12, 19.6], darken(c, 0.3), 1.1, 0.4)
       ctx.restore()
     },
   },
   {
     label: '나비넥타이',
     draw(ctx, v, a) {
-      if (v === 'front') bow(ctx, 0, 68.6, 4.6, 0, a)
-      else if (v === 'side') bow(ctx, 9, 68.6, 3.2, 0, a)
+      onBody(ctx, v, () => bow(ctx, 0, 68.6, 5.2, 0, a))
     },
   },
   {
     label: '화관',
     draw(ctx, v) {
       const cols = ['#f6a6b4', '#fff3ee', '#f3c36a', '#fff3ee', '#f29a8a']
-      const xs = v === 'side' ? [-24, -16.5, -8.5, 0, 8.5, 16.5, 23] : [-22.5, -15.5, -8, 0, 8, 15.5, 22.5]
-      const yAt = (x: number) => 15.5 + (x / 27) ** 2 * 13
+      const xs = v === 'side' ? [-24.5, -17, -9, -0.5, 8, 16, 22.6] : [-22.5, -15.5, -8, 0, 8, 15.5, 22.5]
+      const cx = v === 'side' ? -1 : 0
+      const yAt = (x: number) => 15.5 + ((x - cx) / 27) ** 2 * 13
       for (let i = 0; i < xs.length - 1; i++) {
         const mx = (xs[i] + xs[i + 1]) / 2
-        flat(ctx, ellipse(mx, yAt(mx) + 0.6, 2.8, 1.7, 0.4), LEAF)
+        flat(ctx, ellipse(mx, yAt(mx) + 0.6, 3, 1.8, 0.4), LEAF)
       }
-      xs.forEach((x, i) => flower(ctx, x, yAt(x), 3.5, cols[i % cols.length]))
+      xs.forEach((x, i) => flower(ctx, x, yAt(x), 3.6, cols[i % cols.length]))
     },
   },
   {
     label: '코르사주',
     draw(ctx, v) {
-      if (v === 'back') return
-      const x = v === 'side' ? 6.5 : 7.6
-      flat(ctx, ellipse(x + 2.6, 74.6, 3, 1.7, 0.7), LEAF)
-      flower(ctx, x, 72, 3.7, '#f7a9b5')
+      onBody(ctx, v, () => {
+        flat(ctx, ellipse(10.6, 75, 3.2, 1.8, 0.7), LEAF)
+        flat(ctx, ellipse(5.4, 75.4, 3, 1.7, -0.7), LEAF)
+        flower(ctx, 7.8, 72, 4.2, '#f7a9b5')
+      })
     },
   },
   {
     label: '진주 목걸이',
     draw(ctx, v) {
-      if (v === 'front') {
-        for (let i = -3; i <= 3; i++) {
-          const x = i * 2.7
-          const y = 70.4 - i * i * 0.42
-          shape(ctx, circle(x, y, 1.45), CREAM, [x - 1, y - 1, x + 1, y + 1], { rim: 0.7 })
-        }
-      } else if (v === 'side') {
-        for (let i = 0; i < 3; i++) shape(ctx, circle(5 + i * 2.5, 67 + i * 1.3, 1.4), CREAM, [0, 66, 10, 72], { rim: 0.7 })
+      if (v === 'back') {
+        // 목 뒤로 지나가는 줄
+        for (let i = -3; i <= 3; i++) shape(ctx, circle(i * 2.9, 67.6 - i * i * 0.46, 1.5), CREAM, [-1, 64, 1, 69], { rim: 0.7 })
+        return
       }
+      onBody(ctx, v, () => {
+        for (let i = -3; i <= 3; i++) {
+          const x = i * 2.9
+          const y = 70.6 - i * i * 0.46
+          shape(ctx, circle(x, y, 1.6), CREAM, [x - 1, y - 1, x + 1, y + 1], { rim: 0.75 })
+        }
+      })
     },
   },
 ]

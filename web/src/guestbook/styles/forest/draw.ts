@@ -117,3 +117,48 @@ export function flower(ctx: C, x: number, y: number, r: number, petal: string, c
   shape(ctx, ps, petal, [x - r, y - r, x + r, y + r], { rim: r > 3 ? 1 : 0.7, depth: 0.7 })
   flat(ctx, circle(x, y, r * 0.36), core)
 }
+
+/** 3차 베지어 한 줄 (머릿결·주름 등). pts = [x0,y0, c1x,c1y, c2x,c2y, x1,y1] */
+export function bez(ctx: C, pts: number[], color: string, w: number, alpha = 1): void {
+  ctx.save()
+  ctx.globalAlpha *= alpha
+  ctx.strokeStyle = color
+  ctx.lineWidth = w
+  ctx.lineCap = 'round'
+  ctx.beginPath()
+  ctx.moveTo(pts[0], pts[1])
+  ctx.bezierCurveTo(pts[2], pts[3], pts[4], pts[5], pts[6], pts[7])
+  ctx.stroke()
+  ctx.restore()
+}
+/** 경로 외곽선만 */
+export function outline(ctx: C, p: Path2D, color: string, w: number, alpha = 1): void {
+  ctx.save()
+  ctx.globalAlpha *= alpha
+  ctx.strokeStyle = color
+  ctx.lineWidth = w
+  ctx.lineJoin = 'round'
+  ctx.lineCap = 'round'
+  ctx.stroke(p)
+  ctx.restore()
+}
+export function poly(pts: number[]): Path2D {
+  const p = new Path2D()
+  p.moveTo(pts[0], pts[1])
+  for (let i = 2; i < pts.length; i += 2) p.lineTo(pts[i], pts[i + 1])
+  p.closePath()
+  return p
+}
+
+/**
+ * 3/4 뷰(옆으로 걷는 모습)용 변환: 정면 기준으로 그린 몸통 디테일을
+ * 보는 방향(+x)으로 밀고 가로를 줄여 그대로 재사용한다.
+ */
+export const Q_SHIFT = 3.6
+export const Q_SCALE = 0.8
+export function quarter(ctx: C, fn: () => void): void {
+  ctx.save()
+  ctx.transform(Q_SCALE, 0, 0, 1, Q_SHIFT, 0)
+  fn()
+  ctx.restore()
+}

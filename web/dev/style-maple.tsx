@@ -14,6 +14,8 @@ import {
   type Frame,
   type SpriteKind,
 } from '../src/guestbook/styles/maple'
+import { STYLE_INFO } from '../src/guestbook/styles/maple'
+import { getSprite as getPixelSprite, randomAppearance as randomPixel, SPRITE_H, SPRITE_W } from '../src/guestbook/character'
 
 const BG = '#efe6d6'
 const INK = '#3b332b'
@@ -37,7 +39,7 @@ const label = (k: keyof Appearance, i: number) => PART_DEFS.find((p) => p.key ==
 
 const canvas = document.getElementById('sheet') as HTMLCanvasElement
 canvas.width = PAGE_W
-canvas.height = 2200
+canvas.height = 3300
 const g = canvas.getContext('2d')!
 g.imageSmoothingEnabled = false
 g.fillStyle = BG
@@ -74,62 +76,82 @@ const DIRS: Dir[] = ['down', 'right', 'left', 'up']
 const DIR_KO: Record<Dir, string> = { down: '정면(down)', right: '오른쪽', left: '왼쪽(반전)', up: '뒷모습(up)' }
 const only = new URLSearchParams(location.search).get('only')
 
-function crowd(scale: number): void {
-  // 430px 폭 휴대폰 캔버스에서의 실제 크기: 원본 1px = CSS 1px
+/**
+ * 군중: 430px 폭 휴대폰 캔버스(DPR 2 로 렌더). 메이플은 권장 크기(원본 1.5배 = CSS 96px 높이),
+ * 기본 픽셀 캐릭터는 2.2배로 한 장면에 섞는다. floor: cream = 밝은 크림 바닥 (옷 색 대비 확인용)
+ */
+function crowd(scale: number, opts: { mixed?: boolean; cream?: boolean; seed?: number } = {}): void {
+  const D = 2
   const Wp = 430
-  const Hp = 150
+  const Hp = 230
   const x0 = 16
   const off = document.createElement('canvas')
-  off.width = Wp
-  off.height = Hp
+  off.width = Wp * D
+  off.height = Hp * D
   const c = off.getContext('2d')!
-  c.fillStyle = '#f6efe2'
-  c.fillRect(0, 0, Wp, Hp)
-  // 벽과 바닥
+  c.imageSmoothingEnabled = false
+  c.scale(D, D)
+  const floorY = 70
   c.fillStyle = '#e9d9c0'
-  c.fillRect(0, 0, Wp, 62)
-  c.fillStyle = '#d9b98f'
-  c.fillRect(0, 62, Wp, Hp - 62)
-  c.fillStyle = '#c9a57a'
-  for (let i = 0; i < Wp; i += 24) c.fillRect(i, 62, 1, Hp - 62)
-  c.fillRect(0, 62, Wp, 2)
+  c.fillRect(0, 0, Wp, floorY)
+  c.fillStyle = opts.cream ? '#f6efe2' : '#d9b98f'
+  c.fillRect(0, floorY, Wp, Hp - floorY)
+  c.fillStyle = opts.cream ? '#eadfcb' : '#c9a57a'
+  for (let i = 0; i < Wp; i += 24) c.fillRect(i, floorY, 1, Hp - floorY)
+  c.fillRect(0, floorY, Wp, 2)
   c.fillStyle = '#b8455a'
-  c.fillRect(175, 64, 80, Hp - 64) // 버진로드
-  const r = rng(77)
-  const people: { kind: SpriteKind; x: number; y: number; dir: Dir; frame: Frame }[] = []
-  for (let i = 0; i < 14; i++) {
+  c.fillRect(175, floorY + 2, 80, Hp - floorY - 2) // 버진로드
+  const r = rng(opts.seed ?? 77)
+  const k = STYLE_INFO.recommendedCssHeight / STYLE_INFO.nominalH
+  type P = { maple?: SpriteKind; pixel?: ReturnType<typeof randomPixel>; x: number; y: number; dir: Dir; frame: Frame }
+  const people: P[] = []
+  for (let i = 0; i < 12; i++) {
     const row = i % 2
     const col = Math.floor(i / 2)
-    const left = col < 4 ? 24 + col * 40 : 272 + (col - 4) * 44
-    people.push({
-      kind: randomAppearance(r),
-      x: left + row * 14,
-      y: 76 + row * 62 + Math.floor(r() * 6),
+    const left = col < 3 ? 26 + col * 52 : 284 + (col - 3) * 52
+    const q: P = {
+      x: left + row * 22,
+      y: 118 + row * 92 + Math.floor(r() * 8),
       dir: (['down', 'right', 'left', 'down', 'up'] as Dir[])[Math.floor(r() * 5)],
       frame: ([0, 0, 1, 2] as Frame[])[Math.floor(r() * 4)],
-    })
+    }
+    if (opts.cream) {
+      // 가장 밝은/어두운 옷 색을 번갈아
+      q.maple = { ...randomAppearance(r), outfitColor: [11, 0, 5, 1, 11, 9][i % 6], outfit: [7, 0, 4, 8, 2, 5][i % 6] }
+    } else if (opts.mixed && i % 3 === 1) q.pixel = randomPixel(r)
+    else q.maple = randomAppearance(r)
+    people.push(q)
   }
-  people.push({ kind: 'groom', x: 192, y: 108, dir: 'right', frame: 0 })
-  people.push({ kind: 'bride', x: 238, y: 108, dir: 'left', frame: 0 })
+  people.push({ maple: 'groom', x: 196, y: 160, dir: 'right', frame: 0 })
+  people.push({ maple: 'bride', x: 238, y: 160, dir: 'left', frame: 0 })
   people.sort((a, b) => a.y - b.y)
   for (const q of people) {
     c.fillStyle = 'rgba(60,40,30,0.22)'
     c.beginPath()
-    c.ellipse(q.x, q.y - 1, 13, 4, 0, 0, Math.PI * 2)
+    c.ellipse(q.x, q.y - 1, 16, 4.5, 0, 0, Math.PI * 2)
     c.fill()
-    c.drawImage(getSprite(q.kind, q.dir, q.frame), Math.round(q.x - MAPLE_W / 2), q.y - MAPLE_H + 1)
+    if (q.maple) {
+      const w = MAPLE_W * k
+      const h = MAPLE_H * k
+      c.drawImage(getSprite(q.maple, q.dir, q.frame), q.x - w / 2, q.y - (STYLE_INFO.footY + 1) * k, w, h)
+    } else if (q.pixel) {
+      const w = SPRITE_W * 2.2
+      const h = SPRITE_H * 2.2
+      c.drawImage(getPixelSprite(q.pixel, q.dir, q.frame), q.x - w / 2, q.y - 34 * 2.2, w, h)
+    }
   }
-  g.drawImage(off, x0, y, Wp * scale, Hp * scale)
-  y += Hp * scale + 14
+  g.drawImage(off, x0, y, (Wp * D * scale) / 2, (Hp * D * scale) / 2)
+  y += (Hp * D * scale) / 2 + 14
 }
 
 if (only === 'crowd') {
   canvas.width = 430 * 3 + 32
-  canvas.height = 150 * 3 + 40
+  canvas.height = (230 * 3 + 14) * 2 + 40
   g.imageSmoothingEnabled = false
   g.fillStyle = BG
   g.fillRect(0, 0, canvas.width, canvas.height)
-  crowd(3)
+  crowd(3, { mixed: true })
+  crowd(3, { cream: true, seed: 5 })
 } else {
   title(`메이플 스타일 — 원본 ${MAPLE_W}×${MAPLE_H}px 도트, 코드로 그린 오리지널 (아래는 2배 확대)`)
 
@@ -244,23 +266,55 @@ if (only === 'crowd') {
       }
   })
   y += 3 * (MAPLE_H + 8) + 6
-  title('6-b) 같은 하객 — 오른쪽 걷기 3프레임 (2배)')
-  guests.forEach((a, gi) => {
-    for (const f of [0, 1, 2] as Frame[]) g.drawImage(getSprite(a, 'right', f, 2), 16 + gi * 226 + f * 72, y)
+  title('6-b) 걷기 순환 1 → 0 → 2 → 0 (오른쪽, 3배) — 정장 · 원피스 · 한복 · 남자 한복 · 신랑 · 신부')
+  const walkers: SpriteKind[] = [
+    { ...base, outfit: 0, outfitColor: 1, hairStyle: 1 },
+    { ...base, outfit: 4, outfitColor: 7, hairStyle: 3, hairColor: 0 },
+    { ...base, outfit: 7, outfitColor: 8, hairStyle: 6 },
+    { ...base, outfit: 8, outfitColor: 1, hairStyle: 9, hairColor: 0 },
+    'groom',
+    'bride',
+  ]
+  const CYC: Frame[] = [1, 0, 2, 0]
+  walkers.forEach((a, gi) => {
+    const gx = 16 + (gi % 3) * 460
+    const gy = y + Math.floor(gi / 3) * (MAPLE_H * 3 + 6)
+    CYC.forEach((f, i) => g.drawImage(getSprite(a, 'right', f, 3), gx + i * 108, gy))
   })
-  y += MAPLE_H * 2 + 12
+  y += 2 * (MAPLE_H * 3 + 6) + 6
+  title('6-c) 정면 · 뒷모습 걷기 (1 → 0 → 2), 2배')
+  walkers.forEach((a, gi) => {
+    ;([1, 0, 2] as Frame[]).forEach((f, i) => {
+      g.drawImage(getSprite(a, 'down', f, 2), 16 + gi * 226 + i * 72, y)
+      g.drawImage(getSprite(a, 'up', f, 2), 16 + gi * 226 + i * 72, y + MAPLE_H * 2 + 4)
+    })
+  })
+  y += MAPLE_H * 4 + 16
 
-  title('7) 군중 — 430px 폭 휴대폰 캔버스 실제 크기(왼쪽, 1배) / 같은 그림 2배(오른쪽)')
+  title('6-d) 어두운 피부의 눈 (3배) · 긴 머리/베일 뒷모습 (3배)')
+  ;[3, 4, 5].forEach((sk, i) => {
+    g.drawImage(getSprite({ ...base, skin: sk, hairColor: 0, hairStyle: i }, 'down', 0, 3), 16 + i * 280, y)
+    g.drawImage(getSprite({ ...base, skin: sk, hairColor: 0, hairStyle: i }, 'right', 0, 3), 16 + i * 280 + 130, y)
+  })
+  ;[2, 3, 4, 11, 5].forEach((hs, i) =>
+    g.drawImage(getSprite({ ...base, hairStyle: hs, hairColor: [2, 0, 3, 11, 7][i] }, 'up', 0, 3), 860 + i * 104, y),
+  )
+  y += MAPLE_H * 3 + 6
+  ;(['down', 'right', 'up'] as Dir[]).forEach((d, i) => {
+    g.drawImage(getSprite('bride', d, 0, 3), 16 + i * 150, y)
+    g.drawImage(getSprite('groom', d, 0, 3), 480 + i * 150, y)
+  })
+  ;[0, 1, 2, 3].forEach((i) => g.drawImage(getSprite({ ...base, outfit: [7, 8, 7, 8][i], outfitColor: [7, 9, 3, 11][i], hairStyle: [6, 9, 6, 1][i] }, i < 2 ? 'down' : 'up', 0, 3), 940 + i * 110, y))
+  y += MAPLE_H * 3 + 12
+
+  title('7) 군중 — 430px 폭 휴대폰(2배 확대). 메이플 권장 크기 + 기본 픽셀 캐릭터 2.2배 혼합 / 크림 바닥에 가장 밝고 어두운 옷')
   const yc = y
-  crowd(1)
-  const yAfter = y
+  crowd(1.55, { mixed: true })
   y = yc
-  // 2배 버전은 오른쪽에
   g.save()
-  g.translate(460, 0)
-  crowd(2)
+  g.translate(690, 0)
+  crowd(1.55, { cream: true, seed: 5 })
   g.restore()
-  y = Math.max(y, yAfter)
 
   // 성능 측정
   const rp = rng(5)
@@ -291,7 +345,7 @@ if (only === 'crowd') {
 {
   const q = new URLSearchParams(location.search)
   const z = Number(q.get('z') ?? 1)
-  if (z > 1) {
+  if (z > 1 || q.has('oy') || q.has('ox')) {
     canvas.style.transformOrigin = '0 0'
     canvas.style.transform = `scale(${z}) translate(${-Number(q.get('ox') ?? 0)}px, ${-Number(q.get('oy') ?? 0)}px)`
   }
