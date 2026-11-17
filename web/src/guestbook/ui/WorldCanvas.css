@@ -20,3 +20,47 @@
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* ── stage 모드: 컨테이너(전체 화면)를 정확히 채운다. 페이지 스크롤 없음 ── */
+.world-canvas-wrap--stage {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.world-canvas-wrap--stage .world-canvas {
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+  /* 정수 배율로 그리므로 남는 소수 픽셀도 번지지 않게 */
+  image-rendering: pixelated;
+}
+
+/* 화면에 다 세우지 못한 하객 수 */
+.world-canvas-more {
+  position: absolute;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 30px;
+  padding: 0 9px;
+  border: 2px solid #3b332b;
+  border-radius: 0;
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  line-height: 1;
+  box-shadow: 0 2px 0 rgba(59, 51, 43, 0.3);
+}
+button.world-canvas-more {
+  cursor: pointer;
+}
+/* 터치 영역은 44px 이상으로 넓힌다 */
+button.world-canvas-more::after {
+  content: '';
+  position: absolute;
+  inset: -8px -4px;
+}

@@ -10,7 +10,6 @@ import {
   IDLE_MAX,
   IDLE_MIN,
   SEPARATION_FORCE,
-  SEPARATION_RADIUS,
   SPAWN_FALL_TIME,
   SPEED_MAX,
   SPEED_MIN,
@@ -193,7 +192,8 @@ export class Simulation {
     const list = [...this.agents.values()]
 
     // 공간 해시(이웃 분리용) — 살아있는/등장 중 에이전트만
-    const cell = SEPARATION_RADIUS
+    const sepR = this.layout.separation
+    const cell = sepR
     const grid = new Map<number, Agent[]>()
     const key = (cx: number, cy: number) => (cx + 4096) * 100000 + (cy + 4096)
     for (const a of list) {
@@ -270,9 +270,9 @@ export class Simulation {
             const dx = a.x - b.x
             const dy = a.y - b.y
             const d2 = dx * dx + dy * dy
-            if (d2 > 0 && d2 < SEPARATION_RADIUS * SEPARATION_RADIUS) {
+            if (d2 > 0 && d2 < sepR * sepR) {
               const d = Math.sqrt(d2)
-              const f = (1 - d / SEPARATION_RADIUS) / d
+              const f = (1 - d / sepR) / d
               sx += dx * f
               sy += dy * f
             }

@@ -9,6 +9,8 @@ export type Route =
   | { name: 'new' }
   | { name: 'wedding'; slug: string }
   | { name: 'edit'; slug: string }
+  /** 같은 청첩장의 두 번째 모습: 한 화면짜리 "픽셀 청첩장" */
+  | { name: 'pixel'; slug: string }
   | { name: 'notfound' }
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') // "" 또는 "/wedding-card"
@@ -23,8 +25,12 @@ export function matchRoute(path: string): Route {
   const p = path.replace(/\/+$/, '') || '/'
   if (p === '/') return { name: 'landing' }
   if (p === '/new') return { name: 'new' }
-  const m = /^\/w\/([a-z0-9-]+)(\/edit)?$/.exec(p)
-  if (m) return m[2] ? { name: 'edit', slug: m[1] } : { name: 'wedding', slug: m[1] }
+  const m = /^\/w\/([a-z0-9-]+)(?:\/(edit|pixel))?$/.exec(p)
+  if (m) {
+    if (m[2] === 'edit') return { name: 'edit', slug: m[1] }
+    if (m[2] === 'pixel') return { name: 'pixel', slug: m[1] }
+    return { name: 'wedding', slug: m[1] }
+  }
   return { name: 'notfound' }
 }
 

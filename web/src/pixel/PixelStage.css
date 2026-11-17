@@ -1,0 +1,358 @@
+/* 픽셀 청첩장: 스크롤 없는 한 화면. 데스크톱에서는 휴대폰 폭의 무대를 중립 배경 가운데에 띄운다. */
+html.px-locked,
+html.px-locked body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.px-page {
+  --px-ink: #3b332b;
+  --px-b: 3px; /* 도트 테두리 한 칸 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.px-stage {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  overflow: hidden;
+  background: #ece0c9;
+  box-shadow: 0 0 60px rgba(59, 51, 43, 0.18);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.px-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* 인사말 열기(키보드·스크린리더용): 평소에는 숨기고 포커스되면 상단 바 아래에 나타난다 */
+.px-greet {
+  position: absolute;
+  z-index: 3;
+  top: calc(env(safe-area-inset-top, 0px) + 72px);
+  left: 50%;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transform: translateX(-50%);
+}
+.px-greet:not(:focus-visible) {
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.px-icon {
+  display: block;
+  flex: none;
+}
+
+/* 도트 패널 테두리: 상하좌우로 한 칸씩 밀어낸 그림자 → 모서리가 한 칸 파인 모양 */
+.px-top,
+.px-dock {
+  position: absolute;
+  z-index: 5;
+  background: var(--card);
+  box-shadow:
+    0 calc(var(--px-b) * -1) 0 0 var(--px-ink),
+    0 var(--px-b) 0 0 var(--px-ink),
+    calc(var(--px-b) * -1) 0 0 0 var(--px-ink),
+    var(--px-b) 0 0 0 var(--px-ink),
+    0 calc(var(--px-b) * 2.5) 0 0 rgba(59, 51, 43, 0.22);
+}
+
+/* ── 위: 이름 · 날짜 + 작은 보조 버튼 ───────────────────────── */
+.px-top {
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  left: max(10px, env(safe-area-inset-left, 0px));
+  right: max(10px, env(safe-area-inset-right, 0px));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 52px;
+  padding: 2px 4px 2px 12px;
+}
+.px-top__title {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-pixel);
+  line-height: 1.25;
+}
+.px-top__names {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.px-top__names > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.px-top__heart {
+  flex: none;
+  color: var(--accent);
+  font-size: 12px;
+}
+.px-top__date {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.px-top__actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+}
+.px-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 44px;
+  min-height: 48px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.px-chip + .px-chip {
+  border-left: 2px dotted var(--line);
+}
+.px-chip:active {
+  color: var(--accent);
+  transform: translateY(1px);
+}
+@media (hover: hover) {
+  .px-chip:hover {
+    color: var(--accent);
+  }
+}
+
+/* ── 아래: 메뉴 도크 ─────────────────────────────────────── */
+.px-dock {
+  left: max(10px, env(safe-area-inset-left, 0px));
+  right: max(10px, env(safe-area-inset-right, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: stretch;
+  padding: 3px;
+  gap: 3px;
+}
+.px-dock__btn {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  padding: 8px 2px 6px;
+  border: 0;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  cursor: pointer;
+  box-shadow:
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.75),
+    inset 0 -3px 0 0 rgba(59, 51, 43, 0.12);
+  -webkit-tap-highlight-color: transparent;
+}
+.px-dock__btn:active {
+  background: var(--accent-soft);
+  box-shadow: inset 0 3px 0 0 rgba(59, 51, 43, 0.14);
+  transform: translateY(1px);
+}
+@media (hover: hover) {
+  .px-dock__btn:hover {
+    background: #f7efe2;
+  }
+  .px-dock__btn:hover .px-dock__label {
+    color: var(--accent);
+  }
+}
+.px-dock__icon {
+  position: relative;
+  display: block;
+  flex: none;
+}
+.px-dock__badge {
+  position: absolute;
+  top: -5px;
+  left: calc(100% - 8px);
+  min-width: 18px;
+  height: 16px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  line-height: 1;
+  box-shadow: 0 0 0 2px var(--px-ink);
+}
+.px-dock__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  column-gap: 0.3em;
+  min-height: 2.4em;
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+}
+/* 줄바꿈은 정해 둔 자리('마음 / 전하실 곳')에서만 */
+.px-dock__label > span {
+  white-space: nowrap;
+}
+
+/* ── 방명록 선택 창(바텀시트 본문) ─────────────────────────── */
+.px-book {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px var(--gutter) 24px;
+}
+.px-book__count {
+  margin-bottom: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+.px-book__btn {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.px-book__btn--primary {
+  min-height: 54px;
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.02rem;
+  font-weight: 700;
+  box-shadow: 0 4px 0 rgba(140, 73, 53, 0.45);
+}
+.px-book__btn--primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(140, 73, 53, 0.45);
+}
+.px-book__note {
+  margin-top: 4px;
+  text-align: center;
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+}
+.px-book__link {
+  display: inline-block;
+  padding: 8px 4px;
+  color: var(--accent);
+}
+
+/* 아주 좁은 화면(≤ 340px): 글자를 조금 줄여 5칸을 유지한다 */
+@media (max-width: 340px) {
+  .px-top__names {
+    font-size: 13px;
+  }
+  .px-chip {
+    padding: 0 5px;
+  }
+  .px-dock__btn {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* 낮은 화면(가로 모드 등): HUD 를 납작하게 해서 장면을 살린다 */
+@media (max-height: 460px) {
+  .px-stage {
+    max-width: 580px;
+  }
+  .px-dock__badge {
+    top: -7px;
+    left: auto;
+    right: calc(100% - 9px);
+  }
+  .px-top {
+    min-height: 44px;
+  }
+  .px-chip {
+    min-height: 44px;
+  }
+  .px-dock__btn {
+    flex-direction: row;
+    justify-content: center;
+    min-height: 46px;
+    padding: 4px;
+  }
+  .px-dock__icon .px-icon {
+    width: 24px;
+    height: 24px;
+  }
+  .px-dock__label {
+    min-height: 0;
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .px-chip:active,
+  .px-dock__btn:active,
+  .px-book__btn--primary:active {
+    transform: none;
+  }
+}

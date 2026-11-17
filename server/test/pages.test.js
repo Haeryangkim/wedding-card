@@ -82,6 +82,25 @@ test('/w/:slug → index.html 에 그 청첩장의 title/OG 태그를 넣어 돌
       assert.equal(metaContent(h, 'og:title'), '김신랑 ♥ 박신부 결혼합니다', path)
       assert.equal(metaContent(h, 'og:url'), `${srv.base}/w/kim-park`, path)
     }
+    // /pixel: 같은 청첩장의 픽셀 청첩장 — 자기 주소와 구분되는 제목·설명
+    for (const path of ['/w/kim-park/pixel', '/w/kim-park/pixel/', '/w/kim-park/pixel?from=kakao']) {
+      const r = await fetch(`${srv.base}${path}`)
+      assert.equal(r.status, 200, path)
+      const h = await r.text()
+      assert.ok(h.includes('<title>김신랑 ♥ 박신부 결혼합니다 · 픽셀 청첩장</title>'), path)
+      assert.equal(metaContent(h, 'og:title'), '김신랑 ♥ 박신부 결혼합니다 · 픽셀 청첩장', path)
+      assert.equal(
+        metaContent(h, 'og:description'),
+        '캐릭터가 되어 축하를 남겨 주세요 · 2027년 5월 15일 토요일 오후 12시 30분 · 예시웨딩홀',
+        path,
+      )
+      assert.equal(metaContent(h, 'og:url'), `${srv.base}/w/kim-park/pixel`, path)
+      assert.equal(metaContent(h, 'og:image'), `${srv.base}/og.png`, path)
+      assert.equal(metaContent(h, 'robots'), 'noindex, nofollow', path)
+      assert.equal(count(h, /<title\b/g), 1, path)
+      assert.equal(count(h, /property="og:title"/g), 1, path)
+      assert.ok(h.includes('<div id="root"></div>'), path)
+    }
     const head = await fetch(`${srv.base}/w/kim-park`, { method: 'HEAD' })
     assert.equal(head.status, 200)
     assert.equal((await fetch(`${srv.base}/w/kim-park`, { method: 'POST' })).status, 405)
@@ -164,7 +183,7 @@ test('/w/:slug: 절대 URL 의 오리진 — PUBLIC_ORIGIN 우선, 없으면 (�
 test('/w/:slug: 없는 청첩장은 SPA 셸(범용 태그) + 404, 데모는 200', () =>
   withServer(async (srv) => {
     await createWedding(srv.base, 'kim-park')
-    for (const path of ['/w/nobody-here', '/w/nobody-here/edit', '/w/Bad_Slug!', '/w/kim-park/unknown', '/w/', '/w', '/w/%zz']) {
+    for (const path of ['/w/nobody-here', '/w/nobody-here/edit', '/w/nobody-here/pixel', '/w/Bad_Slug!', '/w/kim-park/unknown', '/w/kim-park/pixel/extra', '/w/', '/w', '/w/%zz']) {
       const res = await fetch(`${srv.base}${path}`)
       assert.equal(res.status, 404, path)
       assert.match(res.headers.get('content-type') ?? '', /^text\/html/, path)
@@ -174,7 +193,7 @@ test('/w/:slug: 없는 청첩장은 SPA 셸(범용 태그) + 404, 데모는 200'
       assert.equal(count(html, /<title\b/g), 1, path)
       assert.ok(!html.includes('김신랑'), path)
     }
-    for (const path of ['/w/demo', '/w/demo/edit']) {
+    for (const path of ['/w/demo', '/w/demo/edit', '/w/demo/pixel']) {
       const res = await fetch(`${srv.base}${path}`)
       assert.equal(res.status, 200, path)
       assert.equal(await res.text(), INDEX_HTML, path)

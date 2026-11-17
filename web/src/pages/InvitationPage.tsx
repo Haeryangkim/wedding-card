@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from 'react'
 import { Reveal } from '../components/Reveal'
 import { Cover } from '../sections/Cover'
 import { Greeting } from '../sections/Greeting'
@@ -8,77 +7,13 @@ import { Location } from '../sections/Location'
 import { Accounts } from '../sections/Accounts'
 import { Guestbook } from '../sections/Guestbook'
 import { ShareFooter } from '../sections/ShareFooter'
-import { DEMO_SLUG } from '../platform/contract'
-import { getApi } from '../platform/api'
-import { demoWedding } from '../platform/demo'
 import { Link } from '../platform/router'
 import { WeddingProvider, type WeddingInstance } from '../platform/WeddingContext'
+import { CharacterPreview } from '../guestbook/ui/CharacterPreview'
 import { shareText } from '../lib/share'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
-import { StatusPage } from './NotFound'
+import { WeddingGate } from './WeddingGate'
 import './InvitationPage.css'
-
-type LoadState =
-  | { status: 'loading' }
-  | { status: 'ready'; wedding: WeddingInstance }
-  | { status: 'missing' }
-  | { status: 'noserver' }
-  | { status: 'error'; message: string }
-
-function initialState(slug: string): LoadState {
-  if (slug === DEMO_SLUG) return { status: 'ready', wedding: demoWedding }
-  if (!getApi().available) return { status: 'noserver' }
-  return { status: 'loading' }
-}
-
-/** slug 로 청첩장을 불러온다. 데모는 번들된 설정을 즉시 사용 */
-function useWeddingLoader(slug: string): [LoadState, () => void] {
-  const [state, setState] = useState<LoadState>(() => initialState(slug))
-  const [attempt, setAttempt] = useState(0)
-
-  useEffect(() => {
-    const init = initialState(slug)
-    setState(init)
-    if (init.status !== 'loading') return
-    let active = true
-    getApi()
-      .getWedding(slug)
-      .then((record) => {
-        if (!active) return
-        setState(
-          record
-            ? { status: 'ready', wedding: { slug: record.slug, config: record.config, isDemo: false } }
-            : { status: 'missing' },
-        )
-      })
-      .catch((err: unknown) => {
-        if (!active) return
-        setState({
-          status: 'error',
-          message: err instanceof Error ? err.message : '청첩장을 불러오지 못했어요.',
-        })
-      })
-    return () => {
-      active = false
-    }
-  }, [slug, attempt])
-
-  const retry = useCallback(() => setAttempt((n) => n + 1), [])
-  return [state, retry]
-}
-
-function Skeleton() {
-  return (
-    <main className="page inv-skel" aria-busy="true" aria-label="청첩장을 불러오는 중">
-      <div className="inv-skel__arch" />
-      <div className="inv-skel__line inv-skel__line--sm" />
-      <div className="inv-skel__line inv-skel__line--lg" />
-      <div className="inv-skel__line inv-skel__line--md" />
-      <div className="inv-skel__line inv-skel__line--sm" />
-      <p className="inv-skel__text">청첩장을 불러오는 중…</p>
-    </main>
-  )
-}
 
 function DemoRibbon() {
   return (
@@ -88,6 +23,38 @@ function DemoRibbon() {
       </Link>
       <Link className="demo-ribbon__cta" to="/new">
         나도 만들기
+      </Link>
+    </aside>
+  )
+}
+
+// 미리보기에 세우는 하객 두 명의 고정 외형
+const GUEST_A = { skin: 1, hairStyle: 3, hairColor: 1, outfit: 4, outfitColor: 7, accessory: 0 }
+const GUEST_B = { skin: 0, hairStyle: 6, hairColor: 2, outfit: 1, outfitColor: 3, accessory: 0 }
+
+/** 맨 아래: 같은 청첩장을 한 화면짜리 "픽셀 청첩장"으로 보는 전환 버튼 (작은 식장 미리보기 포함) */
+function PixelModeCta({ slug }: { slug: string }) {
+  return (
+    <aside className="pixel-cta" aria-label="픽셀 청첩장으로 보기">
+      <Link className="pixel-cta__card" to={`/w/${slug}/pixel`}>
+        <span className="pixel-cta__scene" aria-hidden="true">
+          <span className="pixel-cta__arch" />
+          <span className="pixel-cta__floor" />
+          <span className="pixel-cta__couple">
+            <CharacterPreview kind="groom" scale={2} />
+            <CharacterPreview kind="bride" scale={2} />
+          </span>
+          <CharacterPreview className="pixel-cta__guest pixel-cta__guest--l" kind={GUEST_A} scale={2} dir="right" animate />
+          <CharacterPreview className="pixel-cta__guest pixel-cta__guest--r" kind={GUEST_B} scale={2} dir="left" animate />
+        </span>
+        <span className="pixel-cta__text">
+          <span className="pixel-cta__eyebrow">PIXEL MODE</span>
+          <span className="pixel-cta__title">픽셀 청첩장으로 보기</span>
+          <span className="pixel-cta__desc">예식장을 거니는 캐릭터들과 함께, 한 화면에서 눌러 보는 청첩장</span>
+        </span>
+        <span className="pixel-cta__go" aria-hidden="true">
+          ▶
+        </span>
       </Link>
     </aside>
   )
@@ -123,60 +90,17 @@ function Invitation({ wedding }: { wedding: WeddingInstance }) {
         <Reveal>
           <ShareFooter />
         </Reveal>
+        <PixelModeCta slug={wedding.slug} />
       </main>
     </WeddingProvider>
   )
 }
 
-function Titled({ title, children }: { title: string; children: React.ReactNode }) {
-  useDocumentTitle(title)
-  return <>{children}</>
-}
-
 export default function InvitationPage({ slug }: { slug: string }) {
-  const [state, retry] = useWeddingLoader(slug)
-
-  switch (state.status) {
-    case 'ready':
-      // key: 다른 청첩장으로 이동하면 섹션 상태(열린 시트 등)를 새로 시작
-      return <Invitation key={state.wedding.slug} wedding={state.wedding} />
-    case 'loading':
-      return (
-        <Titled title="청첩장">
-          <Skeleton />
-        </Titled>
-      )
-    case 'missing':
-      return (
-        <Titled title="청첩장을 찾을 수 없습니다">
-          <StatusPage
-            title="청첩장을 찾을 수 없습니다"
-            message="주소가 정확한지 확인해 주세요. 청첩장이 삭제되었거나 주소가 바뀌었을 수 있어요."
-          />
-        </Titled>
-      )
-    case 'noserver':
-      return (
-        <Titled title="데모 배포 안내">
-          <StatusPage
-            title="이곳에서는 데모 청첩장만 볼 수 있어요"
-            message="이 배포는 서버 없이 동작하는 데모라서, 직접 만든 청첩장은 열 수 없습니다. 받은 링크의 주소를 다시 확인해 주세요."
-          >
-            <Link className="btn btn--primary btn--block" to="/w/demo">
-              데모 청첩장 보기
-            </Link>
-          </StatusPage>
-        </Titled>
-      )
-    case 'error':
-      return (
-        <Titled title="청첩장을 불러오지 못했습니다">
-          <StatusPage title="청첩장을 불러오지 못했습니다" message={state.message}>
-            <button type="button" className="btn btn--primary btn--block" onClick={retry}>
-              다시 시도
-            </button>
-          </StatusPage>
-        </Titled>
-      )
-  }
+  return (
+    <WeddingGate slug={slug}>
+      {/* key: 다른 청첩장으로 이동하면 섹션 상태(열린 시트 등)를 새로 시작 */}
+      {(wedding) => <Invitation key={wedding.slug} wedding={wedding} />}
+    </WeddingGate>
+  )
 }

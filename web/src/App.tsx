@@ -12,6 +12,8 @@ import NotFound, { StatusPage } from './pages/NotFound'
 // 새 버전 배포로 예전 청크가 사라졌을 때를 대비해 재시도 → 새로고침 순으로 복구한다.
 const CreatePage = lazy(lazyRetry(() => import('./pages/CreatePage')))
 const EditPage = lazy(lazyRetry(() => import('./pages/EditPage')))
+// 픽셀 청첩장(/w/<slug>/pixel)도 그 주소로 들어온 사람만 받는다
+const PixelInvitationPage = lazy(lazyRetry(() => import('./pages/PixelInvitationPage')))
 
 /** 화면을 그리다 오류가 났을 때 빈 화면 대신 보여 주는 안내 */
 function CrashScreen() {
@@ -45,6 +47,8 @@ function Screen({ route }: { route: Route }) {
       return <EditPage key={route.slug} slug={route.slug} />
     case 'wedding':
       return <InvitationPage slug={route.slug} />
+    case 'pixel':
+      return <PixelInvitationPage slug={route.slug} />
     case 'notfound':
       return <NotFound />
   }

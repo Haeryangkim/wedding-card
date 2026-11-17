@@ -1,113 +1,32 @@
-import { useEffect, useRef, useState } from 'react'
-import type { GuestbookStore, GuestEntry, NewGuestInput } from './types'
-import { getStore } from './store'
+import { useEffect, useState } from 'react'
+import type { GuestEntry, NewGuestInput } from './types'
+import { useGuestbook } from './useGuestbook'
 import { useWedding } from '../platform/WeddingContext'
 import { WorldCanvas } from './ui/WorldCanvas'
 import { BottomSheet } from './ui/BottomSheet'
 import { JoinFlow } from './ui/JoinFlow'
 import { GuestList } from './ui/GuestList'
 import { GuestCard } from './ui/GuestCard'
-import { loadMyIds, saveMyIds, storageScope } from './ui/storage'
 import './PixelGuestbook.css'
 
 type SheetKind = 'none' | 'join' | 'list'
 
-function upsertEntry(list: GuestEntry[], entry: GuestEntry): GuestEntry[] {
-  const idx = list.findIndex((e) => e.id === entry.id)
-  const next = idx >= 0 ? list.map((e) => (e.id === entry.id ? entry : e)) : [...list, entry]
-  return next.sort((a, b) => a.createdAt - b.createdAt)
-}
-
 export function PixelGuestbook() {
   const { slug, isDemo, config } = useWedding()
-  const storeRef = useRef<GuestbookStore | null>(null)
-  const [mode, setMode] = useState<'local' | 'api'>('local')
-  const [entries, setEntries] = useState<GuestEntry[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { mode, entries, loading, error, myIds, scope, reload, add, remove } = useGuestbook(slug, isDemo)
   const [focusId, setFocusId] = useState<string | null>(null)
   // 같은 하객을 다시 "위치 보기" 해도 동작하도록, 포커스는 (id, 요청 번호) 쌍으로 전달한다.
   const [focusSeq, setFocusSeq] = useState(0)
-  // list() 요청 순번: 더 최신 데이터(구독/재요청)가 반영된 뒤 도착한 늦은 응답은 버린다.
-  const loadSeqRef = useRef(0)
-  const mountedRef = useRef(false)
   const [selected, setSelected] = useState<GuestEntry | null>(null)
   const [sheet, setSheet] = useState<SheetKind>('none')
-  // 내 캐릭터 목록·임시 저장은 청첩장별로 따로 둔다
-  const scope = storageScope(slug, isDemo)
-  const [myIds, setMyIds] = useState<Set<string>>(() => loadMyIds(scope))
-
-  useEffect(() => {
-    const store = getStore(slug, isDemo)
-    storeRef.current = store
-    setMode(store.mode)
-    let active = true
-    mountedRef.current = true
-    const seq = ++loadSeqRef.current
-    store
-      .list()
-      .then((list) => {
-        if (!active || seq !== loadSeqRef.current) return
-        setEntries(list)
-        setLoading(false)
-      })
-      .catch((err: unknown) => {
-        if (!active || seq !== loadSeqRef.current) return
-        setError(err instanceof Error ? err.message : '방명록을 불러오지 못했어요.')
-        setLoading(false)
-      })
-    const unsub = store.subscribe((list) => {
-      if (!active) return
-      // 구독이 데이터를 전달했다면 최초 로드 실패/로딩 상태는 더 이상 유효하지 않다.
-      loadSeqRef.current++
-      setEntries(list)
-      setError(null)
-      setLoading(false)
-    })
-    return () => {
-      active = false
-      mountedRef.current = false
-      unsub()
-    }
-  }, [slug, isDemo])
 
   // 선택한 캐릭터가 (다른 탭 등에서) 사라지면 카드 닫기
   useEffect(() => {
     if (selected && !entries.some((e) => e.id === selected.id)) setSelected(null)
   }, [entries, selected])
 
-  const reload = () => {
-    const store = storeRef.current
-    if (!store) return
-    setLoading(true)
-    setError(null)
-    const seq = ++loadSeqRef.current
-    const stale = () => !mountedRef.current || seq !== loadSeqRef.current
-    store
-      .list()
-      .then((list) => {
-        if (stale()) return
-        setEntries(list)
-        setLoading(false)
-      })
-      .catch((err: unknown) => {
-        if (stale()) return
-        setError(err instanceof Error ? err.message : '방명록을 불러오지 못했어요.')
-        setLoading(false)
-      })
-  }
-
   const handleAdd = async (input: NewGuestInput) => {
-    const store = storeRef.current
-    if (!store) throw new Error('잠시 후 다시 시도해 주세요.')
-    const entry = await store.add(input)
-    setEntries((prev) => upsertEntry(prev, entry))
-    setMyIds((prev) => {
-      const next = new Set(prev)
-      next.add(entry.id)
-      saveMyIds(scope, next)
-      return next
-    })
+    const entry = await add(input)
     setSheet('none')
     setSelected(null)
     setFocusId(entry.id)
@@ -115,17 +34,7 @@ export function PixelGuestbook() {
   }
 
   const handleDelete = async (id: string, password: string) => {
-    const store = storeRef.current
-    if (!store) throw new Error('잠시 후 다시 시도해 주세요.')
-    await store.remove(id, password)
-    setEntries((prev) => prev.filter((e) => e.id !== id))
-    setMyIds((prev) => {
-      if (!prev.has(id)) return prev
-      const next = new Set(prev)
-      next.delete(id)
-      saveMyIds(scope, next)
-      return next
-    })
+    await remove(id, password)
     if (selected?.id === id) setSelected(null)
     if (focusId === id) setFocusId(null)
   }

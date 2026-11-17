@@ -1,6 +1,6 @@
 /**
  * 링크 미리보기(카카오톡 등)용 서버 렌더링.
- * 스크레이퍼는 JS 를 실행하지 않으므로 /w/:slug 요청에 프론트 index.html 을 가져와
+ * 스크레이퍼는 JS 를 실행하지 않으므로 /w/:slug (· /edit · /pixel) 요청에 프론트 index.html 을 가져와
  * 그 청첩장의 <title> · description · og:* · twitter:* 태그를 넣어 돌려준다.
  *
  * 템플릿(index.html) 출처: INDEX_HTML_PATH(파일) 또는 INDEX_HTML_URL(기본 http://web/index.html).
@@ -95,17 +95,25 @@ export function formatKoreanDate(iso) {
  * 청첩장 → 미리보기 메타 정보.
  * @param {import('./db.js').WeddingRecord} wedding
  * @param {string} origin 끝에 슬래시 없는 오리진 ('' 이면 상대 경로로 남는다)
+ * @param {'classic' | 'pixel'} [view] 'pixel' = 같은 청첩장의 "픽셀 청첩장" 모습(/w/<slug>/pixel).
+ *   링크를 받은 사람이 어느 쪽인지 알 수 있게 제목·설명에 표시를 덧붙이고 og:url 도 그 주소로 둔다
+ *   (프론트 lib/share.ts 의 pixelShareText 와 같은 규칙).
  */
-export function weddingMeta(wedding, origin) {
+export function weddingMeta(wedding, origin, view = 'classic') {
   const c = wedding.config
-  const title = c.share?.title || `${c.groom.name} ♥ ${c.bride.name} 결혼합니다`
-  const description =
+  const pixel = view === 'pixel'
+  const baseTitle = c.share?.title || `${c.groom.name} ♥ ${c.bride.name} 결혼합니다`
+  const baseDescription =
     c.share?.description || [formatKoreanDate(c.datetime), c.venue?.name].filter(Boolean).join(' · ')
+  const title = pixel ? `${baseTitle} · 픽셀 청첩장` : baseTitle
+  const description = pixel
+    ? ['캐릭터가 되어 축하를 남겨 주세요', baseDescription].filter(Boolean).join(' · ')
+    : baseDescription
   const cover = typeof c.coverImage === 'string' && c.coverImage.startsWith('/uploads/') ? c.coverImage : null
   return {
     title,
     description,
-    url: `${origin}/w/${wedding.slug}`,
+    url: `${origin}/w/${wedding.slug}${pixel ? '/pixel' : ''}`,
     image: `${origin}${cover ?? '/og.png'}`,
     /** 기본 이미지(og.png)일 때만 크기를 안다 */
     imageSize: cover ? null : { width: 800, height: 400 },

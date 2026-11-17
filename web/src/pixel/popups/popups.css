@@ -1,0 +1,447 @@
+/* 팝업별 본문 스타일 (프레임·버튼은 PixelPopup.css) */
+
+/* ── 인사말 ─────────────────────────────── */
+.pxg__body {
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--ink);
+  word-break: keep-all;
+}
+.pxg__gap {
+  display: block;
+  height: 0.9em;
+}
+.pxg__people {
+  display: grid;
+  gap: 12px;
+}
+.pxg__person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+}
+.pxg__person-text {
+  flex: 1;
+  min-width: 0;
+}
+.pxg__parents {
+  font-size: 15px;
+  color: var(--ink);
+  word-break: keep-all;
+}
+.pxg__of {
+  color: var(--ink-soft);
+}
+.pxg__child {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 17px;
+}
+.pxg__contact {
+  flex: none;
+  display: flex;
+  gap: 6px;
+}
+.pxg__when {
+  margin-top: 16px;
+  padding: 10px 12px;
+  background: var(--paper-2);
+  text-align: center;
+  font-size: 15px;
+  color: var(--ink);
+  word-break: keep-all;
+}
+.pxg__when p + p {
+  color: var(--ink-soft);
+}
+
+/* ── 예식 일시 ─────────────────────────────── */
+.pxs__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pxs__date {
+  flex: 1;
+  min-width: 0;
+}
+.pxs__ymd {
+  font-family: var(--font-pixel);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.pxs__time {
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.pxs__dday {
+  flex: none;
+  padding: 8px 10px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow:
+    0 -2px 0 0 var(--px-ink),
+    0 2px 0 0 var(--px-ink),
+    -2px 0 0 0 var(--px-ink),
+    2px 0 0 0 var(--px-ink);
+  margin: 2px;
+}
+.pxs__dday.is-done {
+  background: var(--leaf);
+}
+.pxs__left {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+.pxs__left strong {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.pxs__cal {
+  margin-top: 14px;
+  padding: 10px 8px 8px;
+  background: var(--paper);
+  border: 2px solid var(--line);
+}
+.pxs__month {
+  margin-bottom: 6px;
+  text-align: center;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.pxs__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+.pxs__wd {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  line-height: 22px;
+}
+.pxs__cell {
+  display: grid;
+  place-items: center;
+  height: 30px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.pxs__wd.is-sun,
+.pxs__cell.is-sun {
+  color: var(--danger);
+}
+.pxs__wd.is-sat,
+.pxs__cell.is-sat {
+  color: #4a6a9c;
+}
+.pxs__cell.is-target {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  box-shadow:
+    0 -2px 0 0 var(--px-ink),
+    0 2px 0 0 var(--px-ink),
+    -2px 0 0 0 var(--px-ink),
+    2px 0 0 0 var(--px-ink);
+}
+.pxs__actions {
+  display: grid;
+  gap: 8px;
+}
+
+/* ── 오시는 길 ─────────────────────────────── */
+.pxl__venue {
+  margin-bottom: 12px;
+}
+.pxl__name {
+  font-family: var(--font-pixel);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  word-break: keep-all;
+}
+.pxl__hall {
+  margin-top: 2px;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+.pxl__addr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 12px;
+  background: var(--paper-2);
+}
+.pxl__addr-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  word-break: keep-all;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.pxl__addr .px-btn {
+  flex: none;
+}
+.pxl__navs-label {
+  margin: 14px 0 6px;
+}
+.pxl__navs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.pxl__navs--2 {
+  grid-template-columns: 1fr;
+  margin-top: 14px;
+}
+.pxl__nav {
+  min-height: 48px;
+  padding: 4px 4px;
+  font-size: 14px;
+  word-break: keep-all;
+}
+.pxl__nav--kakaonavi,
+.pxl__nav--kakaomap {
+  background: #fee500;
+  color: #3a2d00;
+}
+.pxl__nav--navermap {
+  background: #03c75a;
+  color: #fff;
+}
+.pxl__nav--tmap {
+  background: #1b4fd9;
+  color: #fff;
+}
+.pxl__hint {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.pxl__hint a {
+  color: var(--accent);
+  font-weight: 600;
+}
+.pxl__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.pxl__links .px-btn {
+  flex: 1 1 auto;
+}
+.pxl__transport {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+.pxl__transport-row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+.pxl__transport-row dt {
+  word-break: keep-all;
+}
+.pxl__transport-row dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+/* ── 마음 전하실 곳 ─────────────────────────────── */
+.pxa__intro {
+  margin-bottom: 14px;
+  font-size: 15px;
+  color: var(--ink-soft);
+  word-break: keep-all;
+}
+.pxa__tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 3px solid var(--px-ink);
+}
+.pxa__tab {
+  min-height: 46px;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--font-pixel);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pxa__tab.is-on {
+  background: var(--px-ink);
+  color: #fff;
+}
+.pxa__only {
+  padding-bottom: 6px;
+  border-bottom: 3px solid var(--px-ink);
+}
+.pxa__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pxa__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 2px dashed var(--line);
+}
+.pxa__row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.pxa__info {
+  flex: 1;
+  min-width: 0;
+}
+.pxa__who {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.pxa__bank {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.pxa__num {
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.pxa__actions {
+  flex: none;
+  display: grid;
+  gap: 8px;
+}
+.pxa__pay {
+  background: #fee500;
+  color: #3a2d00;
+}
+
+/* ── 갤러리 ─────────────────────────────── */
+.pxgal {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pxgal__item {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 2px solid var(--px-ink);
+  background: var(--paper-2);
+  cursor: pointer;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.pxgal__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pxv {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  background: #1f1a16;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pxv__img {
+  width: 100%;
+  height: auto;
+  max-height: calc(80vh - 60px);
+  max-height: calc(min(80dvh, 720px) - 54px);
+  min-height: 0;
+  object-fit: contain;
+}
+.pxv__nav {
+  position: absolute;
+  top: 50%;
+  width: 44px;
+  height: 56px;
+  margin-top: -28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: rgba(31, 26, 22, 0.6);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pxv__nav:focus-visible {
+  outline-color: #fff !important;
+  outline-offset: -4px !important;
+}
+.pxv__nav--prev {
+  left: 0;
+}
+.pxv__nav--next {
+  right: 0;
+}
+
+@media (max-height: 700px) {
+  .pxs__cell {
+    height: 27px;
+  }
+  .pxv__img {
+    max-height: calc(100dvh - 90px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* 아주 좁은 화면(320px): 날짜와 D-day 배지가 붙지 않도록 */
+@media (max-width: 350px) {
+  .pxs__ymd {
+    font-size: 22px;
+  }
+  .pxs__dday {
+    font-size: 15px;
+    padding: 6px 8px;
+  }
+}

@@ -77,9 +77,15 @@ function demoIcs(): Plugin {
   }
 }
 
-/** index.html 의 서비스 소개 메타 태그를 데모 청첩장의 것으로 바꾼다 (순수 문자열 치환) */
-function demoHtml(html: string): string {
-  const { title, description } = wedding.share
+/**
+ * index.html 의 서비스 소개 메타 태그를 데모 청첩장의 것으로 바꾼다 (순수 문자열 치환).
+ * pixel = 같은 데모의 "픽셀 청첩장" 모습(/w/demo/pixel) — 서버(pages.js)·프론트(lib/share.ts)와 같은 문구 규칙.
+ */
+function demoHtml(html: string, pixel = false): string {
+  const title = pixel ? `${wedding.share.title} · 픽셀 청첩장` : wedding.share.title
+  const description = pixel
+    ? `캐릭터가 되어 축하를 남겨 주세요 · ${wedding.share.description}`
+    : wedding.share.description
   const content = (attr: string, key: string, value: string) => (s: string) =>
     s.replace(new RegExp(`(<meta ${attr}="${key}" content=")[^"]*(")`), (_m, a: string, b: string) => `${a}${esc(value)}${b}`)
   const steps = [
@@ -87,7 +93,7 @@ function demoHtml(html: string): string {
     content('name', 'description', description),
     content('property', 'og:title', title),
     content('property', 'og:description', description),
-    ...(siteUrl ? [content('property', 'og:url', `${siteUrl}w/demo`)] : []),
+    ...(siteUrl ? [content('property', 'og:url', `${siteUrl}w/demo${pixel ? '/pixel' : ''}`)] : []),
   ]
   return steps.reduce((s, step) => step(s), html)
 }
@@ -97,7 +103,7 @@ function demoHtml(html: string): string {
  * index.html 과 똑같은 404.html 을 함께 내보내 라우터가 주소를 해석하게 한다.
  *
  * 다만 404.html 은 HTTP 404 로 응답되어 링크 미리보기(카카오톡 등)와 검색엔진이 무시한다.
- * 서버 없이 공유되는 유일한 청첩장인 데모(/w/demo)만큼은 실제 파일(w/demo/index.html)로 내보내
+ * 서버 없이 공유되는 유일한 청첩장인 데모(/w/demo, /w/demo/pixel)만큼은 실제 파일(w/demo/index.html 등)로 내보내
  * 200 으로 응답되게 하고, 미리보기 태그도 데모 청첩장의 것으로 바꾼다.
  * (도커 배포에서는 nginx 가 /w/ 를 api 로 넘기므로 이 파일은 쓰이지 않는다)
  */
@@ -115,7 +121,12 @@ function spaFallback(): Plugin {
       copyFileSync(index, resolve(outDir, '404.html'))
       const demoDir = resolve(outDir, 'w/demo')
       mkdirSync(demoDir, { recursive: true })
-      writeFileSync(resolve(demoDir, 'index.html'), demoHtml(readFileSync(index, 'utf8')))
+      const shell = readFileSync(index, 'utf8')
+      writeFileSync(resolve(demoDir, 'index.html'), demoHtml(shell))
+      // 픽셀 청첩장 데모(/w/demo/pixel)도 공유되는 주소이므로 같은 방식으로 실제 파일을 둔다
+      const pixelDir = resolve(demoDir, 'pixel')
+      mkdirSync(pixelDir, { recursive: true })
+      writeFileSync(resolve(pixelDir, 'index.html'), demoHtml(shell, true))
     },
   }
 }

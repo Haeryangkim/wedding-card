@@ -8,6 +8,7 @@ import {
   FLOOR_PAD_BOTTOM,
   FLOOR_PAD_X,
   LOGICAL_W,
+  SEPARATION_RADIUS,
   WALK_H_MAX,
   WALK_H_MIN,
   WALK_H_PER_GUEST,
@@ -49,6 +50,10 @@ export interface WorldLayout {
   aisleHalf: number
   decor: Decor[]
   guestCount: number
+  /** 벽(상단 밴드)이 시작하는 y — 스테이지 모드에서 상단 HUD 만큼 장면을 내린다 (기본 0) */
+  wallTop: number
+  /** 이웃 분리 반경 — 스테이지 모드에서 바닥이 좁으면 간격을 줄인다 (기본 SEPARATION_RADIUS) */
+  separation: number
 }
 
 function clamp(v: number, lo: number, hi: number): number {
@@ -57,13 +62,68 @@ function clamp(v: number, lo: number, hi: number): number {
 
 /** 하객 수에 따라 바닥 높이가 자라는 장면 레이아웃을 만든다 (결정적) */
 export function computeLayout(guestCount: number): WorldLayout {
-  const W = LOGICAL_W
   const walkH = clamp(WALK_H_MIN + guestCount * WALK_H_PER_GUEST, WALK_H_MIN, WALK_H_MAX)
+  return buildLayout(LOGICAL_W, 0, walkH, FLOOR_PAD_BOTTOM, guestCount, SEPARATION_RADIUS)
+}
 
-  const coupleY = BACKDROP_H + 14
+/** 스테이지(전체 화면) 모드에서 장면이 가져야 하는 최소 논리 크기 */
+export const STAGE_MIN_W = 150
+export const STAGE_MIN_H = 236
+/** 스테이지 모드에서 화면에 동시에 돌아다니는 하객 수 상한 */
+export const STAGE_MAX_GUESTS = 60
+/** 하객 한 명에게 필요한 최소 바닥 넓이(논리 px²) — 화면이 작으면 상한을 더 낮춘다 */
+const STAGE_AREA_PER_GUEST = 520
+
+export interface StageSpec {
+  /** 장면의 논리 크기 (컨테이너 크기 ÷ 확대 배율) */
+  W: number
+  H: number
+  /** 위/아래 HUD 가 가리는 높이(논리 px) — 벽은 그만큼 내려오고, 걷기 영역은 그 위에서 끝난다 */
+  insetTop: number
+  insetBottom: number
+}
+
+/** 스테이지 모드에서 한 화면에 세울 수 있는 하객 수 (화면이 클수록 많이, 최대 STAGE_MAX_GUESTS) */
+export function stageCapacity(spec: StageSpec): number {
+  const { walk } = computeStageLayout(spec, 0)
+  const area = (walk.maxX - walk.minX) * (walk.maxY - walk.minY)
+  return clamp(Math.floor(area / STAGE_AREA_PER_GUEST), 8, STAGE_MAX_GUESTS)
+}
+
+/**
+ * 스테이지 모드 레이아웃: 장면 크기가 하객 수가 아니라 컨테이너(화면)로 정해진다.
+ * 하객이 많으면 바닥을 늘리는 대신 서로의 간격(분리 반경)을 줄인다. (결정적)
+ */
+export function computeStageLayout(spec: StageSpec, guestCount: number): WorldLayout {
+  const W = Math.max(STAGE_MIN_W, Math.round(spec.W))
+  const H = Math.max(STAGE_MIN_H, Math.round(spec.H))
+  const wallTop = Math.max(0, Math.round(spec.insetTop))
+  const walkMinY = wallTop + BACKDROP_H + 14 + COUPLE_FLOOR_GAP
+  const padBottom = Math.max(0, Math.round(spec.insetBottom)) + 8
+  // 화면이 아주 낮아도 걷기 영역이 뒤집히지 않게 최소 높이를 보장한다
+  const walkH = Math.max(40, H - padBottom - walkMinY)
+  const area = (W - FLOOR_PAD_X * 2) * walkH
+  const separation =
+    guestCount > 0 ? clamp(Math.sqrt(area / guestCount) * 0.82, 10, SEPARATION_RADIUS) : SEPARATION_RADIUS
+  const layout = buildLayout(W, wallTop, walkH, H - walkMinY - walkH, guestCount, separation)
+  // 좁은 바닥에서는 가구가 길을 막지 않게 회피 반경을 줄인다
+  if (walkH < 110) for (const d of layout.decor) d.avoid = Math.min(d.avoid, 15)
+  return layout
+}
+
+function buildLayout(
+  W: number,
+  wallTop: number,
+  walkH: number,
+  padBottom: number,
+  guestCount: number,
+  separation: number,
+): WorldLayout {
+  const backdropH = wallTop + BACKDROP_H
+  const coupleY = backdropH + 14
   const walkMinY = coupleY + COUPLE_FLOOR_GAP
   const walkMaxY = walkMinY + walkH
-  const H = Math.round(walkMaxY + FLOOR_PAD_BOTTOM)
+  const H = Math.round(walkMaxY + padBottom)
 
   const aisleX = W / 2
   const aisleHalf = 20
@@ -85,7 +145,7 @@ export function computeLayout(guestCount: number): WorldLayout {
   return {
     W,
     H,
-    backdropH: BACKDROP_H,
+    backdropH,
     coupleY,
     groomX,
     brideX,
@@ -100,5 +160,7 @@ export function computeLayout(guestCount: number): WorldLayout {
     aisleHalf,
     decor,
     guestCount,
+    wallTop,
+    separation,
   }
 }

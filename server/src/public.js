@@ -50,7 +50,7 @@ const PAGE_HEADERS = {
 }
 
 /**
- * GET /w/:slug , /w/:slug/edit , /w/:slug/wedding.ics
+ * GET /w/:slug , /w/:slug/edit , /w/:slug/pixel , /w/:slug/wedding.ics
  * @param {Req} req @param {Res} res @param {Deps} deps @param {Cors} cors
  * @param {string | null} slug @param {string[]} rest slug 뒤의 경로 조각
  */
@@ -82,10 +82,12 @@ export async function handlePage(req, res, deps, cors, slug, rest) {
     )
   }
 
-  const isView = at === '' || at === 'edit'
+  // 'pixel' = 같은 청첩장의 픽셀 청첩장 모습. 미리보기 태그만 그 주소·문구로 달라진다.
+  const isView = at === '' || at === 'edit' || at === 'pixel'
   if (wedding && isView) {
+    const meta = weddingMeta(wedding, origin, at === 'pixel' ? 'pixel' : 'classic')
     // 초대받은 사람만 보는 페이지이므로 검색엔진에는 색인하지 않도록 알린다(미리보기 스크레이퍼와는 무관).
-    return sendRaw(res, 200, renderPage(template, weddingMeta(wedding, origin), { noindex: true }), PAGE_HEADERS)
+    return sendRaw(res, 200, renderPage(template, meta, { noindex: true }), PAGE_HEADERS)
   }
   // 데모는 프론트에 번들되어 있어 서버 데이터 없이도 정상 페이지다(템플릿의 범용 태그 그대로).
   if (slug === DEMO_SLUG && isView) return sendRaw(res, 200, template, PAGE_HEADERS)

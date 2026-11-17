@@ -28,3 +28,12 @@ describe('shareText', () => {
     expect(t.description).toContain('예시웨딩홀')
   })
 })
+
+describe('pixelShareText', () => {
+  it('픽셀 청첩장 링크는 제목·설명으로 구분된다', async () => {
+    const { pixelShareText } = await import('./share')
+    const t = pixelShareText(wedding)
+    expect(t.title).toBe(`${wedding.share.title} · 픽셀 청첩장`)
+    expect(t.description).toBe(`캐릭터가 되어 축하를 남겨 주세요 · ${wedding.share.description}`)
+  })
+})

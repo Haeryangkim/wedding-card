@@ -41,9 +41,12 @@ export class BubbleManager {
   private queue: string[] = []
   private gap = 0.3
   private readonly rand: () => number
+  /** 자동 순환으로 동시에 띄우는 말풍선 수 (탭/포커스로 띄운 것은 MAX_ACTIVE 까지) */
+  private readonly autoMax: number
 
-  constructor(rand: () => number = Math.random) {
+  constructor(rand: () => number = Math.random, autoMax: number = MAX_ACTIVE) {
     this.rand = rand
+    this.autoMax = Math.max(0, Math.min(MAX_ACTIVE, autoMax))
   }
 
   private shuffle(ids: string[]): string[] {
@@ -109,7 +112,7 @@ export class BubbleManager {
     this.active = this.active.filter((b) => !(b.phase === 'out' && b.t >= OUT_TIME))
 
     // 비포커스 자동 순환: 간격을 두고 큐에서 다음 하객
-    if (this.active.length < MAX_ACTIVE) {
+    if (this.active.length < this.autoMax) {
       this.gap -= dt
       if (this.gap <= 0) {
         const next = this.takeNext(pool)

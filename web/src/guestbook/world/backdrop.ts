@@ -15,7 +15,7 @@ function makeCanvas(w: number, h: number): HTMLCanvasElement {
 
 /** 배경을 1:1 논리 해상도로 렌더(상단에서 ctx가 정수배 확대) */
 export function renderBackdrop(layout: WorldLayout): HTMLCanvasElement {
-  const { W, H, backdropH, aisleX, aisleHalf, coupleY } = layout
+  const { W, H, backdropH, aisleX, aisleHalf, coupleY, wallTop } = layout
   const c = makeCanvas(W, H)
   const g = c.getContext('2d')
   if (!g) return c
@@ -67,14 +67,15 @@ export function renderBackdrop(layout: WorldLayout): HTMLCanvasElement {
     for (let i = 0; i < 3; i++) {
       px(x0 + 3 + i * 4, 0, 1, backdropH - 1, PAL.drapeSh) // 주름
     }
-    px(x0, 0, 14, 2, PAL.drapeSh)
+    px(x0, wallTop, 14, 2, PAL.drapeSh)
   }
 
   // ── 꽃 아치 ∩ ───────────────────────────────────────────────
   const archCx = aisleX
   const rx = 58
   const baseY = backdropH - 2
-  const ry = baseY - 5
+  // 아치 높이는 고정 — 스테이지 모드에서 벽이 위로 길어져도(wallTop) 같은 모양을 유지한다
+  const ry = baseY - wallTop - 5
   const steps = 54
   for (let i = 0; i <= steps; i++) {
     const a = Math.PI + (i / steps) * Math.PI
@@ -96,8 +97,8 @@ export function renderBackdrop(layout: WorldLayout): HTMLCanvasElement {
     const x = 8 + t * (W - 16)
     // 완만한 현수선
     const sag = Math.sin(t * Math.PI) * 6
-    const y = 6 + (1 - Math.sin(t * Math.PI)) * 4 + sag * 0.2 + 3
-    px(x, 3, 1, Math.max(1, y - 3), PAL.wire)
+    const y = wallTop + 6 + (1 - Math.sin(t * Math.PI)) * 4 + sag * 0.2 + 3
+    px(x, wallTop + 3, 1, Math.max(1, y - wallTop - 3), PAL.wire)
     px(x - 1, y, 3, 3, PAL.bulbOn)
     px(x, y, 1, 1, PAL.bulbHi)
   }

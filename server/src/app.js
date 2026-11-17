@@ -17,7 +17,7 @@
  *   DELETE /api/weddings/:slug/guests/:id           -> 204 | 403 | 404   ({ password } 또는 관리 토큰)
  *   GET    /api/weddings/:slug/events  (SSE)        -> event: added / removed, 하트비트 주석
  *   GET    /uploads/:slug/:file                     -> 이미지
- *   GET    /w/:slug , /w/:slug/edit                 -> OG 태그가 주입된 index.html
+ *   GET    /w/:slug , /w/:slug/edit , /w/:slug/pixel -> OG 태그가 주입된 index.html
  *   GET    /w/:slug/wedding.ics                     -> text/calendar
  *
  * createApp() 은 아직 listen 하지 않은 http.Server 를 돌려주어 테스트가 임의 포트로 띄울 수 있다.

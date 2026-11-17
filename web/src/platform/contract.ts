@@ -14,6 +14,7 @@
  *   /new              새 청첩장 만들기
  *   /w/demo           데모 청첩장
  *   /w/:slug          청첩장
+ *   /w/:slug/pixel    같은 청첩장의 "픽셀 청첩장" 모습 (한 화면, 탭해서 보는 방식 — 내용·방명록은 공유)
  *   /w/:slug/edit     관리(편집) 화면 — 비밀번호 로그인
  *
  * REST (모두 JSON, 오류는 4xx/5xx {error: string}; 인증은 "Authorization: Bearer <token>")
@@ -36,7 +37,7 @@
  *   DELETE /api/weddings/:slug/guests/:id  {password} 또는 (auth) -> 204 | 403 | 404
  *   GET    /api/weddings/:slug/events   (SSE)  event "added" GuestEntry / "removed" {id}
  *   서버 렌더링(카카오톡 미리보기·캘린더용):
- *   GET    /w/:slug , /w/:slug/edit   -> 프론트 index.html 에 해당 청첩장의 <title>/OG 태그를 주입해 응답
+ *   GET    /w/:slug , /w/:slug/edit , /w/:slug/pixel -> 프론트 index.html 에 해당 청첩장의 <title>/OG 태그를 주입해 응답
  *   GET    /w/:slug/wedding.ics       -> text/calendar
  */
 import type { WeddingConfig } from '../config/wedding'

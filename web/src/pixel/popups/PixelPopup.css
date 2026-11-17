@@ -1,0 +1,264 @@
+/* 픽셀 청첩장 팝업 프레임 + 팝업 공용 프리미티브 (버튼·구분선·라벨) */
+.pxpop {
+  --px: 3px;
+  --px-ink: #3b332b;
+  --px-bar: var(--accent);
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px))
+    calc(16px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
+  background: rgba(30, 24, 20, 0.56);
+  overscroll-behavior: contain;
+  touch-action: none;
+  /* iOS Safari 는 cursor: pointer 가 없는 비대화형 요소에 click 을 보내지 않는다 (배경 탭 닫기용) */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: pxpop-fade 0.14s ease-out;
+}
+
+.pxpop__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 380px;
+  max-height: 80vh;
+  max-height: min(80dvh, 720px);
+  min-height: 0;
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  outline: none;
+  cursor: auto;
+  touch-action: pan-y;
+  /* 모서리가 한 칸 파인 도트 테두리: 상하좌우로 한 칸씩 밀어낸 그림자 + 아래쪽 그림자 */
+  box-shadow:
+    0 calc(var(--px) * -1) 0 0 var(--px-ink),
+    0 var(--px) 0 0 var(--px-ink),
+    calc(var(--px) * -1) 0 0 0 var(--px-ink),
+    var(--px) 0 0 0 var(--px-ink),
+    0 calc(var(--px) * 3) 0 0 rgba(20, 16, 12, 0.35),
+    var(--px) calc(var(--px) * 2) 0 0 rgba(20, 16, 12, 0.35),
+    calc(var(--px) * -1) calc(var(--px) * 2) 0 0 rgba(20, 16, 12, 0.35);
+  animation: pxpop-pop 0.2s steps(4, end);
+}
+.pxpop__panel:focus,
+.pxpop__panel:focus-visible {
+  outline: none;
+}
+
+.pxpop__bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 48px;
+  padding: 0 2px 0 0;
+  background: var(--px-bar);
+  color: #fff;
+  box-shadow:
+    inset 0 var(--px) 0 0 rgba(255, 255, 255, 0.22),
+    inset 0 calc(var(--px) * -1) 0 0 rgba(0, 0, 0, 0.18);
+  border-bottom: var(--px) solid var(--px-ink);
+}
+
+.pxpop__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+}
+
+.pxpop__title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.22);
+}
+
+.pxpop__barbtn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pxpop__barbtn:active {
+  background: rgba(0, 0, 0, 0.18);
+}
+.pxpop__barbtn:focus-visible,
+.pxpop__panel :focus-visible {
+  outline: 2px solid var(--px-ink);
+  outline-offset: 2px;
+}
+.pxpop__barbtn:focus-visible {
+  outline-color: #fff;
+  outline-offset: -4px;
+}
+
+.pxpop__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 18px 16px 18px;
+}
+.pxpop__body--flush {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pxpop__footer {
+  flex: none;
+  padding: 12px 16px 14px;
+  border-top: var(--px) solid var(--line);
+  background: var(--paper);
+}
+
+.pxicon {
+  display: block;
+  flex: none;
+}
+
+/* ── 공용 프리미티브 ───────────────────────── */
+.px-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 6px 14px;
+  border: none;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    0 -2px 0 0 var(--px-ink),
+    0 2px 0 0 var(--px-ink),
+    -2px 0 0 0 var(--px-ink),
+    2px 0 0 0 var(--px-ink),
+    inset 0 -3px 0 0 rgba(0, 0, 0, 0.14),
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.5);
+  /* 그림자 테두리가 이웃과 겹치지 않도록 */
+  margin: 2px;
+}
+.px-btn:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 -2px 0 0 var(--px-ink),
+    0 2px 0 0 var(--px-ink),
+    -2px 0 0 0 var(--px-ink),
+    2px 0 0 0 var(--px-ink),
+    inset 0 2px 0 0 rgba(0, 0, 0, 0.14);
+}
+.px-btn--block {
+  display: flex;
+  width: calc(100% - 4px);
+}
+.px-btn--primary {
+  background: var(--accent);
+  color: #fff;
+}
+.px-btn--sm {
+  min-height: 44px;
+  padding: 4px 12px;
+  font-size: 14px;
+}
+.px-btn--icon {
+  width: 44px;
+  min-width: 44px;
+  padding: 0;
+}
+.px-btn__sub {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.px-rule {
+  height: 3px;
+  margin: 16px 0;
+  border: none;
+  background: repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 12px);
+}
+
+.px-label {
+  font-family: var(--font-pixel);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+.px-note {
+  padding: 12px 14px;
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+@keyframes pxpop-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pxpop-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+}
+
+/* 낮은 화면(작은 폰·가로 모드)에서는 80% 대신 화면을 거의 다 쓴다 */
+@media (max-height: 700px) {
+  .pxpop {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  }
+  .pxpop__panel {
+    max-height: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pxpop,
+  .pxpop__panel {
+    animation: none;
+  }
+  .px-btn:active {
+    transform: none;
+  }
+}

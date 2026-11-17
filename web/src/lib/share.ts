@@ -25,6 +25,20 @@ export function weddingUrl(slug: string): string {
   return weddingUrlFor(slug, configured, window.location.origin, import.meta.env.BASE_URL)
 }
 
+/** 같은 청첩장의 "픽셀 청첩장" 모습(/w/<slug>/pixel) 공유용 절대 주소 */
+export function pixelWeddingUrl(slug: string): string {
+  return `${weddingUrl(slug)}/pixel`
+}
+
+/** 픽셀 청첩장 링크의 공유 문구 — 일반 청첩장과 구분되도록 제목에 표시를 덧붙인다 (서버 pages.js 와 같은 규칙) */
+export function pixelShareText(config: WeddingConfig): { title: string; description: string } {
+  const { title, description } = shareText(config)
+  return {
+    title: `${title} · 픽셀 청첩장`,
+    description: ['캐릭터가 되어 축하를 남겨 주세요', description].filter(Boolean).join(' · '),
+  }
+}
+
 /**
  * 공유 제목/설명. config.share 가 비어 있으면 이름·일시·장소로 만든 문구로 대체합니다.
  * (편집 화면의 미리보기/자리표시 문구에도 그대로 쓸 수 있는 순수 함수)

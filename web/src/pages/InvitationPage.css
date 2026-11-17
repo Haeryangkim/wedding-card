@@ -97,3 +97,136 @@
     animation: none;
   }
 }
+
+/* ── 맨 아래 "픽셀 청첩장으로 보기" 전환 ─────────────────── */
+.pixel-cta {
+  padding: 4px var(--gutter) calc(40px + env(safe-area-inset-bottom, 0px));
+}
+.pixel-cta__card {
+  position: relative;
+  display: block;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--card);
+  /* 도트 테두리: 모서리가 한 칸 파인 모양 */
+  box-shadow:
+    0 -3px 0 0 var(--ink),
+    0 3px 0 0 var(--ink),
+    -3px 0 0 0 var(--ink),
+    3px 0 0 0 var(--ink),
+    0 9px 0 0 rgba(59, 51, 43, 0.16);
+  transition: transform 0.08s ease;
+}
+.pixel-cta__card:active {
+  transform: translateY(2px);
+}
+.pixel-cta__scene {
+  position: relative;
+  display: block;
+  height: 108px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f6eedd 0, #ece0c9 62%, #d8c8aa 62%, #d8c8aa 64%, #efe7d6 64%, #e8dcc5 100%);
+  border-bottom: 3px solid var(--ink);
+}
+.pixel-cta__arch {
+  position: absolute;
+  left: 50%;
+  bottom: 38px;
+  width: 104px;
+  height: 64px;
+  margin-left: -52px;
+  border: 7px solid #6f8a64;
+  border-bottom: 0;
+  border-radius: 52px 52px 0 0;
+  background:
+    radial-gradient(circle at 12% 60%, #e7a9a0 0 3px, transparent 3.5px),
+    radial-gradient(circle at 88% 60%, #d98b86 0 3px, transparent 3.5px);
+  box-shadow: 0 -2px 0 0 #89a079;
+}
+.pixel-cta__floor {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 56px;
+  height: 36%;
+  margin-left: -28px;
+  background: #cf8e7c;
+  border-left: 2px solid #c2a15a;
+  border-right: 2px solid #c2a15a;
+}
+.pixel-cta__couple {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  display: flex;
+  gap: 14px;
+  transform: translateX(-50%);
+}
+.pixel-cta__guest {
+  position: absolute;
+  bottom: 4px;
+}
+.pixel-cta__guest--l {
+  left: 9%;
+}
+.pixel-cta__guest--r {
+  right: 9%;
+}
+.pixel-cta__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 48px 16px 16px;
+  min-height: 76px;
+  text-align: left;
+}
+.pixel-cta__eyebrow {
+  font-family: var(--font-pixel);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.pixel-cta__title {
+  font-family: var(--font-pixel);
+  font-size: 1.06rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.pixel-cta__desc {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  word-break: keep-all;
+}
+.pixel-cta__go {
+  position: absolute;
+  right: 14px;
+  bottom: 26px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.7rem;
+  box-shadow: 0 3px 0 rgba(140, 73, 53, 0.45);
+  animation: pixel-cta-nudge 1.2s steps(2, end) infinite;
+}
+@keyframes pixel-cta-nudge {
+  50% {
+    transform: translateX(3px);
+  }
+}
+@media (hover: hover) {
+  .pixel-cta__card:hover .pixel-cta__title {
+    color: var(--accent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pixel-cta__card {
+    transition: none;
+  }
+  .pixel-cta__go {
+    animation: none;
+  }
+}

@@ -29,6 +29,8 @@ export interface RenderParams {
   fontReady: boolean
   /** dev: 스프라이트가 비어있을 때 실루엣으로 대체 */
   fallback: boolean
+  /** 신랑·신부 위 "눌러보세요" 힌트 불투명도 (0 또는 생략 = 없음) */
+  coupleHint?: number
 }
 
 interface DrawItem {
@@ -66,7 +68,7 @@ export function renderWorld(p: RenderParams): void {
   })
 
   // 하객
-  const crowded = crowdedLabels(agents, p.focusId)
+  const crowded = crowdedLabels(agents, p.focusId, layout)
   for (const a of agents) {
     const entry = p.entryById.get(a.id)
     if (!entry) continue
@@ -85,6 +87,8 @@ export function renderWorld(p: RenderParams): void {
 
   // 파티클(하트·반짝이)
   for (const pt of p.particles) drawParticle(ctx, pt)
+
+  if (p.coupleHint && p.coupleHint > 0) drawCoupleHint(p, p.coupleHint)
 
   // 말풍선(최상단)
   for (const b of p.bubbles) {
@@ -157,11 +161,18 @@ function guestFb(entry: GuestEntry): Fallback {
  * (키 큰 스프라이트라 붐빌 때 이름표가 얼굴을 덮는다 → 그런 이름표는 숨기고, 탭/목록으로 확인)
  * 포커스된 하객의 이름표는 항상 보인다.
  */
-function crowdedLabels(agents: Agent[], focusId: string | null): Set<string> {
+function crowdedLabels(agents: Agent[], focusId: string | null, layout: WorldLayout): Set<string> {
   const out = new Set<string>()
   const reach = SPRITE_H - 12 // 내 이름표(머리 위)와 겹치는 뒤쪽 하객의 얼굴 높이 범위
+  const coupleCx = (layout.groomX + layout.brideX) / 2
+  const coupleHalf = (layout.brideX - layout.groomX) / 2 + 28
   for (const a of agents) {
     if (a.id === focusId) continue
+    // 신랑·신부 바로 앞에 선 하객의 이름표는 두 사람을 가린다
+    if (a.y - layout.coupleY < SPRITE_H + 14 && Math.abs(a.x - coupleCx) < coupleHalf) {
+      out.add(a.id)
+      continue
+    }
     for (const b of agents) {
       if (b === a || b.life === 'despawn') continue
       const dy = a.y - b.y
@@ -268,6 +279,33 @@ function drawSilhouette(ctx: CanvasRenderingContext2D, dx: number, dy: number, f
   px(9, 17, 2, 3, '#4a4038')
 }
 
+/** 신랑·신부 머리 위에 떠서 살짝 오르내리는 "눌러보세요" 말풍선 */
+function drawCoupleHint(p: RenderParams, alpha: number): void {
+  const { ctx, layout, time } = p
+  if (!p.fontReady) return
+  const text = '눌러보세요'
+  ctx.font = `8px 'Galmuri9', 'Galmuri11', monospace`
+  ctx.textBaseline = 'top'
+  ctx.textAlign = 'left'
+  const boxW = Math.ceil(ctx.measureText(text).width) + 10
+  const boxH = 15
+  const cx = Math.round((layout.groomX + layout.brideX) / 2)
+  const bottom = layout.coupleY - SPRITE_H - COUPLE_LABEL_DY - 15 + Math.round(Math.sin(time * 3) * 1.5)
+  const left = Math.round(cx - boxW / 2)
+  const top = bottom - boxH
+  ctx.save()
+  ctx.globalAlpha = Math.max(0, Math.min(1, alpha))
+  ctx.fillStyle = PAL.accent
+  ctx.fillRect(left + 1, top, boxW - 2, boxH)
+  ctx.fillRect(left, top + 1, boxW, boxH - 2)
+  // 꼬리
+  ctx.fillRect(cx - 2, top + boxH, 4, 1)
+  ctx.fillRect(cx - 1, top + boxH + 1, 2, 1)
+  ctx.fillStyle = '#fffdf8'
+  ctx.fillText(text, left + 5, top + 4)
+  ctx.restore()
+}
+
 // ── 이름표 ────────────────────────────────────────────────────
 
 function drawLabel(
@@ -344,26 +382,53 @@ function drawBubble(p: RenderParams, a: Agent, b: ActiveBubble): void {
   const bottom = headTop - 4
   let left = a.x - boxW / 2
   left = Math.max(3, Math.min(left, layout.W - boxW - 3))
-  const top = Math.max(2, bottom - boxH)
+  let top = Math.max(layout.wallTop + 2, bottom - boxH)
+
+  // 신랑·신부(와 이름표)를 가리게 되면 옆으로 비키고, 화면이 좁아 옆자리가 없으면 캐릭터 발아래에 띄운다
+  // (두 사람은 눌러서 인사말을 여는 주인공)
+  const cL = layout.groomX - 11
+  const cR = layout.brideX + 11
+  const cTop = layout.coupleY - SPRITE_H - 14
+  const covers = (l: number) => top < layout.coupleY && top + boxH > cTop && l < cR && l + boxW > cL
+  let below = false
+  if (covers(left)) {
+    const side = a.x >= layout.aisleX ? Math.min(cR + 1, layout.W - boxW - 3) : Math.max(cL - 1 - boxW, 3)
+    if (!covers(side)) {
+      left = side
+    } else {
+      below = true
+      top = Math.round(Math.min(a.y + yoff + 6, layout.H - boxH - 2))
+    }
+  }
 
   // pop 스케일(등장/퇴장)
   const s = 0.7 + 0.3 * b.pop
+  const pivotY = below ? top : bottom
   ctx.save()
   ctx.globalAlpha = b.pop
-  ctx.translate(a.x, bottom)
+  ctx.translate(a.x, pivotY)
   ctx.scale(s, s)
-  ctx.translate(-a.x, -bottom)
+  ctx.translate(-a.x, -pivotY)
 
   // 상자
   roundBox(ctx, left, top, boxW, boxH, PAL.bubbleBg, PAL.bubbleLine)
-  // 꼬리
+  // 꼬리 (발아래에 띄울 때는 위쪽으로)
   const tailX = Math.max(left + 4, Math.min(a.x, left + boxW - 6))
-  ctx.fillStyle = PAL.bubbleBg
-  ctx.fillRect(tailX, top + boxH - 1, 4, 3)
-  ctx.fillStyle = PAL.bubbleLine
-  ctx.fillRect(tailX, top + boxH + 2, 4, 1)
-  ctx.fillRect(tailX - 1, top + boxH - 1, 1, 2)
-  ctx.fillRect(tailX + 4, top + boxH - 1, 1, 2)
+  if (below) {
+    ctx.fillStyle = PAL.bubbleBg
+    ctx.fillRect(tailX, top - 2, 4, 3)
+    ctx.fillStyle = PAL.bubbleLine
+    ctx.fillRect(tailX, top - 3, 4, 1)
+    ctx.fillRect(tailX - 1, top - 2, 1, 2)
+    ctx.fillRect(tailX + 4, top - 2, 1, 2)
+  } else {
+    ctx.fillStyle = PAL.bubbleBg
+    ctx.fillRect(tailX, top + boxH - 1, 4, 3)
+    ctx.fillStyle = PAL.bubbleLine
+    ctx.fillRect(tailX, top + boxH + 2, 4, 1)
+    ctx.fillRect(tailX - 1, top + boxH - 1, 1, 2)
+    ctx.fillRect(tailX + 4, top + boxH - 1, 1, 2)
+  }
 
   // 텍스트(타자기: shown 글자까지)
   ctx.fillStyle = PAL.bubbleInk
@@ -474,22 +539,23 @@ function drawSign(ctx: CanvasRenderingContext2D, x: number, y: number): void {
     ctx.fillRect(Math.round(x + ox), Math.round(y + oy), w, h)
   }
   px(-1, -16, 2, 16, PAL.woodDk) // 기둥
-  px(-22, -40, 44, 26, PAL.cloth)
-  px(-22, -40, 44, 2, PAL.gold)
-  px(-22, -16, 44, 2, PAL.gold)
-  px(-22, -40, 2, 26, PAL.gold)
-  px(20, -40, 2, 26, PAL.gold)
+  // 판: 글자 두 줄(8px)이 테두리에 닿지 않도록 넉넉하게
+  px(-27, -48, 54, 34, PAL.cloth)
+  px(-27, -48, 54, 2, PAL.gold)
+  px(-27, -16, 54, 2, PAL.gold)
+  px(-27, -48, 2, 34, PAL.gold)
+  px(25, -48, 2, 34, PAL.gold)
   // 하트
-  px(-3, -34, 2, 2, PAL.heart)
-  px(1, -34, 2, 2, PAL.heart)
-  px(-3, -32, 6, 2, PAL.heart)
-  px(-2, -30, 4, 1, PAL.heart)
-  ctx.font = `7px 'Galmuri9', 'Galmuri11', monospace`
+  px(-3, -44, 2, 2, PAL.heart)
+  px(1, -44, 2, 2, PAL.heart)
+  px(-3, -42, 6, 2, PAL.heart)
+  px(-2, -40, 4, 1, PAL.heart)
+  ctx.font = `8px 'Galmuri9', 'Galmuri11', monospace`
   ctx.fillStyle = PAL.inkSoft
   ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText('첫 축하를', x, y - 25)
-  ctx.fillText('남겨주세요', x, y - 18)
+  ctx.textBaseline = 'top'
+  ctx.fillText('첫 축하를', Math.round(x), Math.round(y) - 37)
+  ctx.fillText('남겨주세요', Math.round(x), Math.round(y) - 27)
 }
 
 // ── 파티클 ────────────────────────────────────────────────────
