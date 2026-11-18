@@ -119,12 +119,12 @@ export const STYLE_META: Readonly<Record<StyleId, StyleMeta>> = {
     pixelated: false,
     snap: false,
     // 인물(머리 꼭대기~발)이 그림 높이의 약 88% — 다른 그림체와 키가 비슷해지는 값
-    worldH: 44,
-    headFrac: 0.9,
+    worldH: 47,
+    headFrac: 0.86,
     shadowR: 0,
     halfW: 11,
     sep: 1.15,
-    bust: { top: 30, w: 150 },
+    bust: { top: 40, w: 150 },
     counts: { skin: 6, hairStyle: 14, hairColor: 10, outfit: 12, outfitColor: 12, accessory: 9 },
   },
 }

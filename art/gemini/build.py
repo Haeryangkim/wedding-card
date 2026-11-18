@@ -113,6 +113,10 @@ for bi, box in enumerate(boxes):
     sizes = ndi.sum(hair, lab, range(1, n + 1))
     for i, sz in enumerate(sizes):
         if sz < 400: hair[lab == i + 1] = False
+    # 턱 아래의 목·어깨(피부)는 지운다 — 목은 몸 그림의 것을 쓰고, 머리는 턱까지만 얹는다 (목이 두 번 그려져 길어 보이지 않게)
+    below = dy > 104
+    neck = ndi.binary_dilation(skin & below, iterations=5) & below
+    alpha[neck] = 0
     m = np.zeros(c.shape, np.float32); m[..., 0] = hair; m[..., 1] = skin & ~hair
     hm = hair & (v > 0.3)
     hair_sum += c[hm].sum(0); hair_n += hm.sum(); skin_sum += c[skin & (v > 0.9)].sum(0); skin_n += (skin & (v > 0.9)).sum()

@@ -104,6 +104,11 @@
   padding: 12px 0 4px;
   background: linear-gradient(180deg, var(--paper-2), var(--paper));
   border-radius: var(--radius);
+  /* 파츠 목록을 내려도 완성 모습은 계속 위에 보인다 */
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  box-shadow: 0 6px 10px -8px rgb(59 51 43 / 0.35);
 }
 .cc-stage-btn {
   position: relative;

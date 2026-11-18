@@ -25,7 +25,10 @@ export const DOLL_H = 336
 /** 발바닥 선 / 가로 중심 / 두 눈 사이 기준점의 y */
 export const DOLL_FOOT_Y = 329
 const CX = DOLL_W / 2
-const EYE_Y = 115
+/** 몸 그림의 맨 위(목)가 두 눈 사이 기준점에서 얼마나 아래에 오는지 — 턱(약 34) 바로 안쪽으로 밀어 넣어 목이 짧게 이어진다 */
+const NECK_DY = 30
+/** 얼굴을 몸 위에 다시 덮는 범위: 기준점에서 턱 끝까지 */
+const CHIN_DY = 35
 
 interface Swatch {
   label: string
@@ -68,14 +71,14 @@ const OUTFIT_COLORS: Swatch[] = [
 ]
 /** 액세서리 위치: 두 눈 사이 기준점에서 그림 중심까지의 거리(dx, dy)와 배율. 0번은 '없음' */
 const ACC_PLACE: { dx: number; dy: number; s: number }[] = [
-  { dx: 0, dy: 3, s: 0.92 }, // 동그란 안경
-  { dx: 0, dy: 3, s: 0.92 }, // 선글라스
-  { dx: 30, dy: -56, s: 0.5 }, // 리본
-  { dx: 0, dy: -50, s: 0.82 }, // 화관
-  { dx: 0, dy: -62, s: 1 }, // 밀짚모자
-  { dx: 3, dy: -62, s: 0.95 }, // 베레모
-  { dx: 0, dy: -62, s: 0.6 }, // 티아라
-  { dx: 0, dy: -22, s: 1.02 }, // 헤드폰
+  { dx: 0, dy: 2, s: 0.74 }, // 동그란 안경
+  { dx: 0, dy: 2, s: 0.74 }, // 선글라스
+  { dx: 30, dy: -50, s: 0.36 }, // 리본
+  { dx: 0, dy: -47, s: 0.66 }, // 화관
+  { dx: 0, dy: -57, s: 0.88 }, // 밀짚모자
+  { dx: 3, dy: -58, s: 0.82 }, // 베레모
+  { dx: 0, dy: -58, s: 0.42 }, // 티아라
+  { dx: 0, dy: -20, s: 0.9 }, // 헤드폰
 ]
 
 const COUNTS: Record<PartKey, number> = {
@@ -342,16 +345,22 @@ export function getSprite(kind: SpriteKind, dir: Dir, frame: Frame, scale: numbe
   ctx.beginPath()
   ctx.ellipse(CX, DOLL_FOOT_Y - 2, 52, 7, 0, 0, Math.PI * 2)
   ctx.fill()
-  // 머리(긴 머리는 어깨 뒤로 내려온다) → 몸 → 액세서리
-  const hy = EYE_Y - hd.ey + nod * 2
-  ctx.drawImage(head, CX - hd.ex, hy)
-  ctx.drawImage(body, CX - bd.ax, DOLL_FOOT_Y - bd.rect[3])
+  // 발을 바닥에 맞추고, 그 몸의 목 위치에 머리를 얹는다 (옷마다 키가 조금 다르다)
+  const bodyTop = DOLL_FOOT_Y - bd.rect[3]
+  const eyeY = bodyTop - NECK_DY + nod * 2
+  const hx = CX - hd.ex
+  const hy = eyeY - hd.ey
+  // 머리 전체(긴 머리는 어깨 뒤로 내려온다) → 몸 → 턱 위 얼굴을 다시 덮어 목이 턱 밑으로 들어가게 → 액세서리
+  ctx.drawImage(head, hx, hy)
+  ctx.drawImage(body, CX - bd.ax, bodyTop)
+  const faceH = Math.min(hd.rect[3], hd.ey + CHIN_DY)
+  ctx.drawImage(head, 0, 0, hd.rect[2], faceH, hx, hy, hd.rect[2], faceH)
   if (a.accessory > 0) {
     const r = ATLAS.acc[a.accessory - 1].rect
     const p = ACC_PLACE[a.accessory - 1]
     const w = r[2] * p.s
     const h = r[3] * p.s
-    ctx.drawImage(acc, r[0], r[1], r[2], r[3], CX + p.dx - w / 2, EYE_Y + p.dy - h / 2 + nod * 2, w, h)
+    ctx.drawImage(acc, r[0], r[1], r[2], r[3], CX + p.dx - w / 2, eyeY + p.dy - h / 2, w, h)
   }
 
   const px = canvas.width * canvas.height
