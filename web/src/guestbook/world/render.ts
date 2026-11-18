@@ -10,7 +10,7 @@
  */
 import type { GuestEntry } from '../types'
 import { getSprite, SPRITE_H, SPRITE_W, type Dir, type Frame } from '../character'
-import { blitScale, getSpriteAt, headHeight, spriteScale, styleOf, STYLE_META, type SpriteKind } from '../styles/registry'
+import { blitScale, getSpriteAt, headHeight, spriteScale, styleOf, STYLE_META, type SpriteKind, type StyleId } from '../styles/registry'
 import type { ActiveBubble } from './bubbles'
 import { COUPLE_LABEL_DY, SPAWN_FALL_FROM } from './constants'
 import type { Particle } from './effects'
@@ -40,6 +40,8 @@ export interface RenderParams {
   fallback: boolean
   /** 신랑·신부 위 "눌러보세요" 힌트 불투명도 (0 또는 생략 = 없음) */
   coupleHint?: number
+  /** 신랑·신부를 그릴 그림체 (생략 = 기본 픽셀) */
+  coupleStyle?: StyleId
 }
 
 interface DrawItem {
@@ -236,15 +238,23 @@ function drawGuest(p: RenderParams, a: Agent, entry: GuestEntry, showLabel: bool
 function drawCouple(p: RenderParams, kind: 'groom' | 'bride', x: number, y: number, name: string): void {
   const { ctx, time } = p
   const yoff = Math.sin(time * 1.8 + (kind === 'groom' ? 0 : 1.5)) * 0.5
-  drawShadow(ctx, x, y - 1, kind === 'bride' ? 10 : 7)
+  const id = p.coupleStyle ?? 'pixel'
+  // 벡터 그림체는 스프라이트 안에 그림자가 있다
+  if (STYLE_META[id].shadowR > 0) drawShadow(ctx, x, y - 1, kind === 'bride' ? 10 : 7)
   const fb: Fallback =
     kind === 'groom'
       ? { skin: FB_SKIN[0], hair: FB_HAIR[2], outfit: '#352f2a', shape: 'suit' }
       : { skin: FB_SKIN[0], hair: FB_HAIR[0], outfit: '#f6efe4', shape: 'dress' }
-  drawSprite(p, kind, 'down', 0, x, y + yoff, fb)
+  drawSprite(p, kind, 'down', 0, x, y + yoff, fb, id)
   if (p.fontReady) {
-    drawLabel(ctx, name, 'couple', x, y + yoff - SPRITE_H - COUPLE_LABEL_DY, p.layout.W)
+    drawLabel(ctx, name, 'couple', x, y + yoff - coupleHead(p) - COUPLE_LABEL_DY, p.layout.W)
   }
+}
+
+/** 신랑·신부의 발에서 머리 꼭대기까지 높이(논리 px) — 그림체마다 다르다 */
+function coupleHead(p: RenderParams): number {
+  const id = p.coupleStyle ?? 'pixel'
+  return id === 'pixel' ? SPRITE_H : Math.max(SPRITE_H, headHeight(id, p.sx))
 }
 
 /** 스프라이트(또는 dev 실루엣) 한 명 그리기 */
@@ -256,9 +266,9 @@ function drawSprite(
   x: number,
   y: number,
   fb: Fallback,
+  id: StyleId = styleOf(kind),
 ): void {
   const { ctx } = p
-  const id = styleOf(kind)
   if (id === 'pixel') {
     const dx = Math.round(x - SPRITE_W / 2)
     const dy = Math.round(y - SPRITE_H)
@@ -271,7 +281,7 @@ function drawSprite(
   }
   // 다른 그림체: 기기 픽셀 좌표에 직접 그린다 (도트 = 정수배 최근접, 벡터 = 구운 크기 그대로(dpr 2 초과분만 확대) + 스무딩)
   const scale = spriteScale(id, p.sx)
-  const sprite = getSpriteAt(kind, dir, frame, scale)
+  const sprite = getSpriteAt(kind, dir, frame, scale, id)
   const meta = STYLE_META[id]
   if (!sprite) {
     // 스타일 모듈을 불러오는 중이거나 불러오지 못했다 — 이름표·탭 판정만 떠다니지 않게 대체 실루엣을 세운다
@@ -327,7 +337,7 @@ function drawCoupleHint(p: RenderParams, alpha: number): void {
   const boxW = Math.ceil(ctx.measureText(text).width) + 10
   const boxH = 15
   const cx = Math.round((layout.groomX + layout.brideX) / 2)
-  const bottom = layout.coupleY - SPRITE_H - COUPLE_LABEL_DY - 15 + Math.round(Math.sin(time * 3) * 1.5)
+  const bottom = layout.coupleY - coupleHead(p) - COUPLE_LABEL_DY - 15 + Math.round(Math.sin(time * 3) * 1.5)
   const left = Math.round(cx - boxW / 2)
   const top = bottom - boxH
   ctx.save()

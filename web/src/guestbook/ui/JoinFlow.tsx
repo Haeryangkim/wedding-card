@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Appearance, NewGuestInput, Side } from '../types'
 import { LIMITS } from '../types'
-import { normalizeAnyAppearance, randomAppearanceFor, styleOf } from '../styles/registry'
+import { normalizeAnyAppearance, randomAppearanceFor, styleOf, type StyleId } from '../styles/registry'
 import { useStyle } from '../styles/useStyle'
 import { charLen, hasFieldErrors, validateNewGuest } from '../validate'
 import type { GuestFieldErrors } from '../validate'
@@ -19,9 +19,11 @@ export interface JoinFlowProps {
   onSubmit: (input: NewGuestInput) => Promise<void>
   /** 임시 저장 범위 — 청첩장마다 따로 (storageScope) */
   scope: StorageScope
+  /** 넘기면 이 그림체로만 만든다 (데모: 맵의 그림체). 생략하면 하객이 고른다 */
+  lockStyle?: StyleId
 }
 
-export function JoinFlow({ onSubmit, scope }: JoinFlowProps) {
+export function JoinFlow({ onSubmit, scope, lockStyle }: JoinFlowProps) {
   const initial = useMemo(() => {
     const d = loadDraft(scope)
     return {
@@ -29,7 +31,11 @@ export function JoinFlow({ onSubmit, scope }: JoinFlowProps) {
       side: (d?.side ?? 'groom') as Side,
       message: d?.message ?? '',
       // 임시 저장이 없으면 기본 그림체(기본 픽셀)의 랜덤 캐릭터로 시작한다
-      appearance: d ? normalizeAnyAppearance(d.appearance) : randomAppearanceFor('pixel'),
+      // 그림체가 고정이면 임시 저장도 그 그림체일 때만 이어 쓴다
+      appearance:
+        d && (!lockStyle || styleOf(d.appearance) === lockStyle)
+          ? normalizeAnyAppearance(d.appearance)
+          : randomAppearanceFor(lockStyle ?? 'pixel'),
     }
     // 시트를 여는 순간의 임시 저장만 읽는다 (청첩장이 바뀌면 방명록 전체가 새로 마운트된다)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,8 +99,8 @@ export function JoinFlow({ onSubmit, scope }: JoinFlowProps) {
 
       {step === 1 && (
         <div className="join-step">
-          <p className="join-lead">그림체를 고르고, 나를 닮은 캐릭터를 만들어 주세요.</p>
-          <CharacterCreator value={appearance} onChange={setAppearance} memory={styleMemory} />
+          <p className="join-lead">{lockStyle ? '나를 닮은 캐릭터를 만들어 주세요.' : '그림체를 고르고, 나를 닮은 캐릭터를 만들어 주세요.'}</p>
+          <CharacterCreator value={appearance} onChange={setAppearance} memory={styleMemory} hideStyles={!!lockStyle} />
           <button
             type="button"
             className="join-random"

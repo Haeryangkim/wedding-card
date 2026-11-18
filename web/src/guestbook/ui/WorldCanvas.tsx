@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { GuestEntry } from '../types'
 import { getSprite, SPRITE_H } from '../character'
-import { ensureStyles, headHeight, onStyleLoaded, styleOf, STYLE_META } from '../styles/registry'
+import { ensureStyles, headHeight, onStyleLoaded, styleOf, STYLE_META, type StyleId } from '../styles/registry'
 import { LOGICAL_W, MAX_STEPS_PER_FRAME, SIM_DT } from '../world/constants'
 import {
   computeLayout,
@@ -48,6 +48,8 @@ export interface WorldCanvasProps {
   insetBottom?: number
   /** stage 모드: "+N명" 표시를 눌렀을 때 (전체 목록 열기 등) */
   onOverflowClick?: () => void
+  /** 신랑·신부의 그림체 (생략 = 기본 픽셀) */
+  coupleStyle?: StyleId
   className?: string
 }
 
@@ -125,6 +127,7 @@ class WorldEngine {
   private hintOff = hintSeen()
   private hintSparkleT = 1.2
   private groomName = '신랑'
+  private coupleStyle: StyleId = 'pixel'
   private brideName = '신부'
 
   private cssW = 320
@@ -222,6 +225,12 @@ class WorldEngine {
   }
 
   // ── 외부(props) 연동 ────────────────────────────────────────
+  setCoupleStyle(id: StyleId): void {
+    if (id === this.coupleStyle) return
+    this.coupleStyle = id
+    if (this.reduced) this.draw()
+  }
+
   setNames(groomName: string, brideName: string): void {
     if (groomName === this.groomName && brideName === this.brideName) return
     this.groomName = groomName
@@ -515,6 +524,7 @@ class WorldEngine {
       fontReady: this.fontReady,
       fallback: this.fallback,
       coupleHint: this.hintAlpha,
+      coupleStyle: this.coupleStyle,
     })
   }
 
@@ -649,6 +659,7 @@ export function WorldCanvas({
   insetTop = 0,
   insetBottom = 0,
   onOverflowClick,
+  coupleStyle = 'pixel',
   className,
 }: WorldCanvasProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -679,6 +690,10 @@ export function WorldCanvas({
   useEffect(() => {
     engineRef.current?.setNames(groomName?.trim() || '신랑', brideName?.trim() || '신부')
   }, [groomName, brideName, stage])
+
+  useEffect(() => {
+    engineRef.current?.setCoupleStyle(coupleStyle)
+  }, [coupleStyle, stage])
 
   useEffect(() => {
     engineRef.current?.setEntries(entries, loaded)

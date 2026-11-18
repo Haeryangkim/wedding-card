@@ -1,0 +1,30 @@
+.style-switch {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper, #fffaf2) 88%, transparent);
+  border: 1px solid var(--line, #e3d9c8);
+  box-shadow: 0 1px 4px rgb(60 45 30 / 0.12);
+}
+.style-switch__btn {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-soft, #6b5f52);
+  font: inherit;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.style-switch__btn.is-selected {
+  background: var(--accent, #b98a5e);
+  color: #fff;
+}
+.style-switch__btn:focus-visible {
+  outline: 2px solid var(--accent, #b98a5e);
+  outline-offset: 2px;
+}

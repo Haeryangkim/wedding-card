@@ -23,6 +23,8 @@ import { useWedding } from '../platform/WeddingContext'
 import { useBackLayer } from './backLayer'
 import { HudIcon, type HudIconName } from './icons'
 import { AccountsPopup, GalleryPopup, GreetingPopup, LocationPopup, SchedulePopup } from './popups'
+import { StyleSwitch } from '../guestbook/ui/StyleSwitch'
+import { useSceneStyle, useStyledEntries } from '../guestbook/sceneStyle'
 import './PixelStage.css'
 
 type InfoPopup = 'greeting' | 'schedule' | 'location' | 'accounts' | 'gallery'
@@ -66,7 +68,10 @@ export function PixelStage() {
   const { slug, isDemo, config } = useWedding()
   const toast = useToast()
   const book = useGuestbook(slug, isDemo)
-  const { entries, loading, error, myIds } = book
+  const { loading, error, myIds } = book
+  // 데모: 한 맵에 한 그림체 — 보는 사람이 바꿔 볼 수 있다
+  const sceneStyle = useSceneStyle(isDemo)
+  const entries = useStyledEntries(book.entries, sceneStyle)
 
   const [popup, setPopup] = useState<Popup | null>(null)
   const [selected, setSelected] = useState<GuestEntry | null>(null)
@@ -194,6 +199,7 @@ export function PixelStage() {
           onSelect={selectGuest}
           onSelectCouple={selectCouple}
           onOverflowClick={openList}
+          coupleStyle={sceneStyle ?? undefined}
           insetTop={insets.top}
           insetBottom={insets.bottom}
         />
@@ -223,6 +229,7 @@ export function PixelStage() {
               </span>
             </Link>
           </div>
+          {sceneStyle && <StyleSwitch value={sceneStyle} className="px-style" />}
         </header>
 
         {/* 캔버스의 두 사람은 키보드·스크린리더로 누를 수 없으므로 같은 동작의 버튼을 둔다 (포커스될 때만 보인다) */}
@@ -290,7 +297,7 @@ export function PixelStage() {
       </BottomSheet>
 
       <BottomSheet open={popup === 'join'} onClose={close} title="축하 남기기">
-        <JoinFlow onSubmit={handleAdd} scope={book.scope} />
+        <JoinFlow key={sceneStyle ?? 'any'} onSubmit={handleAdd} scope={book.scope} lockStyle={sceneStyle ?? undefined} />
       </BottomSheet>
 
       <BottomSheet
@@ -312,7 +319,7 @@ export function PixelStage() {
 
       {selected && (
         <GuestCard
-          entry={selected}
+          entry={entries.find((e) => e.id === selected.id) ?? selected}
           mine={myIds.has(selected.id)}
           onClose={() => setSelected(null)}
           onDelete={handleDelete}

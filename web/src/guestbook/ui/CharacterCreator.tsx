@@ -27,6 +27,8 @@ export interface CharacterCreatorProps {
    * 생략하면 이 컴포넌트가 떠 있는 동안만 기억한다.
    */
   memory?: { current: StyleMemory }
+  /** true 면 그림체 선택 카드를 숨긴다 (데모: 맵의 그림체로 고정) */
+  hideStyles?: boolean
 }
 
 const DIR_CYCLE: Dir[] = ['down', 'right', 'up', 'left']
@@ -34,7 +36,7 @@ const DIR_CYCLE: Dir[] = ['down', 'right', 'up', 'left']
 const BUST_ROWS = 21
 
 /** 그림체 선택 + 파츠별 선택 UI + 큰 미리보기 + 랜덤 버튼. 바텀시트(약 360~430px) 안에서 동작. */
-export function CharacterCreator({ value, onChange, memory }: CharacterCreatorProps) {
+export function CharacterCreator({ value, onChange, memory, hideStyles }: CharacterCreatorProps) {
   const [dir, setDir] = useState<Dir>('down')
   const ownMemory = useRef<StyleMemory>({})
   const mem = memory ?? ownMemory
@@ -69,28 +71,30 @@ export function CharacterCreator({ value, onChange, memory }: CharacterCreatorPr
 
   return (
     <div className="cc">
-      <div className="cc-styles" role="radiogroup" aria-label="그림체">
-        {STYLE_IDS.map((id) => {
-          const meta = STYLE_META[id]
-          const selected = id === styleId
-          return (
-            <button
-              type="button"
-              key={id}
-              role="radio"
-              aria-checked={selected}
-              className={`cc-style${selected ? ' is-selected' : ''}`}
-              onClick={() => switchStyle(id)}
-            >
-              <span className="cc-style-sample" aria-hidden="true">
-                <CharacterPreview kind={sampleOf(id)} dir="down" scale={2.4} />
-              </span>
-              <span className="cc-style-label">{meta.label}</span>
-              <span className="cc-style-desc">{meta.description}</span>
-            </button>
-          )
-        })}
-      </div>
+      {!hideStyles && (
+        <div className="cc-styles" role="radiogroup" aria-label="그림체">
+          {STYLE_IDS.map((id) => {
+            const meta = STYLE_META[id]
+            const selected = id === styleId
+            return (
+              <button
+                type="button"
+                key={id}
+                role="radio"
+                aria-checked={selected}
+                className={`cc-style${selected ? ' is-selected' : ''}`}
+                onClick={() => switchStyle(id)}
+              >
+                <span className="cc-style-sample" aria-hidden="true">
+                  <CharacterPreview kind={sampleOf(id)} dir="down" scale={2.4} />
+                </span>
+                <span className="cc-style-label">{meta.label}</span>
+                <span className="cc-style-desc">{meta.description}</span>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       <div className="cc-stage">
         <button

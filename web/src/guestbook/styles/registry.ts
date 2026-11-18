@@ -460,8 +460,15 @@ export function vectorBakeRatio(dpr?: number): number {
  * 도트 그림체는 원본 크기 캔버스를 돌려주므로 배율만큼 최근접 확대해 그리고,
  * 벡터 그림체는 그 배율(dpr 2 초과분은 뺀)로 구운 캔버스다. 어느 쪽이든 blitScale 을 곱해 그린다.
  */
-export function getSpriteAt(kind: SpriteKind, dir: Dir, frame: Frame, scale: number): HTMLCanvasElement | null {
-  const id = styleOf(kind)
+export function getSpriteAt(
+  kind: SpriteKind,
+  dir: Dir,
+  frame: Frame,
+  scale: number,
+  /** 신랑·신부처럼 외형에 그림체가 없는 캐릭터를 다른 그림체로 그릴 때 */
+  styleId: StyleId = styleOf(kind),
+): HTMLCanvasElement | null {
+  const id = styleId
   const style = loaded[id]
   if (!style) {
     autoLoadStyle(id)

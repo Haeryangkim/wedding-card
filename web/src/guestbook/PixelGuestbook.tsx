@@ -7,13 +7,18 @@ import { BottomSheet } from './ui/BottomSheet'
 import { JoinFlow } from './ui/JoinFlow'
 import { GuestList } from './ui/GuestList'
 import { GuestCard } from './ui/GuestCard'
+import { StyleSwitch } from './ui/StyleSwitch'
+import { useSceneStyle, useStyledEntries } from './sceneStyle'
 import './PixelGuestbook.css'
 
 type SheetKind = 'none' | 'join' | 'list'
 
 export function PixelGuestbook() {
   const { slug, isDemo, config } = useWedding()
-  const { mode, entries, loading, error, myIds, scope, reload, add, remove } = useGuestbook(slug, isDemo)
+  const { mode, entries: rawEntries, loading, error, myIds, scope, reload, add, remove } = useGuestbook(slug, isDemo)
+  // 데모: 한 맵에 한 그림체 — 보는 사람이 바꿔 볼 수 있다
+  const sceneStyle = useSceneStyle(isDemo)
+  const entries = useStyledEntries(rawEntries, sceneStyle)
   const [focusId, setFocusId] = useState<string | null>(null)
   // 같은 하객을 다시 "위치 보기" 해도 동작하도록, 포커스는 (id, 요청 번호) 쌍으로 전달한다.
   const [focusSeq, setFocusSeq] = useState(0)
@@ -59,6 +64,7 @@ export function PixelGuestbook() {
             데모 모드예요. 남긴 메시지는 이 기기에만 저장돼요.
           </p>
         )}
+        {sceneStyle && <StyleSwitch value={sceneStyle} className="pg-style" />}
       </header>
 
       <div className="pg-stage">
@@ -69,6 +75,7 @@ export function PixelGuestbook() {
           loaded={!loading}
           groomName={config.groom.name}
           brideName={config.bride.name}
+          coupleStyle={sceneStyle ?? undefined}
           onSelect={(entry) => setSelected(entry)}
           className="pg-world"
         />
@@ -84,7 +91,7 @@ export function PixelGuestbook() {
       </div>
 
       <BottomSheet open={sheet === 'join'} onClose={() => setSheet('none')} title="축하 남기기">
-        <JoinFlow onSubmit={handleAdd} scope={scope} />
+        <JoinFlow key={sceneStyle ?? 'any'} onSubmit={handleAdd} scope={scope} lockStyle={sceneStyle ?? undefined} />
       </BottomSheet>
 
       <BottomSheet
@@ -106,7 +113,7 @@ export function PixelGuestbook() {
 
       {selected && (
         <GuestCard
-          entry={selected}
+          entry={entries.find((e) => e.id === selected.id) ?? selected}
           mine={myIds.has(selected.id)}
           onClose={() => setSelected(null)}
           onDelete={handleDelete}

@@ -88,3 +88,8 @@
     transition: none;
   }
 }
+
+/* 데모: 그림체 스위치 */
+.pg-style {
+  margin-top: 10px;
+}

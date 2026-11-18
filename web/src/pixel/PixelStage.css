@@ -356,3 +356,21 @@ html.px-locked body {
     transform: none;
   }
 }
+
+/* 데모: 그림체 스위치 — 위쪽 바 아래 줄에 가운데로 */
+.px-top {
+  flex-wrap: wrap;
+}
+.px-style {
+  display: flex;
+  width: 100%;
+  margin: 0 8px 4px 0;
+}
+.px-style .style-switch__btn {
+  flex: 1;
+}
+.px-style .style-switch__btn {
+  min-height: 30px;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+}
