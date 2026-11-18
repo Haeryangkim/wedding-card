@@ -21,7 +21,7 @@ export type SpriteKind = Appearance | 'groom' | 'bride'
 
 export const DEFAULT_STYLE: StyleId = 'pixel'
 /** 만들기 화면에 보이는 순서 */
-export const STYLE_IDS: readonly StyleId[] = ['pixel', 'maple', 'forest']
+export const STYLE_IDS: readonly StyleId[] = ['pixel', 'maple', 'forest', 'doll']
 
 export const PART_KEYS: readonly PartKey[] = ['skin', 'hairStyle', 'hairColor', 'outfit', 'outfitColor', 'accessory']
 
@@ -109,6 +109,24 @@ export const STYLE_META: Readonly<Record<StyleId, StyleMeta>> = {
     bust: { top: 0.5, w: 26.5 },
     counts: { skin: 6, hairStyle: 11, hairColor: 10, outfit: 10, outfitColor: 12, accessory: 10 },
   },
+  doll: {
+    id: 'doll',
+    label: '도트 인형',
+    description: '손그림 같은 도트 인형',
+    nominalW: 190,
+    nominalH: 336,
+    footY: 329,
+    pixelated: false,
+    snap: false,
+    // 인물(머리 꼭대기~발)이 그림 높이의 약 88% — 다른 그림체와 키가 비슷해지는 값
+    worldH: 44,
+    headFrac: 0.9,
+    shadowR: 0,
+    halfW: 11,
+    sep: 1.15,
+    bust: { top: 30, w: 150 },
+    counts: { skin: 6, hairStyle: 14, hairColor: 10, outfit: 12, outfitColor: 12, accessory: 9 },
+  },
 }
 
 /** 스타일 모듈이 내놓는 것 (세 모듈이 같은 모양) */
@@ -134,7 +152,7 @@ export interface CharacterStyle extends StyleMeta {
 /* ── 정규화 (모듈 없이 동기) ─────────────────────────────── */
 
 export function toStyleId(v: unknown): StyleId {
-  return v === 'maple' || v === 'forest' ? v : DEFAULT_STYLE
+  return v === 'maple' || v === 'forest' || v === 'doll' ? v : DEFAULT_STYLE
 }
 
 /** 외형(또는 신랑/신부)의 그림체. style 이 없거나 모르는 값이면 기본 픽셀 */
@@ -190,6 +208,20 @@ export function normalizeAnyAppearance(raw: unknown): Appearance {
 export function randomAppearanceFor(id: StyleId, rnd: () => number = Math.random): Appearance {
   const c = STYLE_META[id].counts
   const pick = (n: number) => Math.min(n - 1, Math.floor(rnd() * n))
+  if (id === 'doll') {
+    // 도트 인형: 턱시도·웨딩드레스(0·1번)는 두 사람 몫으로 남기고, 옷은 대체로 그림 원래 색(0번)
+    return withStyle(
+      {
+        skin: pick(3),
+        hairStyle: pick(c.hairStyle),
+        hairColor: pick(5),
+        outfit: 2 + pick(c.outfit - 2),
+        outfitColor: rnd() < 0.6 ? 0 : 1 + pick(c.outfitColor - 1),
+        accessory: rnd() < 0.5 ? 0 : 1 + pick(c.accessory - 1),
+      },
+      id,
+    )
+  }
   return withStyle(
     {
       skin: pick(c.skin),
@@ -250,6 +282,17 @@ const importers: Record<Exclude<StyleId, 'pixel'>, Importer> = {
       getSprite: m.getSprite,
       clearCache: m.clearSpriteCache,
     })),
+  // 파츠 이미지를 다 받은 뒤에야 그릴 수 있다 — 그때까지는 "불러오는 중" 으로 둔다
+  doll: () =>
+    import('./doll').then((m) =>
+      m.load().then(() => ({
+        partDefs: m.PART_DEFS,
+        randomAppearance: m.randomAppearance,
+        normalizeAppearance: m.normalizeAppearance,
+        getSprite: m.getSprite,
+        clearCache: m.clearSpriteCache,
+      })),
+    ),
 }
 
 const pending: Partial<Record<StyleId, Promise<CharacterStyle>>> = {}

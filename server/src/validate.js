@@ -1,7 +1,7 @@
 /**
  * NewGuestInput 검증. web/src/guestbook/types.ts 의 LIMITS 와 Appearance 형태를 그대로 반영한다.
  *   name 1~12자, message 1~200자, password 4자 이상, side ∈ {groom,bride},
- *   appearance = 정확히 6개의 정수 필드(각 0..63) + 선택 필드 style ∈ {pixel, maple, forest}
+ *   appearance = 정확히 6개의 정수 필드(각 0..63) + 선택 필드 style ∈ {pixel, maple, forest, doll}
  *     (style 은 하객이 고른 그림체. 없으면 기본 픽셀 — 예전 클라이언트·저장된 글과 호환)
  * 성공 시 정제된 값을, 실패 시 { error } 를 돌려준다.
  */
@@ -14,7 +14,7 @@ const SIDES = new Set(['groom', 'bride'])
 const APPEARANCE_FIELDS = ['skin', 'hairStyle', 'hairColor', 'outfit', 'outfitColor', 'accessory']
 const APPEARANCE_MAX = 63
 /** 캐릭터 그림체 (web/src/guestbook/types.ts 의 CharacterStyleId) */
-const APPEARANCE_STYLES = new Set(['pixel', 'maple', 'forest'])
+const APPEARANCE_STYLES = new Set(['pixel', 'maple', 'forest', 'doll'])
 
 // 제어 문자(C0 + DEL)를 제거한다. 방명록은 한 줄 텍스트이므로 개행·탭도 제거.
 const CONTROL = /[\u0000-\u001F\u007F]/g

@@ -7,6 +7,7 @@ import type { Appearance, PartKey } from '../types'
 import * as pixel from '../character'
 import * as maple from './maple'
 import * as forest from './forest'
+import * as doll from './doll'
 import {
   appearanceKey,
   blitScale,
@@ -38,7 +39,7 @@ import {
 import { sanitizeEntry, sanitizeNewInput } from '../validate'
 import { buildSampleGuests } from '../sampleGuests'
 
-const modules = { pixel, maple, forest } as const
+const modules = { pixel, maple, forest, doll } as const
 const countsOf = (defs: { key: PartKey; options: unknown[] }[]) =>
   Object.fromEntries(defs.map((p) => [p.key, p.options.length]))
 
@@ -142,7 +143,8 @@ describe('랜덤 · 키', () => {
       expect(styleOf(a)).toBe(id)
       expect(normalizeAnyAppearance(a)).toEqual(a)
     }
-    expect(randomAppearanceFor(id, () => 0.999999)).toEqual(normalizeAnyAppearance({ ...HUGE, style: id }))
+    // 도트 인형은 랜덤 범위를 일부러 좁힌다 (밝은 피부 3종·자연스러운 머리 색 5종)
+    if (id !== 'doll') expect(randomAppearanceFor(id, () => 0.999999)).toEqual(normalizeAnyAppearance({ ...HUGE, style: id }))
   })
   it('appearanceKey 는 스타일이 다르면 다르다', () => {
     expect(appearanceKey(ZERO)).toBe(appearanceKey({ ...ZERO, style: 'pixel' }))

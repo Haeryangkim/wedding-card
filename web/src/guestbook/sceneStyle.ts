@@ -44,6 +44,17 @@ function subscribe(fn: () => void): () => void {
 /** 외형을 다른 그림체로 옮긴다 — 파츠 번호는 그대로 두고 그 그림체의 범위로만 자른다 */
 export function restyle(appearance: Appearance, id: StyleId): Appearance {
   if (styleOf(appearance) === id) return appearance
+  if (id === 'doll') {
+    // 도트 인형: 하객이 턱시도·웨딩드레스(0·1번)를 입지 않게 하고, 옷은 그림 원래 색으로
+    return normalizeAnyAppearance({
+      ...appearance,
+      outfit: 2 + (appearance.outfit % 10),
+      outfitColor: 0,
+      hairColor: appearance.hairColor % 5,
+      skin: appearance.skin % 3,
+      style: id,
+    })
+  }
   return normalizeAnyAppearance({ ...appearance, style: id })
 }
 

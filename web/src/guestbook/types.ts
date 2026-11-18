@@ -4,7 +4,7 @@
  */
 
 /** 캐릭터 그림체. 스타일마다 파츠 목록·개수가 다르므로 외형 인덱스는 스타일과 함께일 때만 의미가 있다 */
-export type CharacterStyleId = 'pixel' | 'maple' | 'forest'
+export type CharacterStyleId = 'pixel' | 'maple' | 'forest' | 'doll'
 
 /** 외형 파츠 — 각 값은 해당 스타일 옵션 배열의 인덱스 (0-based 정수) */
 export interface AppearanceParts {

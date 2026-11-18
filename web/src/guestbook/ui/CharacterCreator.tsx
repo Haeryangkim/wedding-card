@@ -53,6 +53,7 @@ export function CharacterCreator({ value, onChange, memory, hideStyles }: Charac
     pixel: randomAppearanceFor('pixel'),
     maple: randomAppearanceFor('maple'),
     forest: randomAppearanceFor('forest'),
+    doll: randomAppearanceFor('doll'),
   }))
   const sampleOf = (id: StyleId): Appearance => (id === styleId ? value : (mem.current[id] ?? fresh[id]))
 
