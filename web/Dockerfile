@@ -8,8 +8,8 @@ WORKDIR /app
 ARG VITE_BASE=/
 ARG VITE_SITE_URL=
 ARG VITE_API_URL=/
-# "1" 이면 비공개 시험용 그림체(msref · acref)를 켠다. 그 그림 파일은 저장소에 없으므로
-# 빌드 컨텍스트(src/guestbook/styles/{msref,acref}/assets)에 직접 만들어 둔 경우에만 실제로 나타난다.
+# "1" 이면 비공개 시험용 그림체(msref)를 켠다. 그 그림 파일은 저장소에 없으므로
+# 빌드 컨텍스트(src/guestbook/styles/msref/assets)에 직접 만들어 둔 경우에만 실제로 나타난다.
 ARG VITE_REF_STYLES=
 ENV VITE_BASE=$VITE_BASE \
     VITE_SITE_URL=$VITE_SITE_URL \

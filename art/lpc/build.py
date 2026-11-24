@@ -185,6 +185,12 @@ def recolor(px, src, dst):
         px[m, 0], px[m, 1], px[m, 2] = (b >> 16) & 255, (b >> 8) & 255, b & 255
 
 
+LENS = {
+    'spritesheets/facial/glasses/glasses/adult/walk.png': {(138, 190, 201): 70, (164, 221, 219): 70, (255, 255, 255): 110},
+    'spritesheets-sa/facial/glasses/round/adult/walk.png': {(255, 255, 255): 60, (219, 219, 219): 40},
+}
+
+
 def strip(path, z, kind, eyes=False):
     key = path
     if key in strip_index:
@@ -196,6 +202,10 @@ def strip(path, z, kind, eyes=False):
     for r, c, sx, sy in STRAY.get(path, []):
         assert im[r * CELL + sy, c * CELL + sx, 3] > 0, f'{path}: 지울 티끌이 없다'
         im[r * CELL + sy, c * CELL + sx] = 0
+    # 안경알: 원본은 불투명해서 눈을 가린다 → 눈이 비치도록 알만 옅게
+    for rgb, a in LENS.get(path, {}).items():
+        hit = (im[..., :3] == rgb).all(-1) & (im[..., 3] > 0)
+        im[hit, 3] = a
     if kind:
         snap(im, SRC[kind])
     if eyes:

@@ -11,10 +11,8 @@ import * as doll from './doll'
 import * as lpc from './lpc'
 import * as cabbit from './cabbit'
 import * as msref from './msref'
-import * as acref from './acref'
 import { ATLAS as LPC_ATLAS } from './lpc/assets/atlas'
 import * as msrefCatalog from './msref/catalog'
-import * as acrefRoster from './acref/roster'
 import {
   ALL_STYLE_IDS,
   appearanceKey,
@@ -56,13 +54,12 @@ import { sanitizeEntry, sanitizeNewInput } from '../validate'
 import { buildSampleGuests } from '../sampleGuests'
 import { restyle } from '../sceneStyle'
 
-const modules = { pixel, maple, forest, doll, lpc, cabbit, msref, acref } as const
+const modules = { pixel, maple, forest, doll, lpc, cabbit, msref } as const
 /** 누구에게나 보이는 그림체 (시험용 제외) */
 const PUBLIC_IDS = ALL_STYLE_IDS.filter((id) => !REF_STYLE_IDS.includes(id))
 /** 시험용 그림체의 그림 파일이 작업 폴더에 있는지 (저장소에는 없다 — 로컬에서 build.py 를 돌렸을 때만 있다) */
 const REF_ASSETS_PRESENT: Partial<Record<StyleId, boolean>> = {
   msref: Object.keys(import.meta.glob('./msref/assets/atlas.png')).length > 0,
-  acref: Object.keys(import.meta.glob('./acref/assets/atlas.webp')).length > 0,
 }
 /** web/public 의 저작자 표시 파일 (글 그대로) */
 const PUBLIC_TEXT = import.meta.glob<string>('../../../public/CREDITS*', { query: '?raw', import: 'default', eager: true })
@@ -98,7 +95,6 @@ describe('STYLE_META 는 모듈과 일치한다', () => {
     expect(size('lpc')).toEqual([lpc.LPC_W, lpc.LPC_H, lpc.LPC_FOOT_Y])
     expect(size('cabbit')).toEqual([cabbit.CABBIT_W, cabbit.CABBIT_H, cabbit.CABBIT_FOOT_Y])
     expect(size('msref')).toEqual([msref.SPRITE_W, msref.SPRITE_H, msref.FOOT_Y])
-    expect(size('acref')).toEqual([acref.ACREF_W, acref.ACREF_H, acref.ACREF_FOOT_Y])
   })
   it('화면에 보이는 이름에 게임 상표를 쓰지 않는다 (비공개 시험용 그림체는 예외)', () => {
     expect(STYLE_META.pixel.label).toBe('기본 픽셀')
@@ -135,7 +131,6 @@ describe('신랑·신부 몫 (GUEST_EXCLUDED) 은 모듈과 일치한다', () =>
   it('시험용 그림체: 목록 파일의 신랑·신부', () => {
     expect([msrefCatalog.GROOM.outfit, msrefCatalog.BRIDE.outfit]).toEqual(GUEST_EXCLUDED.msref?.outfit)
     expect([msrefCatalog.BRIDE.accessory]).toEqual(GUEST_EXCLUDED.msref?.accessory)
-    expect([acrefRoster.GROOM_INDEX, acrefRoster.BRIDE_INDEX]).toEqual(GUEST_EXCLUDED.acref?.hairStyle)
   })
   it('메이플(테스트): 여자 옷·짧은 머리·볼터치 얼굴 번호가 목록 파일과 같고, 랜덤이 그 규칙을 따른다', () => {
     const female = msrefCatalog.OUTFITS.flatMap((o, i) => (Math.floor(o.items[0] / 1000) % 10 === 1 ? [i] : []))

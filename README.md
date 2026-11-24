@@ -229,7 +229,7 @@ npm test               # node --test (외부 의존성 없음, 실제 네트워�
 | `VITE_BASE` | 서빙 하위 경로. 자체 도메인/도커는 `/`, GitHub Pages 프로젝트 페이지는 `/<repo>/` | `/` |
 | `VITE_SITE_URL` | 배포된 사이트의 절대 URL(랜딩·데모의 OG 미리보기·캘린더 링크). 예 `https://our.wedding/` | (빈 값) |
 | `VITE_API_URL` | 플랫폼 API 주소. `/` = 같은 오리진(`/api`), **빈 값 = 데모 전용**, 그 외 = 해당 서버 | (빈 값) |
-| `VITE_REF_STYLES` | `1` 이면 비공개 시험용 캐릭터 그림체(타사 게임 그림을 그대로 쓴 `msref`·`acref`)를 켭니다. 그림 파일이 저장소에 없으므로 `art/msref/build.py`·`art/acref/build.py` 로 만들어 둔 컴퓨터에서 빌드할 때만 나타납니다. **공개 배포에서는 비워 두세요** | (빈 값) |
+| `VITE_REF_STYLES` | `1` 이면 비공개 시험용 캐릭터 그림체(타사 게임 그림을 그대로 쓴 `msref`)를 켭니다. 그림 파일이 저장소에 없으므로 `art/msref/build.py` 로 만들어 둔 컴퓨터에서 빌드할 때만 나타납니다. **공개 배포에서는 비워 두세요** | (빈 값) |
 
 ### API 서버
 
@@ -330,7 +330,7 @@ Pages 프론트를 따로 띄운 API 에 연결하려면, API 서버의 `CORS_OR
 - 원본 시트는 `art/<그림체>/raw/` 에 함께 들어 있고, `art/<그림체>/build.py` 가 앱용 아틀라스(`web/src/guestbook/styles/<그림체>/assets/`)를 다시 만듭니다.
   `python -I art/lpc/build.py --no-sa` 는 CC-BY-SA 파츠를 빼고 만듭니다 (신랑·신부 의상과 옵션 개수가 달라지므로 `registry.ts` 의 개수도 함께 고쳐야 합니다).
 - `art/lpc/build.py` 를 다시 돌렸다면 `web/src/guestbook/styles/lpc/assets/credits.csv` 를 `web/public/CREDITS-lpc.csv` 로 복사합니다 (테스트가 두 파일이 같은지 확인합니다).
-- `msref`·`acref` 는 타사 게임 그림을 그대로 쓴 **비공개 품질 시험용**입니다. 그림 파일은 저장소에 올리지 않으며(`.gitignore`),
+- `msref` 는 타사 게임 그림을 그대로 쓴 **비공개 품질 시험용**입니다. 그림 파일은 저장소에 올리지 않으며(`.gitignore`),
   `VITE_REF_STYLES=1` 로 빌드하고 그림 파일이 있을 때만 나타납니다. 그 밖의 빌드에서는 번들에 들어가지 않고, 그 그림체로 저장된 하객은 기본 픽셀로 보입니다.
 
 ---

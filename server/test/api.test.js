@@ -128,7 +128,7 @@ test('캐릭터 그림체(style)는 선택 필드: 저장되어 그대로 돌아
   try {
     await createWedding(fresh.base, SLUG)
     const parts = { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 0 }
-    const styles = ['pixel', 'maple', 'forest', 'doll', 'lpc', 'cabbit', 'msref', 'acref']
+    const styles = ['pixel', 'maple', 'forest', 'doll', 'lpc', 'cabbit', 'msref']
     for (const style of styles) {
       const res = await postGuest(fresh.base, SLUG, validGuest({ name: style, appearance: { ...parts, style } }))
       assert.equal(res.status, 201, `style ${style}`)

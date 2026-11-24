@@ -11,7 +11,7 @@ import { buildIcs, weddingEvent } from './src/lib/ics.ts'
  *  - VITE_SITE_URL     : 배포된 서비스의 절대 URL (예: https://user.github.io/wedding-card/). OG 태그·공유 링크에 사용
  *  - VITE_API_URL      : API 주소. 비어 있으면 서버 없는 데모 빌드, "/" 면 같은 오리진(/api), 그 외엔 해당 서버
  *  - VITE_KAKAO_JS_KEY : (선택) 카카오 JavaScript 키 — 카카오내비 공식 길안내. 없으면 키 없이 동작하는 방식으로 대체
- *  - VITE_REF_STYLES   : (선택) "1" 이면 비공개 시험용 캐릭터 그림체(msref · acref)를 켠다. 그 밖의 값이면 그 모듈·그림이
+ *  - VITE_REF_STYLES   : (선택) "1" 이면 비공개 시험용 캐릭터 그림체(msref)를 켠다. 그 밖의 값이면 그 모듈·그림이
  *                        번들에서 통째로 빠진다 (src/guestbook/styles/registry.ts). 공개 배포에서는 비워 둔다
  */
 const base = process.env.VITE_BASE ?? '/'

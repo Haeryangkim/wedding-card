@@ -7,7 +7,7 @@
  *  - doll   : 도트 인형 (./doll, 구운 파츠 이미지)
  *  - lpc    : LPC 도트 (./lpc)   — 오픈 라이선스 도트(Liberated Pixel Cup) 조합
  *  - cabbit : RPG 치비 (./cabbit) — 오픈 라이선스 도트(Stendhal / Cabbit) 조합
- *  - msref · acref : 타사 게임 그림을 그대로 쓴 비공개 품질 시험용. VITE_REF_STYLES=1 로 빌드했고
+ *  - msref : 타사 게임 그림을 그대로 쓴 비공개 품질 시험용. VITE_REF_STYLES=1 로 빌드했고
  *    (저장소에 올리지 않는) 에셋이 그 빌드에 들어 있을 때만 쓸 수 있다 — 아니면 목록에서 빠지고 기본 픽셀로 보정된다.
  *
  * 스타일마다 파츠 목록·개수가 달라 외형 인덱스는 스타일과 함께일 때만 의미가 있다.
@@ -26,9 +26,9 @@ export type SpriteKind = Appearance | 'groom' | 'bride'
 
 export const DEFAULT_STYLE: StyleId = 'pixel'
 /** 등록된 모든 그림체 (이 빌드에서 쓸 수 없는 것 포함) — 만들기 화면에 보이는 순서 */
-export const ALL_STYLE_IDS: readonly StyleId[] = ['pixel', 'maple', 'forest', 'doll', 'lpc', 'cabbit', 'msref', 'acref']
+export const ALL_STYLE_IDS: readonly StyleId[] = ['pixel', 'maple', 'forest', 'doll', 'lpc', 'cabbit', 'msref']
 /** 타사 게임 그림을 그대로 쓴 비공개 시험용 그림체 — 그림 파일은 저장소에 없다 */
-export const REF_STYLE_IDS: readonly StyleId[] = ['msref', 'acref']
+export const REF_STYLE_IDS: readonly StyleId[] = ['msref']
 
 /**
  * 시험용 그림체를 켜는 빌드 스위치 (VITE_REF_STYLES=1). 꺼져 있으면 아래의 glob·동적 import 가 통째로 빠져
@@ -39,7 +39,6 @@ const REF_STYLES_ON = import.meta.env.VITE_REF_STYLES === '1'
 const REF_ASSETS: Partial<Record<StyleId, boolean>> = REF_STYLES_ON
   ? {
       msref: Object.keys(import.meta.glob('./msref/assets/atlas.png', { query: '?url', import: 'default' })).length > 0,
-      acref: Object.keys(import.meta.glob('./acref/assets/atlas.webp', { query: '?url', import: 'default' })).length > 0,
     }
   : {}
 
@@ -224,28 +223,6 @@ export const STYLE_META: Readonly<Record<StyleId, StyleMeta>> = {
     // outfitColor 칸은 "얼굴" 고르기로 쓴다 (원본에 옷 색 변형이 없다)
     counts: { skin: 6, hairStyle: 16, hairColor: 8, outfit: 16, outfitColor: 6, accessory: 16 },
   },
-  acref: {
-    id: 'acref',
-    label: '동숲 (테스트)',
-    description: '참고 게임의 주민 그림을 그대로 사용 (비공개 시험용)',
-    // = ./acref/roster.ts 의 SPRITE_W / SPRITE_H / FOOT_Y
-    nominalW: 430,
-    nominalH: 383,
-    footY: 367,
-    pixelated: false,
-    snap: false,
-    // 가장 큰 주민(귀 포함 341)이 약 40 논리 px, 작은 주민(278)이 약 33
-    worldH: 45,
-    headFrac: 0.85,
-    shadowR: 0, // 그림자는 스프라이트에 들어 있다
-    halfW: 12,
-    sep: 1.2,
-    // 썸네일은 전신: 고르는 것이 "주민 통째" 와 "손에 든 소품" 이라, 얼굴만 키우면 소품이 상자 밖으로 잘린다.
-    // 가로 340 = 중심에서 좌우 170 (바깥으로 눕힌 풍선까지 거의 다 들어온다), 위 16 = 가장 큰 주민의 귀 끝(26) 조금 위
-    bust: { top: 16, w: 340 },
-    // 통짜 그림이라 주민(hairStyle)과 손에 든 소품(accessory)만 고른다
-    counts: { skin: 1, hairStyle: 36, hairColor: 1, outfit: 1, outfitColor: 1, accessory: 13 },
-  },
 }
 
 /**
@@ -257,7 +234,6 @@ export const GUEST_EXCLUDED: Readonly<Partial<Record<StyleId, Readonly<Partial<R
   lpc: { outfit: [0, 1], accessory: [10] }, // + 티아라
   cabbit: { outfit: [0, 1], accessory: [12], hairStyle: [17] }, // + 면사포, 민머리
   msref: { outfit: [0, 1], accessory: [15] }, // + 웨딩 베일
-  acref: { hairStyle: [0, 1] }, // 신랑·신부 몫의 두 주민
 }
 
 /** LPC 도트: 의상 묶음이 몸(남/여)을 정한다 — 9번부터(와 1번 웨딩드레스)가 여자 몸. 머리 모양은 0~7 짧은 머리, 8~ 긴 머리 */
@@ -421,20 +397,6 @@ export function randomAppearanceFor(id: StyleId, rnd: () => number = Math.random
       id,
     )
   }
-  if (id === 'acref') {
-    // 시험용 그림체: 신랑·신부 몫만 빼고 고르게 (옵션이 하나뿐인 칸은 0)
-    return withStyle(
-      {
-        skin: pick(c.skin),
-        hairStyle: guest('hairStyle'),
-        hairColor: pick(c.hairColor),
-        outfit: guest('outfit'),
-        outfitColor: pick(c.outfitColor),
-        accessory: rnd() < 0.5 ? 0 : guest('accessory'),
-      },
-      id,
-    )
-  }
   if (id === 'doll') {
     // 도트 인형: 턱시도·웨딩드레스(0·1번)는 두 사람 몫으로 남기고, 옷은 대체로 그림 원래 색(0번)
     return withStyle(
@@ -554,18 +516,6 @@ const importers: Record<Exclude<StyleId, 'pixel'>, Importer> = {
           })),
         )
     : unavailable('msref'),
-  acref: REF_STYLES_ON
-    ? () =>
-        import('./acref').then((m) =>
-          m.load().then(() => ({
-            partDefs: m.PART_DEFS,
-            randomAppearance: m.randomAppearance,
-            normalizeAppearance: m.normalizeAppearance,
-            getSprite: m.getSprite,
-            clearCache: m.clearSpriteCache,
-          })),
-        )
-    : unavailable('acref'),
 }
 
 function unavailable(id: StyleId): Importer {
