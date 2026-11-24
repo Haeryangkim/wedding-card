@@ -7,6 +7,9 @@
  *  - doll   : 도트 인형 (./doll, 구운 파츠 이미지)
  *  - lpc    : LPC 도트 (./lpc)   — 오픈 라이선스 도트(Liberated Pixel Cup) 조합
  *  - cabbit : RPG 치비 (./cabbit) — 오픈 라이선스 도트(Stendhal / Cabbit) 조합
+ *  - nemo   : 네모 친구 (./nemo, 벡터) — CC0 캐릭터 팩의 모양을 걷는 리그로 다시 그린 것
+ *  - kaykit : 3D 모험가 (./kaykit) — CC0 3D 모델을 빌드 때 렌더링해 구운 스프라이트 조합
+ *  - chibi  : 손그림 치비 — 재배포 허락이 불분명한 무료 팩이라 msref 처럼 비공개 시험용
  *  - msref : 타사 게임 그림을 그대로 쓴 비공개 품질 시험용. VITE_REF_STYLES=1 로 빌드했고
  *    (저장소에 올리지 않는) 에셋이 그 빌드에 들어 있을 때만 쓸 수 있다 — 아니면 목록에서 빠지고 기본 픽셀로 보정된다.
  *
@@ -26,9 +29,9 @@ export type SpriteKind = Appearance | 'groom' | 'bride'
 
 export const DEFAULT_STYLE: StyleId = 'pixel'
 /** 등록된 모든 그림체 (이 빌드에서 쓸 수 없는 것 포함) — 만들기 화면에 보이는 순서 */
-export const ALL_STYLE_IDS: readonly StyleId[] = ['pixel', 'maple', 'forest', 'doll', 'lpc', 'cabbit', 'msref']
+export const ALL_STYLE_IDS: readonly StyleId[] = ['pixel', 'maple', 'forest', 'doll', 'lpc', 'cabbit', 'nemo', 'kaykit', 'chibi', 'msref']
 /** 타사 게임 그림을 그대로 쓴 비공개 시험용 그림체 — 그림 파일은 저장소에 없다 */
-export const REF_STYLE_IDS: readonly StyleId[] = ['msref']
+export const REF_STYLE_IDS: readonly StyleId[] = ['chibi', 'msref']
 
 /**
  * 시험용 그림체를 켜는 빌드 스위치 (VITE_REF_STYLES=1). 꺼져 있으면 아래의 glob·동적 import 가 통째로 빠져
@@ -38,6 +41,7 @@ const REF_STYLES_ON = import.meta.env.VITE_REF_STYLES === '1'
 /** 시험용 그림체의 그림 파일이 이 빌드에 들어 있는지 (저장소에서 바로 빌드하면 없다) */
 const REF_ASSETS: Partial<Record<StyleId, boolean>> = REF_STYLES_ON
   ? {
+      chibi: Object.keys(import.meta.glob('./chibi/assets/atlas.png', { query: '?url', import: 'default' })).length > 0,
       msref: Object.keys(import.meta.glob('./msref/assets/atlas.png', { query: '?url', import: 'default' })).length > 0,
     }
   : {}
@@ -198,6 +202,63 @@ export const STYLE_META: Readonly<Record<StyleId, StyleMeta>> = {
     counts: { skin: 6, hairStyle: 18, hairColor: 11, outfit: 18, outfitColor: 12, accessory: 13 },
     credits: true,
   },
+  nemo: {
+    id: 'nemo',
+    label: '네모 친구',
+    description: '납작하고 동글동글한 캐릭터',
+    nominalW: 40,
+    nominalH: 42,
+    footY: 41.25,
+    pixelated: false,
+    snap: false,
+    // 머리가 아주 넓어(명목 31~36) 명목 높이대로 그리면 다른 그림체보다 커 보여 조금 줄인다 — 인물 약 33 논리 px
+    worldH: 41,
+    headFrac: 0.8,
+    shadowR: 9,
+    halfW: 14,
+    sep: 1.3,
+    bust: { top: 2, w: 38 },
+    counts: { skin: 6, hairStyle: 14, hairColor: 12, outfit: 10, outfitColor: 12, accessory: 10 },
+    credits: true,
+  },
+  kaykit: {
+    id: 'kaykit',
+    label: '3D 모험가',
+    description: '입체 로우폴리 모험가 캐릭터',
+    nominalW: 200,
+    nominalH: 256,
+    footY: 240,
+    pixelated: false,
+    snap: false,
+    // 맨머리 인물이 그림 높이의 75% (192/256) — 약 37 논리 px
+    worldH: 50,
+    headFrac: 0.75,
+    shadowR: 0,
+    halfW: 12,
+    sep: 1.2,
+    bust: { top: 26, w: 128 },
+    counts: { skin: 6, hairStyle: 6, hairColor: 10, outfit: 11, outfitColor: 12, accessory: 13 },
+    credits: true,
+  },
+  chibi: {
+    id: 'chibi',
+    label: '손그림 치비 (테스트)',
+    description: '손으로 그린 2등신 캐릭터 (비공개 시험용)',
+    // = ./chibi/catalog.ts 의 CHIBI_W / CHIBI_H / CHIBI_FOOT_Y
+    nominalW: 160,
+    nominalH: 246,
+    footY: 240,
+    pixelated: false,
+    snap: false,
+    worldH: 46,
+    headFrac: 0.89,
+    shadowR: 0,
+    halfW: 12,
+    sep: 1.2,
+    bust: { top: 14, w: 104 },
+    // outfitColor 칸은 "얼굴" 고르기로 쓴다
+    counts: { skin: 6, hairStyle: 17, hairColor: 10, outfit: 18, outfitColor: 8, accessory: 9 },
+  },
   msref: {
     id: 'msref',
     label: '메이플 (테스트)',
@@ -233,6 +294,9 @@ export const GUEST_EXCLUDED: Readonly<Partial<Record<StyleId, Readonly<Partial<R
   doll: { outfit: [0, 1] }, // 턱시도 · 웨딩드레스
   lpc: { outfit: [0, 1], accessory: [10] }, // + 티아라
   cabbit: { outfit: [0, 1], accessory: [12], hairStyle: [17] }, // + 면사포, 민머리
+  nemo: { outfit: [0, 1], accessory: [9] }, // + 면사포
+  kaykit: { outfit: [0, 1], accessory: [12] }, // + 면사포와 부케
+  chibi: { outfit: [0, 1], accessory: [8] }, // + 면사포
   msref: { outfit: [0, 1], accessory: [15] }, // + 웨딩 베일
 }
 
@@ -247,6 +311,17 @@ export const LPC_SHORT_HAIRS = 8
 export const MSREF_FEMALE_OUTFITS: readonly number[] = [1, 4, 5, 7, 9, 12, 14]
 export const MSREF_SHORT_HAIRS = 7
 export const MSREF_BLUSH_FACE = 2
+
+/** 네모 친구: 치마·원피스 차림(긴 머리와 주로 묶는다), 짧은 머리 개수, 콧수염 번호 — ./nemo 와 같은 값 */
+export const NEMO_SKIRT_OUTFITS: readonly number[] = [4, 5, 9]
+export const NEMO_SHORT_HAIRS = 7
+export const NEMO_MOUSTACHE = 6
+/** 3D 모험가: 후드 머리(5번)에는 모자류 액세서리를 주지 않는다 — ./kaykit 의 randomAppearance 와 같은 규칙 */
+export const KAYKIT_HOOD_HAIR = 5
+export const KAYKIT_HAT_ACCESSORIES: readonly number[] = [1, 2, 3, 5, 11]
+/** 손그림 치비(테스트): 여자 옷 번호, 짧은 머리 개수 — ./chibi/catalog.ts 와 같은 값 */
+export const CHIBI_FEMALE_OUTFITS: readonly number[] = [1, 10, 11, 12, 13, 14, 15, 16, 17]
+export const CHIBI_SHORT_HAIRS = 8
 
 const guestChoiceCache = new Map<string, readonly number[]>()
 /** 하객이 랜덤으로 받을 수 있는 번호 목록 (액세서리는 0 = 없음을 뺀 것) */
@@ -397,6 +472,53 @@ export function randomAppearanceFor(id: StyleId, rnd: () => number = Math.random
       id,
     )
   }
+  if (id === 'nemo') {
+    const outfit = guest('outfit')
+    const skirt = NEMO_SKIRT_OUTFITS.includes(outfit)
+    const hairStyle =
+      rnd() < 0.75
+        ? skirt
+          ? NEMO_SHORT_HAIRS + pick(c.hairStyle - NEMO_SHORT_HAIRS)
+          : pick(NEMO_SHORT_HAIRS)
+        : pick(c.hairStyle)
+    let accessory = rnd() < 0.45 ? 0 : guest('accessory')
+    if (accessory === NEMO_MOUSTACHE && (skirt || hairStyle >= NEMO_SHORT_HAIRS)) accessory = 0
+    return withStyle(
+      { skin: pick(c.skin), hairStyle, hairColor: rnd() < 0.6 ? pick(4) : pick(c.hairColor), outfit, outfitColor: pick(c.outfitColor), accessory },
+      id,
+    )
+  }
+  if (id === 'kaykit') {
+    const hairStyle = pick(c.hairStyle)
+    let accessory = rnd() < 0.5 ? 0 : guest('accessory')
+    if (hairStyle === KAYKIT_HOOD_HAIR && KAYKIT_HAT_ACCESSORIES.includes(accessory)) accessory = 0
+    return withStyle(
+      {
+        skin: rnd() < 0.7 ? pick(3) : pick(c.skin),
+        hairStyle,
+        hairColor: rnd() < 0.65 ? pick(4) : pick(c.hairColor),
+        outfit: guest('outfit'),
+        outfitColor: rnd() < 0.5 ? 0 : 1 + pick(c.outfitColor - 1),
+        accessory,
+      },
+      id,
+    )
+  }
+  if (id === 'chibi') {
+    const outfit = guest('outfit')
+    const long = rnd() < (CHIBI_FEMALE_OUTFITS.includes(outfit) ? 0.85 : 0.15)
+    return withStyle(
+      {
+        skin: rnd() < 0.6 ? pick(2) : pick(c.skin),
+        hairStyle: long ? CHIBI_SHORT_HAIRS + pick(c.hairStyle - CHIBI_SHORT_HAIRS) : pick(CHIBI_SHORT_HAIRS),
+        hairColor: rnd() < 0.7 ? pick(4) : pick(c.hairColor),
+        outfit,
+        outfitColor: pick(c.outfitColor),
+        accessory: rnd() < 0.5 ? 0 : guest('accessory'),
+      },
+      id,
+    )
+  }
   if (id === 'doll') {
     // 도트 인형: 턱시도·웨딩드레스(0·1번)는 두 사람 몫으로 남기고, 옷은 대체로 그림 원래 색(0번)
     return withStyle(
@@ -503,6 +625,36 @@ const importers: Record<Exclude<StyleId, 'pixel'>, Importer> = {
         clearCache: m.clearSpriteCache,
       })),
     ),
+  nemo: () =>
+    import('./nemo').then((m) => ({
+      partDefs: m.PART_DEFS,
+      randomAppearance: m.randomAppearance,
+      normalizeAppearance: m.normalizeAppearance,
+      getSprite: m.getSprite,
+      clearCache: m.clearSpriteCache,
+    })),
+  kaykit: () =>
+    import('./kaykit').then((m) =>
+      m.load().then(() => ({
+        partDefs: m.PART_DEFS,
+        randomAppearance: m.randomAppearance,
+        normalizeAppearance: m.normalizeAppearance,
+        getSprite: m.getSprite,
+        clearCache: m.clearSpriteCache,
+      })),
+    ),
+  chibi: REF_STYLES_ON
+    ? () =>
+        import('./chibi').then((m) =>
+          m.load().then(() => ({
+            partDefs: m.PART_DEFS,
+            randomAppearance: m.randomAppearance,
+            normalizeAppearance: m.normalizeAppearance,
+            getSprite: m.getSprite,
+            clearCache: m.clearSpriteCache,
+          })),
+        )
+    : unavailable('chibi'),
   // 시험용 그림체: 스위치가 꺼진 빌드에서는 import 자체가 없어 모듈·그림이 번들에 들어가지 않는다
   msref: REF_STYLES_ON
     ? () =>

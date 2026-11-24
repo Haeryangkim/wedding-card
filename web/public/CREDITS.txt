@@ -31,6 +31,18 @@ Character sprites from the Stendhal project (https://stendhalgame.org, https://g
 CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
 
 
+3. "네모 친구" (nemo) — Character Creation Asset Pack
+-----------------------------------------------------
+
+Character Creation Asset Pack by nonemo (https://nonemo.itch.io/character-creation-asset-pack), CC0 1.0. Shapes were redrawn as canvas vectors, cut into a walking rig, recoloured and extended with our own parts.
+
+
+4. "3D 모험가" (kaykit) — KayKit Adventurers
+--------------------------------------------
+
+3D characters: "KayKit : Adventurers Character Pack" by Kay Lousberg (www.kaylousberg.com), CC0 1.0. Models were rendered to sprites, recoloured and combined for this app.
+
+
 Licence texts
 -------------
 

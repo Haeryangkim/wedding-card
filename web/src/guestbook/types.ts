@@ -6,10 +6,12 @@
 /**
  * 캐릭터 그림체. 스타일마다 파츠 목록·개수가 다르므로 외형 인덱스는 스타일과 함께일 때만 의미가 있다.
  *  - lpc · cabbit : 오픈 라이선스 도트를 조합한 그림체 (저작자 표시: public/CREDITS.txt)
+ *  - nemo · kaykit : CC0 그림(2D 벡터 / 3D 렌더)을 조합한 그림체
+ *  - chibi: 재배포 허락이 불분명한 무료 팩 — msref 와 같은 비공개 시험용
  *  - msref: 타사 게임 그림을 그대로 쓴 비공개 시험용 — VITE_REF_STYLES=1 로 빌드하고 에셋이 있을 때만 쓸 수 있다
  *    (그 밖의 빌드에서는 기본 픽셀로 보정된다 — guestbook/styles/registry.ts)
  */
-export type CharacterStyleId = 'pixel' | 'maple' | 'forest' | 'doll' | 'lpc' | 'cabbit' | 'msref'
+export type CharacterStyleId = 'pixel' | 'maple' | 'forest' | 'doll' | 'lpc' | 'cabbit' | 'nemo' | 'kaykit' | 'chibi' | 'msref'
 
 /** 외형 파츠 — 각 값은 해당 스타일 옵션 배열의 인덱스 (0-based 정수) */
 export interface AppearanceParts {

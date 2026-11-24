@@ -11,6 +11,9 @@ import * as doll from './doll'
 import * as lpc from './lpc'
 import * as cabbit from './cabbit'
 import * as msref from './msref'
+import * as nemo from './nemo'
+import * as kaykit from './kaykit'
+import * as chibi from './chibi'
 import { ATLAS as LPC_ATLAS } from './lpc/assets/atlas'
 import * as msrefCatalog from './msref/catalog'
 import {
@@ -26,6 +29,11 @@ import {
   GUEST_EXCLUDED,
   headHeight,
   isStyleLoaded,
+  CHIBI_FEMALE_OUTFITS,
+  CHIBI_SHORT_HAIRS,
+  NEMO_MOUSTACHE,
+  NEMO_SHORT_HAIRS,
+  NEMO_SKIRT_OUTFITS,
   LPC_FEMALE_OUTFIT_FROM,
   LPC_SHORT_HAIRS,
   loadStyle,
@@ -54,12 +62,13 @@ import { sanitizeEntry, sanitizeNewInput } from '../validate'
 import { buildSampleGuests } from '../sampleGuests'
 import { restyle } from '../sceneStyle'
 
-const modules = { pixel, maple, forest, doll, lpc, cabbit, msref } as const
+const modules = { pixel, maple, forest, doll, lpc, cabbit, nemo, kaykit, chibi, msref } as const
 /** 누구에게나 보이는 그림체 (시험용 제외) */
 const PUBLIC_IDS = ALL_STYLE_IDS.filter((id) => !REF_STYLE_IDS.includes(id))
 /** 시험용 그림체의 그림 파일이 작업 폴더에 있는지 (저장소에는 없다 — 로컬에서 build.py 를 돌렸을 때만 있다) */
 const REF_ASSETS_PRESENT: Partial<Record<StyleId, boolean>> = {
   msref: Object.keys(import.meta.glob('./msref/assets/atlas.png')).length > 0,
+  chibi: Object.keys(import.meta.glob('./chibi/assets/atlas.png')).length > 0,
 }
 /** web/public 의 저작자 표시 파일 (글 그대로) */
 const PUBLIC_TEXT = import.meta.glob<string>('../../../public/CREDITS*', { query: '?raw', import: 'default', eager: true })
@@ -95,6 +104,9 @@ describe('STYLE_META 는 모듈과 일치한다', () => {
     expect(size('lpc')).toEqual([lpc.LPC_W, lpc.LPC_H, lpc.LPC_FOOT_Y])
     expect(size('cabbit')).toEqual([cabbit.CABBIT_W, cabbit.CABBIT_H, cabbit.CABBIT_FOOT_Y])
     expect(size('msref')).toEqual([msref.SPRITE_W, msref.SPRITE_H, msref.FOOT_Y])
+    expect(size('nemo')).toEqual([nemo.NEMO_W, nemo.NEMO_H, nemo.NEMO_FOOT_Y])
+    expect(size('kaykit')).toEqual([kaykit.KAYKIT_W, kaykit.KAYKIT_H, kaykit.KAYKIT_FOOT_Y])
+    expect(size('chibi')).toEqual([chibi.SPRITE_W, chibi.SPRITE_H, chibi.FOOT_Y])
   })
   it('화면에 보이는 이름에 게임 상표를 쓰지 않는다 (비공개 시험용 그림체는 예외)', () => {
     expect(STYLE_META.pixel.label).toBe('기본 픽셀')
@@ -108,7 +120,7 @@ describe('STYLE_META 는 모듈과 일치한다', () => {
     expect(ALL_STYLE_IDS[0]).toBe('pixel')
   })
   it('오픈 라이선스 그림체는 저작자 표시 링크를 단다', () => {
-    expect(ALL_STYLE_IDS.filter((id) => STYLE_META[id].credits)).toEqual(['lpc', 'cabbit'])
+    expect(ALL_STYLE_IDS.filter((id) => STYLE_META[id].credits)).toEqual(['lpc', 'cabbit', 'nemo', 'kaykit'])
   })
 })
 
@@ -127,6 +139,18 @@ describe('신랑·신부 몫 (GUEST_EXCLUDED) 은 모듈과 일치한다', () =>
     expect(label('outfit', 1)).toBe('웨딩드레스')
     expect(label('accessory', GUEST_EXCLUDED.cabbit!.accessory![0])).toBe('면사포')
     expect(label('hairStyle', GUEST_EXCLUDED.cabbit!.hairStyle![0])).toBe('민머리')
+  })
+  it('네모 친구 · 3D 모험가 · 손그림 치비: 신랑·신부 몫과 랜덤 규칙의 번호가 모듈과 같다', () => {
+    expect(nemo.COUPLE_OUTFITS).toEqual(GUEST_EXCLUDED.nemo?.outfit)
+    expect([nemo.VEIL_ACCESSORY]).toEqual(GUEST_EXCLUDED.nemo?.accessory)
+    expect(nemo.OUTFITS.flatMap((o, i) => (o.feminine ? [i] : [])).filter((i) => i > 1)).toEqual(NEMO_SKIRT_OUTFITS)
+    expect([nemo.SHORT_HAIRS, nemo.MOUSTACHE_ACCESSORY]).toEqual([NEMO_SHORT_HAIRS, NEMO_MOUSTACHE])
+    expect(kaykit.COUPLE_OUTFITS).toEqual(GUEST_EXCLUDED.kaykit?.outfit)
+    expect(kaykit.COUPLE_ACCESSORIES).toEqual(GUEST_EXCLUDED.kaykit?.accessory)
+    expect(chibi.COUPLE_OUTFITS).toEqual(GUEST_EXCLUDED.chibi?.outfit)
+    expect([chibi.COUPLE_ACCESSORY]).toEqual(GUEST_EXCLUDED.chibi?.accessory)
+    expect(chibi.FEMALE_OUTFITS).toEqual(CHIBI_FEMALE_OUTFITS)
+    expect(chibi.SHORT_HAIRS).toBe(CHIBI_SHORT_HAIRS)
   })
   it('시험용 그림체: 목록 파일의 신랑·신부', () => {
     expect([msrefCatalog.GROOM.outfit, msrefCatalog.BRIDE.outfit]).toEqual(GUEST_EXCLUDED.msref?.outfit)
@@ -289,7 +313,7 @@ describe('데모 장면의 그림체 바꾸기 (restyle)', () => {
     }
   })
   it('새 그림체로 옮겨도 하객들이 한 모습으로 몰리지 않는다', () => {
-    for (const id of ['lpc', 'cabbit'] as const) {
+    for (const id of ['lpc', 'cabbit', 'nemo', 'kaykit'] as const) {
       const looks = new Set(guests.map((g) => appearanceKey(restyle(g.appearance, id))))
       expect(looks.size).toBeGreaterThanOrEqual(guests.length - 1)
       const outfits = new Set(guests.map((g) => restyle(g.appearance, id).outfit))

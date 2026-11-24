@@ -326,10 +326,12 @@ Pages 프론트를 따로 띄운 API 에 연결하려면, API 서버의 `CORS_OR
 |---|---|---|---|
 | LPC 도트 (`lpc`) | [Liberated Pixel Cup](http://opengameart.org/content/lpc-collection) 캐릭터 — [Universal LPC Spritesheet Character Generator](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator) 에서 고른 파츠 | OGA-BY 3.0 / CC-BY 3.0 (일부 CC0). 턱시도 재킷·조끼·넥타이·티아라·모자·안경 일부는 **CC-BY-SA 3.0** 이라, 조합된 캐릭터 그림도 같은 조건으로 공개됩니다 (그림에만 해당, 앱 코드는 아님) | [`art/lpc/LICENSE.md`](art/lpc/LICENSE.md), 파일별 목록 [`web/public/CREDITS-lpc.csv`](web/public/CREDITS-lpc.csv) |
 | RPG 치비 (`cabbit`) | [Stendhal](https://stendhalgame.org) 프로젝트의 의상 스프라이트 — Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge) 외 | OGA-BY 3.0 / CC-BY 3.0, 몸·얼굴은 CC0 | [`art/cabbit/LICENSE.md`](art/cabbit/LICENSE.md) |
-
+| 네모 친구 (`nemo`) | [Character Creation Asset Pack](https://nonemo.itch.io/character-creation-asset-pack) by nonemo — 모양을 벡터로 옮겨 걷는 리그로 만들고 파츠를 더 그려 넣음 | CC0 1.0 | [`art/nemo/LICENSE.md`](art/nemo/LICENSE.md) |
+| 3D 모험가 (`kaykit`) | [KayKit Adventurers](https://kaylousberg.itch.io/kaykit-adventurers) by Kay Lousberg — 3D 모델을 빌드 때 three.js 로 렌더링해 스프라이트로 구움 (앱 실행 시에는 3D 엔진 없음) | CC0 1.0 | [`art/kaykit/README.md`](art/kaykit/README.md) |
 - 원본 시트는 `art/<그림체>/raw/` 에 함께 들어 있고, `art/<그림체>/build.py` 가 앱용 아틀라스(`web/src/guestbook/styles/<그림체>/assets/`)를 다시 만듭니다.
   `python -I art/lpc/build.py --no-sa` 는 CC-BY-SA 파츠를 빼고 만듭니다 (신랑·신부 의상과 옵션 개수가 달라지므로 `registry.ts` 의 개수도 함께 고쳐야 합니다).
 - `art/lpc/build.py` 를 다시 돌렸다면 `web/src/guestbook/styles/lpc/assets/credits.csv` 를 `web/public/CREDITS-lpc.csv` 로 복사합니다 (테스트가 두 파일이 같은지 확인합니다).
+- `chibi`(손그림 치비)는 MaelleMarylloup 의 무료 치비 팩을 쓴 **비공개 시험용**입니다. 무료 사용은 허락되어 있지만 공개 저장소 재배포는 명시되어 있지 않아, `msref` 와 똑같이 그림 파일을 저장소에 올리지 않습니다 ([`art/chibi/LICENSE.md`](art/chibi/LICENSE.md)).
 - `msref` 는 타사 게임 그림을 그대로 쓴 **비공개 품질 시험용**입니다. 그림 파일은 저장소에 올리지 않으며(`.gitignore`),
   `VITE_REF_STYLES=1` 로 빌드하고 그림 파일이 있을 때만 나타납니다. 그 밖의 빌드에서는 번들에 들어가지 않고, 그 그림체로 저장된 하객은 기본 픽셀로 보입니다.
 
