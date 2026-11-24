@@ -1,0 +1,42 @@
+픽셀 청첩장 — 그림 출처와 저작자 표시 (Art credits)
+====================================================
+
+하객 캐릭터의 그림체 가운데 "LPC 도트" 와 "RPG 치비" 는 오픈 라이선스로 공개된 도트 그림을
+색을 바꾸고 다시 묶어(recoloured and re-packed) 사용합니다. 아래는 각 라이선스가 요구하는 저작자 표시입니다.
+그 밖의 그림체(기본 픽셀 · SD 캐릭터 · 숲속 주민 · 도트 인형)와 배경은 이 프로젝트를 위해 만든 그림입니다.
+
+
+1. "LPC 도트" (LPC) — Liberated Pixel Cup characters
+----------------------------------------------------
+
+Sprites by: Benjamin K. Smith (BenCreating), bluecarrot16, TheraHedwig, Evert, MuffinElZangano, Durrani, Pierre Vigier (pvigier), ElizaWy, Matthew Krohn (makrohn), Johannes Sjölund (wulax), Stephen Challener (Redshrike), JaidynReiman, Eliza Wyatt (ElizaWy), Nila122, Joe White, Mandi Paugh, Page, Manuel Riecke (MrBeast), Lanea Zimmerman (Sharm), William.Thompsonj, Ahmad3366.
+
+Sprites contributed as part of the Liberated Pixel Cup project from OpenGameArt.org: http://opengameart.org/content/lpc-collection
+
+Licence: OGA-BY 3.0 (https://static.opengameart.org/OGA-BY-3.0.txt) / CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/); some parts CC0. Sprites were recoloured and re-packed for this app.
+
+Formal wear, hats and glasses by: bluecarrot16, JaidynReiman, Johannes Sjölund (wulax), laetissima, Luke Mehl, Makrohn, Michael Whitlock (bigbeargames), Stephen Challener (Redshrike), Thane Brimhall (pennomi). Licence: CC-BY-SA 3.0 (http://creativecommons.org/licenses/by-sa/3.0/). Includes "LPC Gentleman" by bluecarrot16 (https://opengameart.org/content/lpc-gentleman). The character sprites that use these parts are available under the same licence.
+
+Source: Universal LPC Spritesheet Character Generator
+https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator
+
+Detailed per-file credits (file, authors, licences, source links): CREDITS-lpc.csv (next to this file)
+
+
+2. "RPG 치비" (cabbit) — Stendhal outfit sprites
+------------------------------------------------
+
+Character sprites from the Stendhal project (https://stendhalgame.org, https://github.com/arianne/stendhal) by Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge), diamonddmgirl, Tracy, bleutailfly, olonu, Stephen Challener (Redshrike). Based on art published on OpenGameArt.org (https://opengameart.org/node/72969, https://opengameart.org/node/83523, https://opengameart.org/node/72198, https://opengameart.org/node/84455). Licensed OGA-BY 3.0 (https://static.opengameart.org/OGA-BY-3.0.txt) and CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/); base bodies, heads, eyes and mouths are CC0. Sprites were recoloured, lightly edited (a plain backing fill was added behind the veil's front view) and re-packed for this app.
+
+CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+
+
+Licence texts
+-------------
+
+OGA-BY 3.0     https://static.opengameart.org/OGA-BY-3.0.txt
+CC-BY 3.0      https://creativecommons.org/licenses/by/3.0/
+CC-BY-SA 3.0   https://creativecommons.org/licenses/by-sa/3.0/
+CC0 1.0        https://creativecommons.org/publicdomain/zero/1.0/
+
+The licences above cover the artwork only, not the application code.

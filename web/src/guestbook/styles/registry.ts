@@ -4,6 +4,11 @@
  *  - pixel  : 기본 픽셀 (../character) — 항상 번들에 포함. 신랑·신부도 이 그림체.
  *  - maple  : SD 캐릭터 (./maple, 48x64 도트) — 필요할 때 동적 import
  *  - forest : 숲속 주민 (./forest, 벡터)      — 필요할 때 동적 import
+ *  - doll   : 도트 인형 (./doll, 구운 파츠 이미지)
+ *  - lpc    : LPC 도트 (./lpc)   — 오픈 라이선스 도트(Liberated Pixel Cup) 조합
+ *  - cabbit : RPG 치비 (./cabbit) — 오픈 라이선스 도트(Stendhal / Cabbit) 조합
+ *  - msref · acref : 타사 게임 그림을 그대로 쓴 비공개 품질 시험용. VITE_REF_STYLES=1 로 빌드했고
+ *    (저장소에 올리지 않는) 에셋이 그 빌드에 들어 있을 때만 쓸 수 있다 — 아니면 목록에서 빠지고 기본 픽셀로 보정된다.
  *
  * 스타일마다 파츠 목록·개수가 달라 외형 인덱스는 스타일과 함께일 때만 의미가 있다.
  * 그래서 "메타"(이름·치수·옵션 개수·장면 배치 수치)는 여기 정적으로 두어 모듈이 아직 안 왔어도
@@ -20,8 +25,32 @@ export type { Dir, Frame, PartDef }
 export type SpriteKind = Appearance | 'groom' | 'bride'
 
 export const DEFAULT_STYLE: StyleId = 'pixel'
-/** 만들기 화면에 보이는 순서 */
-export const STYLE_IDS: readonly StyleId[] = ['pixel', 'maple', 'forest', 'doll']
+/** 등록된 모든 그림체 (이 빌드에서 쓸 수 없는 것 포함) — 만들기 화면에 보이는 순서 */
+export const ALL_STYLE_IDS: readonly StyleId[] = ['pixel', 'maple', 'forest', 'doll', 'lpc', 'cabbit', 'msref', 'acref']
+/** 타사 게임 그림을 그대로 쓴 비공개 시험용 그림체 — 그림 파일은 저장소에 없다 */
+export const REF_STYLE_IDS: readonly StyleId[] = ['msref', 'acref']
+
+/**
+ * 시험용 그림체를 켜는 빌드 스위치 (VITE_REF_STYLES=1). 꺼져 있으면 아래의 glob·동적 import 가 통째로 빠져
+ * 시험용 그림이 번들에 들어가지 않는다 (그림 파일이 작업 폴더에 남아 있어도).
+ */
+const REF_STYLES_ON = import.meta.env.VITE_REF_STYLES === '1'
+/** 시험용 그림체의 그림 파일이 이 빌드에 들어 있는지 (저장소에서 바로 빌드하면 없다) */
+const REF_ASSETS: Partial<Record<StyleId, boolean>> = REF_STYLES_ON
+  ? {
+      msref: Object.keys(import.meta.glob('./msref/assets/atlas.png', { query: '?url', import: 'default' })).length > 0,
+      acref: Object.keys(import.meta.glob('./acref/assets/atlas.webp', { query: '?url', import: 'default' })).length > 0,
+    }
+  : {}
+
+/** 이 빌드에서 고르고 그릴 수 있는 그림체인지. 시험용 그림체는 스위치가 켜져 있고 에셋이 있을 때만 */
+export function isStyleAvailable(id: StyleId): boolean {
+  return REF_STYLE_IDS.includes(id) ? REF_ASSETS[id] === true : ALL_STYLE_IDS.includes(id)
+}
+
+/** 이 빌드에서 쓸 수 있는 그림체 — 만들기 화면·데모 스위치에 보이는 순서 */
+export const STYLE_IDS: readonly StyleId[] = ALL_STYLE_IDS.filter(isStyleAvailable)
+const AVAILABLE: ReadonlySet<unknown> = new Set(STYLE_IDS)
 
 export const PART_KEYS: readonly PartKey[] = ['skin', 'hairStyle', 'hairColor', 'outfit', 'outfitColor', 'accessory']
 
@@ -53,6 +82,8 @@ export interface StyleMeta {
   bust: { top: number; w: number }
   /** 파츠별 옵션 개수 */
   counts: Readonly<Record<PartKey, number>>
+  /** 오픈 라이선스 그림을 쓴 그림체: 저작자 표시(public/CREDITS.txt)로 가는 링크를 만들기 화면에 보인다 */
+  credits?: boolean
 }
 
 export const STYLE_META: Readonly<Record<StyleId, StyleMeta>> = {
@@ -127,9 +158,136 @@ export const STYLE_META: Readonly<Record<StyleId, StyleMeta>> = {
     bust: { top: 40, w: 150 },
     counts: { skin: 6, hairStyle: 14, hairColor: 10, outfit: 12, outfitColor: 12, accessory: 9 },
   },
+  lpc: {
+    id: 'lpc',
+    label: 'LPC 도트',
+    description: '또렷한 4방향 RPG 도트 캐릭터',
+    nominalW: 40,
+    nominalH: 58,
+    footY: 56,
+    pixelated: true,
+    snap: true,
+    // 인물 키(머리 꼭대기~발 약 49도트)가 다른 그림체와 비슷해지는 값 — 휴대폰(390px 폭)에서 dpr 2 면 3배, dpr 3 이면 4배.
+    // 40 으로 내리면 논리 px 당 5 기기 픽셀(430px 폭 · dpr 2)에서 3배로 떨어져 다른 그림체보다 훨씬 작아진다 (41 이면 4배)
+    worldH: 41,
+    // 머리카락 꼭대기는 위에서 7~9번째 줄 (모자만 3번째 줄까지 올라온다)
+    headFrac: 48 / 58,
+    shadowR: 8,
+    halfW: 12,
+    sep: 1.15,
+    // 폭 26 이면 썸네일이 dpr 2 에서 4배(만들기)·3배(목록)로 잡혀 얼굴이 크게 보인다 (32 면 3배·2배로 내려가 허벅지까지 나온다)
+    bust: { top: 3, w: 26 },
+    counts: { skin: 6, hairStyle: 18, hairColor: 12, outfit: 17, outfitColor: 12, accessory: 13 },
+    credits: true,
+  },
+  cabbit: {
+    id: 'cabbit',
+    label: 'RPG 치비',
+    description: '동글동글한 RPG 풍 도트 캐릭터',
+    nominalW: 48,
+    nominalH: 64,
+    footY: 63,
+    pixelated: true,
+    snap: true,
+    // SD 캐릭터와 같은 48x64 칸, 인물 키도 약 55도트라 같은 값
+    worldH: 40,
+    headFrac: 56 / 64,
+    shadowR: 8,
+    halfW: 12,
+    sep: 1.15,
+    bust: { top: 2, w: 38 },
+    counts: { skin: 6, hairStyle: 18, hairColor: 11, outfit: 18, outfitColor: 12, accessory: 13 },
+    credits: true,
+  },
+  msref: {
+    id: 'msref',
+    label: '메이플 (테스트)',
+    description: '참고 게임의 원본 도트를 그대로 조합 (비공개 시험용)',
+    // = ./msref/catalog.ts 의 MSREF_W / MSREF_H / MSREF_FOOT_Y (목록에서 가장 넓은 아이템이 바뀌면 함께 바뀐다)
+    nominalW: 66,
+    nominalH: 86,
+    footY: 83,
+    pixelated: true,
+    snap: true,
+    // 인물(발~머리카락 꼭대기)이 약 68~70도트. 정수 배율이라 값에 따라 배율이 한 단계씩 뛴다 — 42 로 두면
+    //  · 픽셀 청첩장: 논리 px 당 4·6 기기 픽셀(390px 폭의 dpr 2·3)에서 2배·3배 = 인물 약 34 논리 px (다른 그림체와 비슷)
+    //  · 일반 청첩장의 방명록: dpr 3 휴대폰은 대부분 2배(약 30), 폭 430 이상만 3배(약 39) — 46 이면 393px 부터 3배(44)라 너무 크다
+    //  · 그림체 카드의 견본(논리 px 당 5): 2배라 98px 칸에 머리까지 들어온다 (42.13 을 넘으면 3배 → 머리가 잘린다)
+    // 대신 dpr 2 의 일반 청첩장은 폭 376px 까지 1배(약 24, 작다), 그보다 넓으면 2배(41~45, 크다) — 정수 배율로는 그 사이가 없다
+    worldH: 42,
+    headFrac: 70 / 86,
+    shadowR: 8,
+    halfW: 12,
+    sep: 1.15,
+    // 위 2도트만 건너뛴다: 리본 묶음·토끼 귀처럼 머리 위로 솟는 파츠(위에서 1~6도트)가 썸네일에서 잘리지 않게
+    bust: { top: 2, w: 58 },
+    // outfitColor 칸은 "얼굴" 고르기로 쓴다 (원본에 옷 색 변형이 없다)
+    counts: { skin: 6, hairStyle: 16, hairColor: 8, outfit: 16, outfitColor: 6, accessory: 16 },
+  },
+  acref: {
+    id: 'acref',
+    label: '동숲 (테스트)',
+    description: '참고 게임의 주민 그림을 그대로 사용 (비공개 시험용)',
+    // = ./acref/roster.ts 의 SPRITE_W / SPRITE_H / FOOT_Y
+    nominalW: 430,
+    nominalH: 383,
+    footY: 367,
+    pixelated: false,
+    snap: false,
+    // 가장 큰 주민(귀 포함 341)이 약 40 논리 px, 작은 주민(278)이 약 33
+    worldH: 45,
+    headFrac: 0.85,
+    shadowR: 0, // 그림자는 스프라이트에 들어 있다
+    halfW: 12,
+    sep: 1.2,
+    // 썸네일은 전신: 고르는 것이 "주민 통째" 와 "손에 든 소품" 이라, 얼굴만 키우면 소품이 상자 밖으로 잘린다.
+    // 가로 340 = 중심에서 좌우 170 (바깥으로 눕힌 풍선까지 거의 다 들어온다), 위 16 = 가장 큰 주민의 귀 끝(26) 조금 위
+    bust: { top: 16, w: 340 },
+    // 통짜 그림이라 주민(hairStyle)과 손에 든 소품(accessory)만 고른다
+    counts: { skin: 1, hairStyle: 36, hairColor: 1, outfit: 1, outfitColor: 1, accessory: 13 },
+  },
 }
 
-/** 스타일 모듈이 내놓는 것 (세 모듈이 같은 모양) */
+/**
+ * 하객에게 주지 않는 번호 (그림체별): 신랑·신부 몫의 옷·머리 장식·주민, 그리고 랜덤으로는 뽑지 않는 민머리.
+ * 각 모듈의 randomAppearance 와 같은 규칙 — registry.test.ts 가 모듈과 어긋나지 않는지 지킨다.
+ */
+export const GUEST_EXCLUDED: Readonly<Partial<Record<StyleId, Readonly<Partial<Record<PartKey, readonly number[]>>>>>> = {
+  doll: { outfit: [0, 1] }, // 턱시도 · 웨딩드레스
+  lpc: { outfit: [0, 1], accessory: [10] }, // + 티아라
+  cabbit: { outfit: [0, 1], accessory: [12], hairStyle: [17] }, // + 면사포, 민머리
+  msref: { outfit: [0, 1], accessory: [15] }, // + 웨딩 베일
+  acref: { hairStyle: [0, 1] }, // 신랑·신부 몫의 두 주민
+}
+
+/** LPC 도트: 의상 묶음이 몸(남/여)을 정한다 — 9번부터(와 1번 웨딩드레스)가 여자 몸. 머리 모양은 0~7 짧은 머리, 8~ 긴 머리 */
+export const LPC_FEMALE_OUTFIT_FROM = 9
+export const LPC_SHORT_HAIRS = 8
+
+/**
+ * 메이플(테스트): 여자 옷(원피스·드레스)의 번호, 짧은 머리 개수(0~6번이 짧은 머리), 볼터치가 짙은 얼굴 번호.
+ * ./msref/catalog.ts 의 아이템 번호에서 나오는 값 — registry.test.ts 가 어긋나지 않는지 지킨다.
+ */
+export const MSREF_FEMALE_OUTFITS: readonly number[] = [1, 4, 5, 7, 9, 12, 14]
+export const MSREF_SHORT_HAIRS = 7
+export const MSREF_BLUSH_FACE = 2
+
+const guestChoiceCache = new Map<string, readonly number[]>()
+/** 하객이 랜덤으로 받을 수 있는 번호 목록 (액세서리는 0 = 없음을 뺀 것) */
+export function guestChoices(id: StyleId, key: PartKey): readonly number[] {
+  const k = `${id}:${key}`
+  let list = guestChoiceCache.get(k)
+  if (!list) {
+    const skip = GUEST_EXCLUDED[id]?.[key] ?? []
+    list = Array.from({ length: STYLE_META[id].counts[key] }, (_, i) => i).filter(
+      (i) => !skip.includes(i) && !(key === 'accessory' && i === 0),
+    )
+    guestChoiceCache.set(k, list)
+  }
+  return list
+}
+
+/** 스타일 모듈이 내놓는 것 (모든 모듈이 같은 모양) */
 export interface StyleModule {
   partDefs: PartDef[]
   randomAppearance: (rnd?: () => number) => AppearanceParts
@@ -151,8 +309,9 @@ export interface CharacterStyle extends StyleMeta {
 
 /* ── 정규화 (모듈 없이 동기) ─────────────────────────────── */
 
+/** 이 빌드에서 쓸 수 있는 그림체 이름이면 그대로, 아니면(모르는 값·꺼진 시험용 그림체) 기본 픽셀 */
 export function toStyleId(v: unknown): StyleId {
-  return v === 'maple' || v === 'forest' || v === 'doll' ? v : DEFAULT_STYLE
+  return AVAILABLE.has(v) ? (v as StyleId) : DEFAULT_STYLE
 }
 
 /** 외형(또는 신랑/신부)의 그림체. style 이 없거나 모르는 값이면 기본 픽셀 */
@@ -185,7 +344,7 @@ export function withStyle(parts: AppearanceParts, id: StyleId): Appearance {
 
 /**
  * 임의의 값(서버·localStorage·폼)을 유효한 외형으로 보정한다.
- * 모르는 style → 기본 픽셀, 인덱스는 "그 스타일" 의 옵션 개수로 자른다(음수·NaN → 0, 초과 → 마지막).
+ * 모르는 style(이 빌드에서 꺼진 시험용 그림체 포함) → 기본 픽셀, 인덱스는 "그 스타일" 의 옵션 개수로 자른다(음수·NaN → 0, 초과 → 마지막).
  */
 export function normalizeAnyAppearance(raw: unknown): Appearance {
   const id = styleOf(raw)
@@ -208,6 +367,74 @@ export function normalizeAnyAppearance(raw: unknown): Appearance {
 export function randomAppearanceFor(id: StyleId, rnd: () => number = Math.random): Appearance {
   const c = STYLE_META[id].counts
   const pick = (n: number) => Math.min(n - 1, Math.floor(rnd() * n))
+  /** 하객 몫(신랑·신부 것을 뺀) 가운데 하나 */
+  const guest = (key: PartKey) => {
+    const list = guestChoices(id, key)
+    return list.length > 0 ? list[pick(list.length)] : 0
+  }
+  if (id === 'lpc') {
+    // LPC 도트: 몸(남/여)은 의상이 정하므로 거기에 어울리는 머리 길이를 주로 고른다. 밝은 피부·자연스러운 머리 색이 많게
+    const outfit = guest('outfit')
+    const long = rnd() < (outfit >= LPC_FEMALE_OUTFIT_FROM ? 0.85 : 0.1)
+    return withStyle(
+      {
+        skin: rnd() < 0.7 ? pick(2) : pick(c.skin),
+        hairStyle: long ? LPC_SHORT_HAIRS + pick(c.hairStyle - LPC_SHORT_HAIRS) : pick(LPC_SHORT_HAIRS),
+        hairColor: rnd() < 0.65 ? pick(4) : pick(c.hairColor),
+        outfit,
+        outfitColor: pick(c.outfitColor),
+        accessory: rnd() < 0.5 ? 0 : guest('accessory'),
+      },
+      id,
+    )
+  }
+  if (id === 'cabbit') {
+    // RPG 치비: 옷은 대체로 그림 원래 색(0번), 밝은 피부 3종·자연스러운 머리 색 6종이 많게
+    return withStyle(
+      {
+        skin: rnd() < 0.8 ? pick(3) : pick(c.skin),
+        hairStyle: guest('hairStyle'),
+        hairColor: rnd() < 0.7 ? pick(6) : pick(c.hairColor),
+        outfit: guest('outfit'),
+        outfitColor: rnd() < 0.55 ? 0 : 1 + pick(c.outfitColor - 1),
+        accessory: rnd() < 0.5 ? 0 : guest('accessory'),
+      },
+      id,
+    )
+  }
+  if (id === 'msref') {
+    // 메이플(테스트): 여자 옷에는 긴 머리가, 그 밖의 옷에는 짧은 머리가 많게. 원작의 기본 피부(0번)와 자연스러운 머리 색(앞의 넷)이 많게.
+    // 볼터치가 짙은 얼굴(구슬 눈)은 기본 피부에만 — 다른 피부에서는 눈가가 얼룩져 보인다 (./msref 의 randomAppearance 와 같은 규칙)
+    const outfit = guest('outfit')
+    const long = rnd() < (MSREF_FEMALE_OUTFITS.includes(outfit) ? 0.85 : 0.15)
+    const skin = rnd() < 0.55 ? 0 : pick(c.skin)
+    const face = pick(c.outfitColor)
+    return withStyle(
+      {
+        skin,
+        hairStyle: long ? MSREF_SHORT_HAIRS + pick(c.hairStyle - MSREF_SHORT_HAIRS) : pick(MSREF_SHORT_HAIRS),
+        hairColor: rnd() < 0.65 ? pick(4) : pick(c.hairColor),
+        outfit,
+        outfitColor: face === MSREF_BLUSH_FACE && skin !== 0 ? 0 : face,
+        accessory: rnd() < 0.5 ? 0 : guest('accessory'),
+      },
+      id,
+    )
+  }
+  if (id === 'acref') {
+    // 시험용 그림체: 신랑·신부 몫만 빼고 고르게 (옵션이 하나뿐인 칸은 0)
+    return withStyle(
+      {
+        skin: pick(c.skin),
+        hairStyle: guest('hairStyle'),
+        hairColor: pick(c.hairColor),
+        outfit: guest('outfit'),
+        outfitColor: pick(c.outfitColor),
+        accessory: rnd() < 0.5 ? 0 : guest('accessory'),
+      },
+      id,
+    )
+  }
   if (id === 'doll') {
     // 도트 인형: 턱시도·웨딩드레스(0·1번)는 두 사람 몫으로 남기고, 옷은 대체로 그림 원래 색(0번)
     return withStyle(
@@ -293,6 +520,56 @@ const importers: Record<Exclude<StyleId, 'pixel'>, Importer> = {
         clearCache: m.clearSpriteCache,
       })),
     ),
+  // 아래 넷도 아틀라스를 받은 뒤에야 준비된다. 도트 그림체는 원본 크기 캔버스만 돌려준다 (확대는 그릴 때 정수배 최근접)
+  lpc: () =>
+    import('./lpc').then((m) =>
+      m.load().then(() => ({
+        partDefs: m.PART_DEFS,
+        randomAppearance: m.randomAppearance,
+        normalizeAppearance: m.normalizeAppearance,
+        getSprite: (kind, dir, frame) => m.getSprite(kind, dir, frame, 1),
+        clearCache: m.clearSpriteCache,
+      })),
+    ),
+  cabbit: () =>
+    import('./cabbit').then((m) =>
+      m.load().then(() => ({
+        partDefs: m.PART_DEFS,
+        randomAppearance: m.randomAppearance,
+        normalizeAppearance: m.normalizeAppearance,
+        getSprite: (kind, dir, frame) => m.getSprite(kind, dir, frame, 1),
+        clearCache: m.clearSpriteCache,
+      })),
+    ),
+  // 시험용 그림체: 스위치가 꺼진 빌드에서는 import 자체가 없어 모듈·그림이 번들에 들어가지 않는다
+  msref: REF_STYLES_ON
+    ? () =>
+        import('./msref').then((m) =>
+          m.load().then(() => ({
+            partDefs: m.PART_DEFS,
+            randomAppearance: m.randomAppearance,
+            normalizeAppearance: m.normalizeAppearance,
+            getSprite: (kind, dir, frame) => m.getSprite(kind, dir, frame),
+            clearCache: m.clearSpriteCache,
+          })),
+        )
+    : unavailable('msref'),
+  acref: REF_STYLES_ON
+    ? () =>
+        import('./acref').then((m) =>
+          m.load().then(() => ({
+            partDefs: m.PART_DEFS,
+            randomAppearance: m.randomAppearance,
+            normalizeAppearance: m.normalizeAppearance,
+            getSprite: m.getSprite,
+            clearCache: m.clearSpriteCache,
+          })),
+        )
+    : unavailable('acref'),
+}
+
+function unavailable(id: StyleId): Importer {
+  return () => Promise.reject(new Error(`${id} 그림체는 이 빌드에 들어 있지 않아요.`))
 }
 
 const pending: Partial<Record<StyleId, Promise<CharacterStyle>>> = {}
@@ -443,7 +720,7 @@ export function retryStyle(id: StyleId): void {
 /** 실패한 스타일의 대기 시간을 없앤다 — 네트워크가 돌아왔거나 탭으로 돌아왔을 때 곧바로 다시 시도할 수 있게 */
 export function resetStyleFailures(): void {
   let any = false
-  for (const id of STYLE_IDS) {
+  for (const id of ALL_STYLE_IDS) {
     if (!failures[id] || loaded[id]) continue
     failures[id] = { tries: 0, at: Number.NEGATIVE_INFINITY }
     clearRetryTimer(id)
@@ -468,7 +745,7 @@ export function ensureStyles(kinds: Iterable<unknown>): void {
 
 /** 구워 둔 스프라이트 캔버스를 버린다 (벡터 그림체의 캐시). 필요한 것은 다음에 그릴 때 다시 굽는다 */
 export function trimSpriteCaches(): void {
-  for (const id of STYLE_IDS) loaded[id]?.clearCache?.()
+  for (const id of ALL_STYLE_IDS) loaded[id]?.clearCache?.()
 }
 
 /* ── 그리기 ──────────────────────────────────────────────── */

@@ -38,3 +38,13 @@ node_modules
 
 # Gemini 원본 시트(장당 5~8MB) — 앱에는 art/gemini/build.py 가 만든 축소 아틀라스만 들어간다
 art/gemini/*.png
+
+# 스타일 참고용으로 받은 타사 게임 이미지 — 저장소에 올리지 않는다
+art/refs/
+
+# 오픈 라이선스 원본 도트(art/cabbit/raw/data/…)는 빌드 스크립트가 다시 받지 못하므로 저장소에 둔다
+# (위의 "data/" 규칙에 걸리지 않게 예외로 둔다)
+!art/cabbit/raw/data/
+
+# 파이썬 빌드 스크립트 캐시
+__pycache__/

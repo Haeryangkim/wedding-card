@@ -1,0 +1,6679 @@
+{
+ "source": "https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator",
+ "commit": "86a3719ee4a7e2e9fb27c7c152e29a741d3e930a",
+ "frame": {
+  "w": 64,
+  "h": 64
+ },
+ "walk": {
+  "sheet": [
+   576,
+   256
+  ],
+  "cols": 9,
+  "rows": [
+   "up",
+   "left",
+   "down",
+   "right"
+  ]
+ },
+ "idle": {
+  "sheet": [
+   128,
+   256
+  ],
+  "cols": 2,
+  "rows": [
+   "up",
+   "left",
+   "down",
+   "right"
+  ]
+ },
+ "items": [
+  {
+   "id": "body",
+   "group": "base",
+   "name": "Body Color",
+   "definition": "sheet_definitions/body/body.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "JaidynReiman",
+    "Benjamin K. Smith (BenCreating)",
+    "Evert",
+    "Eliza Wyatt (ElizaWy)",
+    "TheraHedwig",
+    "MuffinElZangano",
+    "Durrani",
+    "Johannes Sj\u00f6lund (wulax)",
+    "Stephen Challener (Redshrike)",
+    "Pierre Vigier (pvigier)",
+    "ElizaWy",
+    "Matthew Krohn (makrohn)",
+    "Sander Frenken (castelonia)",
+    "dalonedrau",
+    "Nila122",
+    "kheftel"
+   ],
+   "urls": [
+    "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+    "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+    "https://opengameart.org/content/lpc-male-jumping-animation-by-durrani",
+    "https://opengameart.org/content/lpc-runcycle-and-diagonal-walkcycle",
+    "https://opengameart.org/content/lpc-revised-character-basics",
+    "https://opengameart.org/content/lpc-be-seated",
+    "https://opengameart.org/content/lpc-runcycle-for-male-muscular-and-pregnant-character-bases-with-modular-heads",
+    "https://opengameart.org/content/lpc-jump-expanded",
+    "https://opengameart.org/content/lpc-character-bases",
+    "https://opengameart.org/content/lpc-ladies",
+    "https://opengameart.org/content/lpc-7-womens-shirts",
+    "https://gitlab.com/vagabondgame/lpc-characters",
+    "https://opengameart.org/content/lpc-barbarian-sprite-base",
+    "https://opengameart.org/content/lpc-muscular-swing-animation",
+    "https://opengameart.org/content/lpc-muscular-hurt-animation",
+    "https://opengameart.org/content/lpc-teen-unisex-base-clothes",
+    "https://opengameart.org/content/lpc-pregnancy-bases-maternity-wear",
+    "https://opengameart.org/content/lpc-child-standing-template",
+    "https://opengameart.org/content/lpc-children-walk-animation"
+   ],
+   "recolors": {
+    "material": "body",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 10,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/body/bodies/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/body/bodies/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/body/bodies/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/body/bodies/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/body/bodies/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 1.0,
+        "cloth": 0.214
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/body/bodies/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 1.0,
+        "cloth": 0.205
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/body/bodies/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 1.0,
+        "cloth": 0.247
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/body/bodies/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 1.0,
+        "cloth": 0.244
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "head_male",
+   "group": "base",
+   "name": "Human Male",
+   "definition": "sheet_definitions/head/heads/human/heads_human_male.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "Benjamin K. Smith (BenCreating)",
+    "Stephen Challener (Redshrike)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+    "https://opengameart.org/content/lpc-character-bases"
+   ],
+   "recolors": {
+    "color_1": {
+     "material": "body",
+     "palettes": [
+      "ulpc",
+      "lpcr",
+      "all.lpcr"
+     ]
+    },
+    "color_2": {
+     "type_name": "eyes",
+     "label": "Eye Color",
+     "material": "eye",
+     "palettes": [
+      "ulpc",
+      "lpcr"
+     ]
+    }
+   },
+   "layers": [
+    {
+     "zPos": 100,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/head/heads/human/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/heads/human/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/head/heads/human/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/heads/human/male/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/head/heads/human/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 10,
+       "palette_coverage": {
+        "body": 0.977,
+        "cloth": 0.144,
+        "eye": 0.014
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/head/heads/human/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 10,
+       "palette_coverage": {
+        "body": 0.977,
+        "cloth": 0.144,
+        "eye": 0.014
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "head_female",
+   "group": "base",
+   "name": "Human Female",
+   "definition": "sheet_definitions/head/heads/human/heads_human_female.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "Benjamin K. Smith (BenCreating)",
+    "Stephen Challener (Redshrike)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/",
+    "https://opengameart.org/content/lpc-character-bases"
+   ],
+   "recolors": {
+    "color_1": {
+     "material": "body",
+     "palettes": [
+      "ulpc",
+      "lpcr",
+      "all.lpcr"
+     ]
+    },
+    "color_2": {
+     "type_name": "eyes",
+     "label": "Eye Color",
+     "material": "eye",
+     "palettes": [
+      "ulpc",
+      "lpcr"
+     ]
+    }
+   },
+   "layers": [
+    {
+     "zPos": 100,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/head/heads/human/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/heads/human/female/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/head/heads/human/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/heads/human/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/head/heads/human/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 10,
+       "palette_coverage": {
+        "body": 0.976,
+        "cloth": 0.149,
+        "eye": 0.015
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/head/heads/human/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 10,
+       "palette_coverage": {
+        "body": 0.976,
+        "cloth": 0.149,
+        "eye": 0.015
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shadow",
+   "group": "base",
+   "name": "Shadow",
+   "definition": "sheet_definitions/body/shadow.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "drjamgo@hotmail.com",
+    "JaidynReiman"
+   ],
+   "urls": [
+    "https://opengameart.org/content/shadow-for-lpc-sprite"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 0,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/shadow/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/shadow/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/shadow/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/shadow/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/shadow/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 1,
+       "palette_coverage": {
+        "body": 1.0,
+        "cloth": 1.0
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/shadow/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 1,
+       "palette_coverage": {
+        "body": 1.0,
+        "cloth": 1.0
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_plain",
+   "group": "hair",
+   "name": "Plain",
+   "definition": "sheet_definitions/hair/short/hair_plain.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "Manuel Riecke (MrBeast)",
+    "Joe White"
+   ],
+   "urls": [
+    "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+    "https://opengameart.org/content/ponytail-and-plain-hairstyles",
+    "https://opengameart.org/content/lpc-expanded-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/plain/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/plain/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/plain/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/plain/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/plain/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.969,
+        "metal": 0.031
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/hair/plain/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.969,
+        "metal": 0.031
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_parted3",
+   "group": "hair",
+   "name": "Parted 3",
+   "definition": "sheet_definitions/hair/short/hair_parted3.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy"
+   ],
+   "urls": [
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/parted3/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/parted3/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/parted3/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/parted3/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/parted3/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/hair/parted3/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_cowlick",
+   "group": "hair",
+   "name": "Cowlick",
+   "definition": "sheet_definitions/hair/short/hair_cowlick.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-hair",
+    "https://github.com/ElizaWy/LPC/blob/main/Characters/Hair",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/cowlick/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/cowlick/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/cowlick/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/cowlick/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/cowlick/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/hair/cowlick/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_curtains",
+   "group": "hair",
+   "name": "Curtains",
+   "definition": "sheet_definitions/hair/short/hair_curtains.json",
+   "licenses": [
+    "CC-BY 3.0",
+    "GPL 2.0",
+    "GPL 3.0"
+   ],
+   "use_license": "CC-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "Mandi Paugh",
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/star-overland",
+    "https://opengameart.org/content/lpc-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/curtains/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/curtains/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/curtains/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/curtains/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/curtains/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "GPL 2.0",
+        "GPL 3.0",
+        "CC-BY 3.0"
+       ]
+      },
+      "spritesheets/hair/curtains/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "GPL 2.0",
+        "GPL 3.0",
+        "CC-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_buzzcut",
+   "group": "hair",
+   "name": "Buzzcut",
+   "definition": "sheet_definitions/hair/bald/hair_buzzcut.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/buzzcut/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/buzzcut/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/buzzcut/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/buzzcut/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/buzzcut/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/hair/buzzcut/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_natural",
+   "group": "hair",
+   "name": "Natural",
+   "definition": "sheet_definitions/hair/afro/hair_natural.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-hair",
+    "https://github.com/ElizaWy/LPC/blob/main/Characters/Hair",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/natural/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/natural/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/natural/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/natural/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/natural/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.99
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/hair/natural/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.99
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_curly_short",
+   "group": "hair",
+   "name": "Curly short",
+   "definition": "sheet_definitions/hair/curly/hair_curly_short.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-hair",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/curly_short/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/curly_short/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/curly_short/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/curly_short/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/curly_short/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/hair/curly_short/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_idol",
+   "group": "hair",
+   "name": "Idol",
+   "definition": "sheet_definitions/hair/short/hair_idol.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "thecilekli",
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-korean-idol-hairstyle-male-with-12-colors",
+    "https://opengameart.org/content/lpc-hair",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/idol/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/idol/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/idol/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/idol/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/idol/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.969
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/hair/idol/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_bob",
+   "group": "hair",
+   "name": "Bob",
+   "definition": "sheet_definitions/hair/bob/hair_bob.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-hair",
+    "https://github.com/ElizaWy/LPC/blob/main/Characters/Hair",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/bob/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/bob/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/bob/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/bob/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/bob/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.983
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/hair/bob/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_bob_side_part",
+   "group": "hair",
+   "name": "Bob side part",
+   "definition": "sheet_definitions/hair/bob/hair_bob_side_part.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "thecilekli",
+    "bluecarrot16",
+    "ElizaWy"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-pink-short-hair",
+    "https://opengameart.org/content/lpc-hair",
+    "https://github.com/ElizaWy/LPC/blob/main/Characters/Hair",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/bob_side_part/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/bob_side_part/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/bob_side_part/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/bob_side_part/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/bob_side_part/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.994
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/hair/bob_side_part/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_page",
+   "group": "hair",
+   "name": "Page",
+   "definition": "sheet_definitions/hair/short/hair_page.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "Page",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+    "https://opengameart.org/content/lpc-expanded-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/page/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/page/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/page/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/page/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/page/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/hair/page/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_lob",
+   "group": "hair",
+   "name": "Lob",
+   "definition": "sheet_definitions/hair/bob/hair_lob.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/lob/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/lob/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/lob/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/lob/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/lob/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.985
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/hair/lob/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.985
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_long_straight",
+   "group": "hair",
+   "name": "Long straight",
+   "definition": "sheet_definitions/hair/long/hair_long_straight.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "thecilekli",
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-long-straight-hair-with-12-colors",
+    "https://opengameart.org/content/lpc-hair",
+    "https://opengameart.org/content/lpc-expanded-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/long_straight/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/long_straight/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/long_straight/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/long_straight/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/long_straight/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 0.949
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/hair/long_straight/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 0.949
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_half_up",
+   "group": "hair",
+   "name": "Half up",
+   "definition": "sheet_definitions/hair/braids/hair_half_up.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/half_up/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/half_up/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/half_up/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/half_up/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/half_up/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.995
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/hair/half_up/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.995
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_high_ponytail",
+   "group": "hair",
+   "name": "High ponytail",
+   "definition": "sheet_definitions/hair/braids/hair_high_ponytail.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "ElizaWy",
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-hair",
+    "https://opengameart.org/content/lpc-expanded-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/high_ponytail/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/high_ponytail/adult/fg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/high_ponytail/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/high_ponytail/adult/fg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/high_ponytail/adult/fg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/hair/high_ponytail/adult/fg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    },
+    {
+     "zPos": 9,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/high_ponytail/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/high_ponytail/adult/bg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/high_ponytail/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/high_ponytail/adult/bg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/high_ponytail/adult/bg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/hair/high_ponytail/adult/bg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_bangs_bun",
+   "group": "hair",
+   "name": "Bangs bun",
+   "definition": "sheet_definitions/hair/braids/hair_bangs_bun.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-hair",
+    "https://github.com/ElizaWy/LPC/blob/main/Characters/Hair",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/bangs_bun/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/bangs_bun/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/bangs_bun/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/bangs_bun/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/bangs_bun/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/hair/bangs_bun/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_princess",
+   "group": "hair",
+   "name": "Princess",
+   "definition": "sheet_definitions/hair/xlong/hair_princess.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "Lanea Zimmerman (Sharm)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+    "https://opengameart.org/content/lpc-expanded-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/princess/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/princess/adult/fg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/princess/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/princess/adult/fg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/princess/adult/fg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/hair/princess/adult/fg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    },
+    {
+     "zPos": 9,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/princess/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/princess/adult/bg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/princess/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/princess/adult/bg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/princess/adult/bg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/hair/princess/adult/bg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hair_wavy",
+   "group": "hair",
+   "name": "Wavy",
+   "definition": "sheet_definitions/hair/long/hair_wavy.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 2.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "Nila122"
+   ],
+   "urls": [
+    "https://opengameart.org/content/3-hairs-for-lpc",
+    "https://opengameart.org/content/lpc-expanded-hair"
+   ],
+   "recolors": {
+    "material": "hair",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 120,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/wavy/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/wavy/adult/fg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/wavy/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/wavy/adult/fg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/wavy/adult/fg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/hair/wavy/adult/fg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    },
+    {
+     "zPos": 9,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hair/wavy/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/wavy/adult/bg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hair/wavy/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hair/wavy/adult/bg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hair/wavy/adult/bg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/hair/wavy/adult/bg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "hair": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shirt_buttoned",
+   "group": "torso",
+   "name": "Longsleeve 2 Buttoned",
+   "definition": "sheet_definitions/torso/shirts/longsleeve/torso_clothes_longsleeve2_buttoned.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "http://opengameart.org/content/lpc-revised-character-basics",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-simple-shirts"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_buttoned/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_buttoned/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_buttoned/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_buttoned/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_buttoned/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.152,
+        "cloth": 1.0,
+        "metal": 0.379
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_buttoned/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.136,
+        "cloth": 1.0,
+        "metal": 0.399
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_buttoned/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.158,
+        "cloth": 1.0,
+        "metal": 0.427
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_buttoned/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.15,
+        "cloth": 1.0,
+        "metal": 0.423
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shirt_cardigan",
+   "group": "torso",
+   "name": "Cardigan",
+   "definition": "sheet_definitions/torso/shirts/longsleeve/torso_clothes_longsleeve2_cardigan.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "http://opengameart.org/content/lpc-revised-character-basics",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-simple-shirts"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_cardigan/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_cardigan/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_cardigan/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_cardigan/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_cardigan/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.16,
+        "cloth": 1.0,
+        "metal": 0.387
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_cardigan/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.142,
+        "cloth": 1.0,
+        "metal": 0.407
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_cardigan/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.17,
+        "cloth": 1.0,
+        "metal": 0.453
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_cardigan/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.163,
+        "cloth": 1.0,
+        "metal": 0.438
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shirt_vneck_long",
+   "group": "torso",
+   "name": "Longsleeve 2 VNeck",
+   "definition": "sheet_definitions/torso/shirts/longsleeve/torso_clothes_longsleeve2_vneck.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "http://opengameart.org/content/lpc-revised-character-basics",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-simple-shirts"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_vneck/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_vneck/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_vneck/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2_vneck/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_vneck/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.158,
+        "cloth": 1.0,
+        "metal": 0.371
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_vneck/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.142,
+        "cloth": 1.0,
+        "metal": 0.389
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_vneck/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.168,
+        "cloth": 1.0,
+        "metal": 0.428
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2_vneck/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.159,
+        "cloth": 1.0,
+        "metal": 0.429
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shirt_longsleeve",
+   "group": "torso",
+   "name": "Longsleeve 2",
+   "definition": "sheet_definitions/torso/shirts/longsleeve/torso_clothes_longsleeve2.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-revised-character-basics",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-simple-shirts"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/longsleeve/longsleeve2/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/longsleeve/longsleeve2/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.15,
+        "cloth": 1.0,
+        "metal": 0.368
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.135,
+        "cloth": 1.0,
+        "metal": 0.386
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.161,
+        "cloth": 1.0,
+        "metal": 0.42
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/longsleeve/longsleeve2/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.157,
+        "cloth": 1.0,
+        "metal": 0.436
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shirt_tshirt",
+   "group": "torso",
+   "name": "TShirt",
+   "definition": "sheet_definitions/torso/shirts/shortsleeve/torso_clothes_tshirt.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-revised-character-basics",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-simple-shirts"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/shortsleeve/tshirt/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.114,
+        "cloth": 1.0,
+        "metal": 0.367
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/tshirt/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.089,
+        "cloth": 1.0,
+        "metal": 0.383
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/tshirt/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.133,
+        "cloth": 1.0,
+        "metal": 0.418
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/tshirt/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.117,
+        "cloth": 1.0,
+        "metal": 0.418
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shirt_polo",
+   "group": "torso",
+   "name": "Shortsleeve Polo",
+   "definition": "sheet_definitions/torso/shirts/shortsleeve/torso_clothes_shortsleeve_polo.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "http://opengameart.org/content/lpc-revised-character-basics",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-simple-shirts"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/clothes/shortsleeve/shortsleeve_polo/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/shortsleeve/shortsleeve_polo/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/shortsleeve/shortsleeve_polo/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/shortsleeve/shortsleeve_polo/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/shortsleeve/shortsleeve_polo/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.116,
+        "cloth": 1.0,
+        "metal": 0.373
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/shortsleeve_polo/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.091,
+        "cloth": 1.0,
+        "metal": 0.385
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/shortsleeve_polo/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.127,
+        "cloth": 1.0,
+        "metal": 0.42
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/shortsleeve_polo/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.114,
+        "cloth": 1.0,
+        "metal": 0.425
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shirt_scoop",
+   "group": "torso",
+   "name": "TShirt Scoop",
+   "definition": "sheet_definitions/torso/shirts/shortsleeve/torso_clothes_tshirt_scoop.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "http://opengameart.org/content/lpc-revised-character-basics",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-simple-shirts"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt_scoop/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt_scoop/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt_scoop/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt_scoop/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/shortsleeve/tshirt_scoop/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.122,
+        "cloth": 1.0,
+        "metal": 0.389
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/tshirt_scoop/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.093,
+        "cloth": 1.0,
+        "metal": 0.397
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/tshirt_scoop/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.141,
+        "cloth": 1.0,
+        "metal": 0.455
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/tshirt_scoop/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.129,
+        "cloth": 1.0,
+        "metal": 0.454
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shirt_vneck",
+   "group": "torso",
+   "name": "TShirt VNeck",
+   "definition": "sheet_definitions/torso/shirts/shortsleeve/torso_clothes_tshirt_vneck.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-revised-character-basics",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-simple-shirts"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt_vneck/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt_vneck/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt_vneck/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/shortsleeve/tshirt_vneck/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/shortsleeve/tshirt_vneck/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.121,
+        "cloth": 1.0,
+        "metal": 0.372
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/tshirt_vneck/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.095,
+        "cloth": 1.0,
+        "metal": 0.386
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/tshirt_vneck/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.136,
+        "cloth": 1.0,
+        "metal": 0.433
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/shortsleeve/tshirt_vneck/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.124,
+        "cloth": 1.0,
+        "metal": 0.435
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shirt_sleeveless",
+   "group": "torso",
+   "name": "Sleeveless 2",
+   "definition": "sheet_definitions/torso/shirts/sleeveless/torso_clothes_sleeveless2.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "http://opengameart.org/content/lpc-revised-character-basics",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-simple-shirts"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/clothes/sleeveless/sleeveless2/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/sleeveless/sleeveless2/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/sleeveless/sleeveless2/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/clothes/sleeveless/sleeveless2/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/sleeveless/sleeveless2/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.073,
+        "cloth": 1.0,
+        "metal": 0.35
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/sleeveless/sleeveless2/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.06,
+        "cloth": 1.0,
+        "metal": 0.353
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/sleeveless/sleeveless2/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.09,
+        "cloth": 1.0,
+        "metal": 0.425
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/sleeveless/sleeveless2/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.084,
+        "cloth": 1.0,
+        "metal": 0.437
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "blouse",
+   "group": "torso",
+   "name": "Blouse",
+   "definition": "sheet_definitions/torso/shirts/torso_clothes_blouse.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "ElizaWy",
+    "Lanea Zimmerman (Sharm)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+    "https://opengameart.org/content/lpc-7-womens-shirts"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/blouse/female/walk/white.png",
+        "spritesheets/torso/clothes/blouse/female/walk/pink.png",
+        "spritesheets/torso/clothes/blouse/female/walk/sky.png",
+        "spritesheets/torso/clothes/blouse/female/walk/black.png"
+       ],
+       "idle": []
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/blouse/female/walk/white.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.185,
+        "cloth": 1.0,
+        "metal": 0.459
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/blouse/female/walk/pink.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "metal": 0.185
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/blouse/female/walk/sky.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "cloth": 0.098,
+        "metal": 0.098
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/blouse/female/walk/black.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {},
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "blouse_longsleeve",
+   "group": "torso",
+   "name": "Longsleeve blouse",
+   "definition": "sheet_definitions/torso/shirts/torso_clothes_blouse_longsleeve.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "ElizaWy",
+    "Lanea Zimmerman (Sharm)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+    "https://opengameart.org/content/lpc-7-womens-shirts"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 35,
+     "files": {
+      "female": {
+       "walk": [
+        "spritesheets/torso/clothes/blouse_longsleeve/female/walk/white.png",
+        "spritesheets/torso/clothes/blouse_longsleeve/female/walk/pink.png",
+        "spritesheets/torso/clothes/blouse_longsleeve/female/walk/sky.png",
+        "spritesheets/torso/clothes/blouse_longsleeve/female/walk/black.png"
+       ],
+       "idle": []
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/clothes/blouse_longsleeve/female/walk/white.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.243,
+        "cloth": 1.0,
+        "metal": 0.429
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/blouse_longsleeve/female/walk/pink.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "metal": 0.243
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/blouse_longsleeve/female/walk/sky.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "cloth": 0.082,
+        "metal": 0.082
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/torso/clothes/blouse_longsleeve/female/walk/black.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {},
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "overalls",
+   "group": "torso",
+   "name": "Overalls",
+   "definition": "sheet_definitions/torso/aprons/torso_aprons_overalls.json",
+   "licenses": [
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "bluecarrot16",
+    "JaidynReiman"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-revised-character-basics",
+    "http://opengameart.org/content/lpc-clothing-updates"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 38,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/aprons/overalls/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/aprons/overalls/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/aprons/overalls/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/aprons/overalls/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/aprons/overalls/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.134,
+        "cloth": 1.0,
+        "metal": 0.377
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/torso/aprons/overalls/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.144,
+        "cloth": 1.0,
+        "metal": 0.373
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/torso/aprons/overalls/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.157,
+        "cloth": 1.0,
+        "metal": 0.356
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/torso/aprons/overalls/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.163,
+        "cloth": 1.0,
+        "metal": 0.35
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "suspenders",
+   "group": "torso",
+   "name": "Suspenders",
+   "definition": "sheet_definitions/torso/aprons/torso_aprons_suspenders.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy",
+    "JaidynReiman"
+   ],
+   "urls": [
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 38,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/torso/aprons/suspenders/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/aprons/suspenders/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/torso/aprons/suspenders/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets/torso/aprons/suspenders/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/torso/aprons/suspenders/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 9,
+       "palette_coverage": {
+        "cloth": 0.442,
+        "metal": 0.222
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/aprons/suspenders/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 9,
+       "palette_coverage": {
+        "cloth": 0.429,
+        "metal": 0.231
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/aprons/suspenders/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 9,
+       "palette_coverage": {
+        "cloth": 0.442,
+        "metal": 0.222
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/torso/aprons/suspenders/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 9,
+       "palette_coverage": {
+        "cloth": 0.429,
+        "metal": 0.231
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "jacket_collared",
+   "group": "torso",
+   "name": "Collared coat",
+   "definition": "sheet_definitions/torso/jacket/torso_jacket_collared.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0"
+   ],
+   "use_license": "CC-BY-SA 3.0",
+   "sharealike_only": true,
+   "authors": [
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-gentleman",
+    "https://opengameart.org/content/lpc-pirates"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 55,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets-sa/torso/jacket/collared/male/walk/black.png",
+        "spritesheets-sa/torso/jacket/collared/male/walk/navy.png",
+        "spritesheets-sa/torso/jacket/collared/male/walk/charcoal.png",
+        "spritesheets-sa/torso/jacket/collared/male/walk/gray.png",
+        "spritesheets-sa/torso/jacket/collared/male/walk/white.png",
+        "spritesheets-sa/torso/jacket/collared/male/walk/brown.png",
+        "spritesheets-sa/torso/jacket/collared/male/walk/maroon.png"
+       ],
+       "idle": []
+      }
+     },
+     "file_info": {
+      "spritesheets-sa/torso/jacket/collared/male/walk/black.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/jacket/collared/male/walk/navy.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/jacket/collared/male/walk/charcoal.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/jacket/collared/male/walk/gray.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/jacket/collared/male/walk/white.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.35,
+        "cloth": 1.0,
+        "metal": 0.416
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/jacket/collared/male/walk/brown.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "metal": 0.35
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/jacket/collared/male/walk/maroon.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "metal": 0.35
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "vest",
+   "group": "torso",
+   "name": "Vest",
+   "definition": "sheet_definitions/torso/vest/torso_clothes_vest.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0"
+   ],
+   "use_license": "CC-BY-SA 3.0",
+   "sharealike_only": true,
+   "authors": [
+    "bluecarrot16",
+    "Thane Brimhall (pennomi)",
+    "laetissima",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)",
+    "Michael Whitlock (bigbeargames)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-2-characters",
+    "https://opengameart.org/content/lpc-gentleman",
+    "https://opengameart.org/content/lpc-pirates"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 45,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets-sa/torso/clothes/vest/male/walk/black.png",
+        "spritesheets-sa/torso/clothes/vest/male/walk/white.png",
+        "spritesheets-sa/torso/clothes/vest/male/walk/gray_striped.png"
+       ],
+       "idle": [
+        "spritesheets-sa/torso/clothes/vest/male/idle/black.png",
+        "spritesheets-sa/torso/clothes/vest/male/idle/white.png",
+        "spritesheets-sa/torso/clothes/vest/male/idle/gray_striped.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets-sa/torso/clothes/vest/male/walk/black.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/clothes/vest/male/walk/white.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.143,
+        "cloth": 1.0,
+        "metal": 0.443
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/clothes/vest/male/walk/gray_striped.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/clothes/vest/male/idle/black.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/clothes/vest/male/idle/white.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.136,
+        "cloth": 1.0,
+        "metal": 0.448
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/torso/clothes/vest/male/idle/gray_striped.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "dress_slit",
+   "group": "dress",
+   "name": "Slit dress",
+   "definition": "sheet_definitions/torso/dresses/dress_slit.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 2.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "Nila122",
+    "ElizaWy",
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-clothes-and-hair",
+    "http://opengameart.org/content/lpc-clothing-updates"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 30,
+     "files": {
+      "female": {
+       "walk": [
+        "spritesheets/dress/slit/female/walk/white.png",
+        "spritesheets/dress/slit/female/walk/pink.png",
+        "spritesheets/dress/slit/female/walk/red.png",
+        "spritesheets/dress/slit/female/walk/sky.png",
+        "spritesheets/dress/slit/female/walk/black.png"
+       ],
+       "idle": [
+        "spritesheets/dress/slit/female/idle/white.png",
+        "spritesheets/dress/slit/female/idle/pink.png",
+        "spritesheets/dress/slit/female/idle/red.png",
+        "spritesheets/dress/slit/female/idle/sky.png",
+        "spritesheets/dress/slit/female/idle/black.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/dress/slit/female/walk/white.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.264,
+        "cloth": 1.0,
+        "metal": 0.582
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/dress/slit/female/walk/pink.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "metal": 0.264
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/dress/slit/female/walk/red.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "metal": 0.264
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/dress/slit/female/walk/sky.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "cloth": 0.02,
+        "metal": 0.02
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/dress/slit/female/walk/black.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/dress/slit/female/idle/white.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.26,
+        "cloth": 1.0,
+        "metal": 0.582
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/dress/slit/female/idle/pink.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "metal": 0.26
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/dress/slit/female/idle/red.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "metal": 0.26
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/dress/slit/female/idle/sky.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "cloth": 0.019,
+        "metal": 0.019
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/dress/slit/female/idle/black.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "legs_formal",
+   "group": "legs",
+   "name": "Formal Pants",
+   "definition": "sheet_definitions/legs/pants/legs_formal.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "JaidynReiman",
+    "ElizaWy",
+    "Johannes Sj\u00f6lund (wulax)",
+    "Stephen Challener (Redshrike)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+    "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+    "https://opengameart.org/content/lpc-2-characters",
+    "https://opengameart.org/content/lpc-gentleman",
+    "https://opengameart.org/content/lpc-expanded-pants"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 20,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/legs/formal/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/formal/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/legs/formal/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/formal/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/legs/formal/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {},
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/formal/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {},
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/formal/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {
+        "cloth": 1.0,
+        "metal": 0.74
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/formal/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {
+        "cloth": 1.0,
+        "metal": 0.829
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "legs_pants",
+   "group": "legs",
+   "name": "Pants",
+   "definition": "sheet_definitions/legs/pants/legs_pants.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "JaidynReiman",
+    "ElizaWy",
+    "Matthew Krohn (makrohn)",
+    "Johannes Sj\u00f6lund (wulax)",
+    "Stephen Challener (Redshrike)",
+    "Joe White"
+   ],
+   "urls": [
+    "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+    "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+    "https://opengameart.org/content/lpc-expanded-pants",
+    "http://opengameart.org/content/lpc-clothing-updates"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 20,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/legs/pants/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/pants/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/legs/pants/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/pants/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/legs/pants/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "cloth": 1.0,
+        "metal": 0.645
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0",
+        "CC-BY-SA 3.0"
+       ]
+      },
+      "spritesheets/legs/pants/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "cloth": 1.0,
+        "metal": 0.61
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0",
+        "CC-BY-SA 3.0"
+       ]
+      },
+      "spritesheets/legs/pants/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.374,
+        "cloth": 1.0,
+        "metal": 0.319
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0",
+        "CC-BY-SA 3.0"
+       ]
+      },
+      "spritesheets/legs/pants/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.351,
+        "cloth": 1.0,
+        "metal": 0.339
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0",
+        "CC-BY-SA 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "legs_pants2",
+   "group": "legs",
+   "name": "Long Pants",
+   "definition": "sheet_definitions/legs/pants/legs_pants2.json",
+   "licenses": [
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "ElizaWy",
+    "Bluecarrot16",
+    "Johannes Sj\u00f6lund (wulax)",
+    "Stephen Challener (Redshrike)"
+   ],
+   "urls": [
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more",
+    "https://opengameart.org/content/lpc-expanded-pants"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 20,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/legs/pants2/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/pants2/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/legs/pants2/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/pants2/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/legs/pants2/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.181,
+        "cloth": 1.0,
+        "metal": 0.36
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/pants2/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.18,
+        "cloth": 1.0,
+        "metal": 0.37
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/pants2/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.208,
+        "cloth": 1.0,
+        "metal": 0.332
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/legs/pants2/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.197,
+        "cloth": 1.0,
+        "metal": 0.337
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "legs_shorts",
+   "group": "legs",
+   "name": "Shorts",
+   "definition": "sheet_definitions/legs/shorts/legs_shorts.json",
+   "licenses": [
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "ElizaWy",
+    "Bluecarrot16",
+    "Johannes Sj\u00f6lund (wulax)",
+    "Stephen Challener (Redshrike)"
+   ],
+   "urls": [
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-pants",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 20,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/legs/shorts/shorts/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/shorts/shorts/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/legs/shorts/shorts/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/shorts/shorts/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/legs/shorts/shorts/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.162,
+        "cloth": 1.0,
+        "metal": 0.377
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/shorts/shorts/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.149,
+        "cloth": 1.0,
+        "metal": 0.407
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/shorts/shorts/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.179,
+        "cloth": 1.0,
+        "metal": 0.355
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/legs/shorts/shorts/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.161,
+        "cloth": 1.0,
+        "metal": 0.378
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "skirt_belle",
+   "group": "legs",
+   "name": "Belle skirt",
+   "definition": "sheet_definitions/legs/skirts/legs_skirt_belle.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "Matthew Krohn (makrohn)",
+    "Lanea Zimmerman (Sharm)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles",
+    "https://opengameart.org/content/lpc-dress-in-combat-poses",
+    "http://opengameart.org/content/lpc-clothing-updates"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 20,
+     "files": {
+      "female": {
+       "walk": [
+        "spritesheets/legs/skirts/belle/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/skirts/belle/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/legs/skirts/belle/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.175,
+        "cloth": 1.0,
+        "metal": 0.468
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/skirts/belle/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.166,
+        "cloth": 1.0,
+        "metal": 0.475
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "skirt_straight",
+   "group": "legs",
+   "name": "Straight skirt",
+   "definition": "sheet_definitions/legs/skirts/legs_skirt_straight.json",
+   "licenses": [
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "ElizaWy"
+   ],
+   "urls": [
+    "http://opengameart.org/content/lpc-clothing-updates"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 20,
+     "files": {
+      "female": {
+       "walk": [
+        "spritesheets/legs/skirts/straight/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/skirts/straight/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/legs/skirts/straight/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.223,
+        "cloth": 1.0,
+        "metal": 0.255
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/skirts/straight/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.218,
+        "cloth": 1.0,
+        "metal": 0.266
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "skirt_plain",
+   "group": "legs",
+   "name": "Plain skirt",
+   "definition": "sheet_definitions/legs/skirts/legs_skirts_plain.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "Pierre Vigier (pvigier)",
+    "Johannes Sj\u00f6lund (wulax)",
+    "Ahmad3366",
+    "JaidynReiman"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 20,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/legs/skirts/plain/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/skirts/plain/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/legs/skirts/plain/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/skirts/plain/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/legs/skirts/plain/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.244,
+        "cloth": 1.0,
+        "metal": 0.435
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/skirts/plain/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.226,
+        "cloth": 1.0,
+        "metal": 0.456
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/skirts/plain/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.243,
+        "cloth": 1.0,
+        "metal": 0.428
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/skirts/plain/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.228,
+        "cloth": 1.0,
+        "metal": 0.451
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "legs_leggings",
+   "group": "legs",
+   "name": "Leggings",
+   "definition": "sheet_definitions/legs/leggings/legs_leggings.json",
+   "licenses": [
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "ElizaWy",
+    "JaidynReiman",
+    "Mandi Paugh",
+    "William.Thompsonj",
+    "Johannes Sj\u00f6lund (wulax)",
+    "Stephen Challener (Redshrike)"
+   ],
+   "urls": [
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-pants",
+    "http://opengameart.org/content/sara-wizard",
+    "https://opengameart.org/content/lpc-sara"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 20,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/legs/leggings/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/leggings/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/legs/leggings/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/legs/leggings/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/legs/leggings/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.181,
+        "cloth": 1.0,
+        "metal": 0.535
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/leggings/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.183,
+        "cloth": 1.0,
+        "metal": 0.499
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/legs/leggings/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 4,
+       "palette_coverage": {
+        "cloth": 1.0,
+        "metal": 0.655
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/legs/leggings/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 4,
+       "palette_coverage": {
+        "cloth": 1.0,
+        "metal": 0.622
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shoes_revised",
+   "group": "feet",
+   "name": "Revised Shoes",
+   "definition": "sheet_definitions/feet/shoes/feet_shoes_revised.json",
+   "licenses": [
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "ElizaWy",
+    "Bluecarrot16",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-socks-shoes",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "metal.ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 15,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/feet/shoes/revised/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/feet/shoes/revised/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/feet/shoes/revised/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/feet/shoes/revised/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/feet/shoes/revised/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.346,
+        "cloth": 1.0,
+        "metal": 0.374
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/shoes/revised/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.365,
+        "cloth": 1.0,
+        "metal": 0.376
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/shoes/revised/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.396,
+        "cloth": 1.0,
+        "metal": 0.339
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/feet/shoes/revised/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.391,
+        "cloth": 1.0,
+        "metal": 0.333
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "shoes_basic",
+   "group": "feet",
+   "name": "Basic Shoes",
+   "definition": "sheet_definitions/feet/shoes/feet_shoes_basic.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "bluecarrot16",
+    "Johannes Sj\u00f6lund (wulax)",
+    "Joe White"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites",
+    "http://opengameart.org/content/lpc-clothing-updates",
+    "https://opengameart.org/content/lpc-expanded-socks-shoes"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "metal.ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 15,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/feet/shoes/basic/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/feet/shoes/basic/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/feet/shoes/basic/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/feet/shoes/basic/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/feet/shoes/basic/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.421,
+        "cloth": 1.0,
+        "metal": 0.27
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/shoes/basic/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.429,
+        "cloth": 1.0,
+        "metal": 0.314
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/shoes/basic/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.448,
+        "cloth": 1.0,
+        "metal": 0.289
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/shoes/basic/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.442,
+        "cloth": 1.0,
+        "metal": 0.313
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "boots_revised",
+   "group": "feet",
+   "name": "Revised Boots",
+   "definition": "sheet_definitions/feet/boots/feet_boots_revised.json",
+   "licenses": [
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman",
+    "ElizaWy",
+    "Bluecarrot16",
+    "Stephen Challener (Redshrike)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing",
+    "https://opengameart.org/content/lpc-expanded-socks-shoes",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "metal.ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 25,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/feet/boots/revised/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/feet/boots/revised/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/feet/boots/revised/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/feet/boots/revised/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/feet/boots/revised/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.338,
+        "cloth": 1.0,
+        "metal": 0.341
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/boots/revised/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.337,
+        "cloth": 1.0,
+        "metal": 0.322
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/boots/revised/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.379,
+        "cloth": 1.0,
+        "metal": 0.297
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/feet/boots/revised/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.368,
+        "cloth": 1.0,
+        "metal": 0.253
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "sandals",
+   "group": "feet",
+   "name": "Sandals",
+   "definition": "sheet_definitions/feet/feet_sandals.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 2.0",
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "Nila122",
+    "JaidynReiman",
+    "Matthew Krohn (makrohn)",
+    "Johannes Sj\u00f6lund (wulax)"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-roman-armor",
+    "http://opengameart.org/content/lpc-clothing-updates",
+    "https://opengameart.org/content/lpc-expanded-socks-shoes"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 15,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/feet/sandals/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets/feet/sandals/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/feet/sandals/thin/walk.png"
+       ],
+       "idle": [
+        "spritesheets/feet/sandals/thin/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/feet/sandals/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.361,
+        "cloth": 1.0,
+        "metal": 0.368
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/sandals/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.319,
+        "cloth": 1.0,
+        "metal": 0.378
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/sandals/thin/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.376,
+        "cloth": 1.0,
+        "metal": 0.379
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/feet/sandals/thin/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.33,
+        "cloth": 1.0,
+        "metal": 0.391
+       },
+       "licenses": [
+        "OGA-BY 3.0",
+        "CC-BY-SA 3.0",
+        "GPL 2.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "bowtie2",
+   "group": "neck",
+   "name": "Bowtie 2",
+   "definition": "sheet_definitions/headwear/neck/neck_bowtie2.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy"
+   ],
+   "urls": [
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing/Feminine%2C%20Thin/Accessories",
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing/Masculine%2C%20Thin/Accessories/Neckwear%2001%20-%20Bowtie",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 90,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/neck/tie/bowtie2/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/neck/tie/bowtie2/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/neck/tie/bowtie2/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/neck/tie/bowtie2/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/neck/tie/bowtie2/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.027,
+        "cloth": 1.0,
+        "metal": 0.541
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/neck/tie/bowtie2/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "body": 0.027,
+        "cloth": 1.0,
+        "metal": 0.541
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "necktie",
+   "group": "neck",
+   "name": "Necktie",
+   "definition": "sheet_definitions/headwear/neck/neck_necktie.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0"
+   ],
+   "use_license": "CC-BY-SA 3.0",
+   "sharealike_only": true,
+   "authors": [
+    "JaidynReiman",
+    "bluecarrot16",
+    "Thane Brimhall (pennomi)",
+    "laetissima",
+    "Makrohn"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-2-characters",
+    "https://opengameart.org/content/lpc-gentleman"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 90,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets-sa/neck/tie/necktie/male/walk.png"
+       ],
+       "idle": [
+        "spritesheets-sa/neck/tie/necktie/male/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets-sa/neck/tie/necktie/female/walk.png"
+       ],
+       "idle": [
+        "spritesheets-sa/neck/tie/necktie/female/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets-sa/neck/tie/necktie/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 4,
+       "palette_coverage": {
+        "body": 0.15,
+        "cloth": 1.0,
+        "metal": 0.708
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/neck/tie/necktie/male/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 4,
+       "palette_coverage": {
+        "body": 0.15,
+        "cloth": 1.0,
+        "metal": 0.708
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/neck/tie/necktie/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 4,
+       "palette_coverage": {
+        "body": 0.15,
+        "cloth": 1.0,
+        "metal": 0.708
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/neck/tie/necktie/female/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 4,
+       "palette_coverage": {
+        "body": 0.15,
+        "cloth": 1.0,
+        "metal": 0.708
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "necklace_simple",
+   "group": "accessory",
+   "name": "Simple Necklace",
+   "definition": "sheet_definitions/headwear/neck/neck_necklace_simple.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-jewelry"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 80,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/neck/necklace/simple/male/walk.png"
+       ],
+       "idle": []
+      },
+      "female": {
+       "walk": [
+        "spritesheets/neck/necklace/simple/female/walk.png"
+       ],
+       "idle": []
+      }
+     },
+     "file_info": {
+      "spritesheets/neck/necklace/simple/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "cloth": 0.769,
+        "metal": 0.892
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/neck/necklace/simple/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "cloth": 0.769,
+        "metal": 0.891
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "glasses",
+   "group": "accessory",
+   "name": "Glasses",
+   "definition": "sheet_definitions/headwear/accessories/glasses/facial_glasses.json",
+   "licenses": [
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "ElizaWy"
+   ],
+   "urls": [
+    "https://github.com/ElizaWy/LPC/tree/main/Characters/Head%20Accessories",
+    "https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 115,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/facial/glasses/glasses/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/facial/glasses/glasses/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/facial/glasses/glasses/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/facial/glasses/glasses/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/facial/glasses/glasses/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 8,
+       "palette_coverage": {
+        "cloth": 0.415,
+        "metal": 0.774
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      },
+      "spritesheets/facial/glasses/glasses/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 8,
+       "palette_coverage": {
+        "cloth": 0.415,
+        "metal": 0.774
+       },
+       "licenses": [
+        "OGA-BY 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "glasses_round",
+   "group": "accessory",
+   "name": "Round Glasses",
+   "definition": "sheet_definitions/headwear/accessories/glasses/facial_glasses_round.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0"
+   ],
+   "use_license": "CC-BY-SA 3.0",
+   "sharealike_only": true,
+   "authors": [
+    "bluecarrot16",
+    "Thane Brimhall (pennomi)",
+    "laetissima"
+   ],
+   "urls": [
+    "https://opengameart.org/content/clothing-facial-features-and-ui-elements",
+    "https://opengameart.org/content/lpc-gentleman"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 115,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets-sa/facial/glasses/round/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets-sa/facial/glasses/round/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets-sa/facial/glasses/round/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets-sa/facial/glasses/round/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets-sa/facial/glasses/round/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "cloth": 0.188,
+        "metal": 0.188
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/facial/glasses/round/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 6,
+       "palette_coverage": {
+        "cloth": 0.188,
+        "metal": 0.188
+       },
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "sunglasses",
+   "group": "accessory",
+   "name": "Sunglasses",
+   "definition": "sheet_definitions/headwear/accessories/glasses/facial_glasses_sunglasses.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0"
+   ],
+   "use_license": "CC-BY-SA 3.0",
+   "sharealike_only": true,
+   "authors": [
+    "Michael Whitlock (bigbeargames)",
+    "Thane Brimhall (pennomi)",
+    "laetissima"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-base-character-expressions",
+    "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 115,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets-sa/facial/glasses/sunglasses/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets-sa/facial/glasses/sunglasses/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets-sa/facial/glasses/sunglasses/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets-sa/facial/glasses/sunglasses/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets-sa/facial/glasses/sunglasses/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/facial/glasses/sunglasses/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "earrings_princess",
+   "group": "accessory",
+   "name": "Princess earrings",
+   "definition": "sheet_definitions/headwear/accessories/earrings/facial_earrings_princess.json",
+   "licenses": [
+    "CC0"
+   ],
+   "use_license": "CC0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-jewelry"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 115,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/facial/earrings/princess/male/walk.png"
+       ],
+       "idle": []
+      },
+      "female": {
+       "walk": [
+        "spritesheets/facial/earrings/princess/female/walk.png"
+       ],
+       "idle": []
+      }
+     },
+     "file_info": {
+      "spritesheets/facial/earrings/princess/male/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "cloth": 0.082,
+        "metal": 0.082
+       },
+       "licenses": [
+        "CC0"
+       ]
+      },
+      "spritesheets/facial/earrings/princess/female/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "cloth": 0.078,
+        "metal": 0.078
+       },
+       "licenses": [
+        "CC0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "headband_thick",
+   "group": "accessory",
+   "name": "Thick Headband",
+   "definition": "sheet_definitions/headwear/coverings/headbands/hat_headband_thick.json",
+   "licenses": [
+    "CC-BY 3.0+",
+    "GPL 3.0",
+    "OGA-BY 3.0+"
+   ],
+   "use_license": "CC-BY 3.0+",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-relm-hair-xlong-ponytail",
+    "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 125,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hat/headband/thick/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hat/headband/thick/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hat/headband/thick/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hat/headband/thick/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hat/headband/thick/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.402,
+        "cloth": 1.0,
+        "metal": 0.345
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/hat/headband/thick/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.402,
+        "cloth": 1.0,
+        "metal": 0.345
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "headband_hairtie",
+   "group": "accessory",
+   "name": "Hair Tie",
+   "definition": "sheet_definitions/headwear/coverings/headbands/hat_headband_hairtie.json",
+   "licenses": [
+    "CC-BY 3.0+",
+    "GPL 3.0",
+    "OGA-BY 3.0+"
+   ],
+   "use_license": "CC-BY 3.0+",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-relm-hair-xlong-ponytail",
+    "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+   ],
+   "recolors": {
+    "material": "cloth",
+    "palettes": [
+     "ulpc",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 125,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hat/headband/hairtie/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hat/headband/hairtie/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hat/headband/hairtie/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hat/headband/hairtie/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hat/headband/hairtie/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.383,
+        "cloth": 1.0,
+        "metal": 0.234
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/hat/headband/hairtie/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {
+        "body": 0.383,
+        "cloth": 1.0,
+        "metal": 0.234
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "hat_christmas",
+   "group": "accessory",
+   "name": "Christmas Hat",
+   "definition": "sheet_definitions/headwear/hats/holiday/hat_holiday_christmas.json",
+   "licenses": [
+    "GPL 3.0",
+    "OGA-BY 3.0"
+   ],
+   "use_license": "OGA-BY 3.0",
+   "sharealike_only": false,
+   "authors": [
+    "bluecarrot16",
+    "JaidynReiman"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-santa",
+    "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 130,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/hat/holiday/christmas/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hat/holiday/christmas/adult/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/hat/holiday/christmas/adult/walk.png"
+       ],
+       "idle": [
+        "spritesheets/hat/holiday/christmas/adult/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/hat/holiday/christmas/adult/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/hat/holiday/christmas/adult/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "OGA-BY 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "tiara",
+   "group": "accessory",
+   "name": "Tiara",
+   "definition": "sheet_definitions/headwear/hats/formal/hat_formal_tiara.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0"
+   ],
+   "use_license": "CC-BY-SA 3.0",
+   "sharealike_only": true,
+   "authors": [
+    "Luke Mehl"
+   ],
+   "urls": [
+    "https://opengameart.org/content/female-mage-clothing-set",
+    "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 130,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets-sa/hat/formal/tiara/adult/walk/tiara_gold.png",
+        "spritesheets-sa/hat/formal/tiara/adult/walk/tiara_silver.png"
+       ],
+       "idle": [
+        "spritesheets-sa/hat/formal/tiara/adult/idle/tiara_gold.png",
+        "spritesheets-sa/hat/formal/tiara/adult/idle/tiara_silver.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets-sa/hat/formal/tiara/adult/walk/tiara_gold.png",
+        "spritesheets-sa/hat/formal/tiara/adult/walk/tiara_silver.png"
+       ],
+       "idle": [
+        "spritesheets-sa/hat/formal/tiara/adult/idle/tiara_gold.png",
+        "spritesheets-sa/hat/formal/tiara/adult/idle/tiara_silver.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets-sa/hat/formal/tiara/adult/walk/tiara_gold.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/hat/formal/tiara/adult/walk/tiara_silver.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/hat/formal/tiara/adult/idle/tiara_gold.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/hat/formal/tiara/adult/idle/tiara_silver.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "tophat",
+   "group": "accessory",
+   "name": "Formal Tophat",
+   "definition": "sheet_definitions/headwear/hats/formal/hat_formal_tophat.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0"
+   ],
+   "use_license": "CC-BY-SA 3.0",
+   "sharealike_only": true,
+   "authors": [
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-gentleman",
+    "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 130,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets-sa/hat/formal/tophat/adult/walk/black.png"
+       ],
+       "idle": [
+        "spritesheets-sa/hat/formal/tophat/adult/idle/black.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets-sa/hat/formal/tophat/adult/walk/black.png"
+       ],
+       "idle": [
+        "spritesheets-sa/hat/formal/tophat/adult/idle/black.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets-sa/hat/formal/tophat/adult/walk/black.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/hat/formal/tophat/adult/idle/black.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "bowler",
+   "group": "accessory",
+   "name": "Formal Bowler Hat",
+   "definition": "sheet_definitions/headwear/hats/formal/hat_formal_bowler.json",
+   "licenses": [
+    "CC-BY-SA 3.0",
+    "GPL 3.0"
+   ],
+   "use_license": "CC-BY-SA 3.0",
+   "sharealike_only": true,
+   "authors": [
+    "bluecarrot16"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-gentleman",
+    "https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+   ],
+   "recolors": null,
+   "layers": [
+    {
+     "zPos": 130,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets-sa/hat/formal/bowler/adult/walk/black.png"
+       ],
+       "idle": [
+        "spritesheets-sa/hat/formal/bowler/adult/idle/black.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets-sa/hat/formal/bowler/adult/walk/black.png"
+       ],
+       "idle": [
+        "spritesheets-sa/hat/formal/bowler/adult/idle/black.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets-sa/hat/formal/bowler/adult/walk/black.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets-sa/hat/formal/bowler/adult/idle/black.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 5,
+       "palette_coverage": {},
+       "licenses": [
+        "CC-BY-SA 3.0",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "ears_cat",
+   "group": "accessory",
+   "name": "Cat Ears",
+   "definition": "sheet_definitions/head/furry_ears/top/head_ears_cat.json",
+   "licenses": [
+    "CC-BY 3.0+",
+    "GPL 3.0",
+    "OGA-BY 3.0+"
+   ],
+   "use_license": "CC-BY 3.0+",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-furry-ears-tails-for-rpg-sprites"
+   ],
+   "recolors": {
+    "color_1": {
+     "material": "hair",
+     "palettes": [
+      "ulpc",
+      "lpcr",
+      "all.lpcr"
+     ]
+    },
+    "color_2": {
+     "type_name": "inner_ear",
+     "label": "Inner Ear",
+     "material": "hair",
+     "base": "white",
+     "palettes": [
+      "ulpc",
+      "lpcr",
+      "all.lpcr"
+     ]
+    }
+   },
+   "layers": [
+    {
+     "zPos": 130,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/head/ears/cat/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/ears/cat/adult/fg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/head/ears/cat/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/ears/cat/adult/fg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/head/ears/cat/adult/fg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.963,
+        "cloth": 0.037,
+        "metal": 0.037
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/head/ears/cat/adult/fg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.963,
+        "cloth": 0.037,
+        "metal": 0.037
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      }
+     }
+    },
+    {
+     "zPos": 8,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/head/ears/cat/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/ears/cat/adult/bg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/head/ears/cat/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/ears/cat/adult/bg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/head/ears/cat/adult/bg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.943,
+        "cloth": 0.057,
+        "metal": 0.057
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/head/ears/cat/adult/bg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 7,
+       "palette_coverage": {
+        "hair": 0.943,
+        "cloth": 0.057,
+        "metal": 0.057
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "ears_cat_skin",
+   "group": "accessory",
+   "name": "Cat Ears Skintone",
+   "definition": "sheet_definitions/head/furry_ears/top/head_ears_cat_skin.json",
+   "licenses": [
+    "CC-BY 3.0+",
+    "GPL 3.0",
+    "OGA-BY 3.0+"
+   ],
+   "use_license": "CC-BY 3.0+",
+   "sharealike_only": false,
+   "authors": [
+    "JaidynReiman"
+   ],
+   "urls": [
+    "https://opengameart.org/content/lpc-furry-ears-tails-for-rpg-sprites"
+   ],
+   "recolors": {
+    "material": "body",
+    "palettes": [
+     "ulpc",
+     "lpcr",
+     "all.lpcr"
+    ]
+   },
+   "layers": [
+    {
+     "zPos": 131,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/head/ears/cat/skin/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/ears/cat/skin/adult/fg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/head/ears/cat/skin/adult/fg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/ears/cat/skin/adult/fg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/head/ears/cat/skin/adult/fg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {
+        "body": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/head/ears/cat/skin/adult/fg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {
+        "body": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      }
+     }
+    },
+    {
+     "zPos": 9,
+     "files": {
+      "male": {
+       "walk": [
+        "spritesheets/head/ears/cat/skin/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/ears/cat/skin/adult/bg/idle.png"
+       ]
+      },
+      "female": {
+       "walk": [
+        "spritesheets/head/ears/cat/skin/adult/bg/walk.png"
+       ],
+       "idle": [
+        "spritesheets/head/ears/cat/skin/adult/bg/idle.png"
+       ]
+      }
+     },
+     "file_info": {
+      "spritesheets/head/ears/cat/skin/adult/bg/walk.png": {
+       "size": [
+        576,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {
+        "body": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      },
+      "spritesheets/head/ears/cat/skin/adult/bg/idle.png": {
+       "size": [
+        128,
+        256
+       ],
+       "colors": 3,
+       "palette_coverage": {
+        "body": 1.0
+       },
+       "licenses": [
+        "OGA-BY 3.0+",
+        "CC-BY 3.0+",
+        "GPL 3.0"
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

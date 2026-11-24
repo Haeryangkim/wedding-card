@@ -52,16 +52,17 @@ wedding-card/
 │  │  ├─ editor/            # 관리 화면의 폼·검증·사진 업로드
 │  │  ├─ sections/          # 청첩장 본문 섹션 (표지·인사말·달력·갤러리·오시는 길 …)
 │  │  ├─ config/wedding.ts  # WeddingConfig 타입 + 데모 청첩장(김신랑 ♥ 박신부) 내용
-│  │  ├─ guestbook/         # 픽셀 방명록 (캐릭터 생성·맵·저장소)
+│  │  ├─ guestbook/         # 픽셀 방명록 (캐릭터 생성·맵·저장소, styles/ = 캐릭터 그림체들)
 │  │  ├─ lib/               # 길안내·캘린더·ics 유틸
 │  │  └─ styles/            # 디자인 토큰·폰트
-│  ├─ public/               # 정적 파일 (기본 미리보기 이미지 og.png 등)
+│  ├─ public/               # 정적 파일 (기본 미리보기 이미지 og.png, 그림 출처 CREDITS.txt 등)
 │  ├─ Dockerfile            # 웹 이미지 (빌드 → nginx)
 │  └─ nginx.conf            # SPA 서빙 + /api · /uploads · /w 프록시(SSE 지원)
 ├─ server/                  # 플랫폼 API (Node 24, 외부 의존성 0개)
 │  ├─ src/                  # node:http + node:sqlite
 │  ├─ test/                 # node:test 통합 테스트
 │  └─ Dockerfile            # API 이미지 (비루트, /data 볼륨, 헬스체크)
+├─ art/                     # 캐릭터 그림체 원본과 아틀라스 빌드 스크립트 (아래 "Art credits")
 ├─ docker-compose.yml       # web + api 한 번에 (자체 호스팅용)
 ├─ .env.example             # compose 환경변수 예시
 └─ .github/workflows/       # ci.yml(검증) · deploy.yml(Pages 배포)
@@ -228,6 +229,7 @@ npm test               # node --test (외부 의존성 없음, 실제 네트워�
 | `VITE_BASE` | 서빙 하위 경로. 자체 도메인/도커는 `/`, GitHub Pages 프로젝트 페이지는 `/<repo>/` | `/` |
 | `VITE_SITE_URL` | 배포된 사이트의 절대 URL(랜딩·데모의 OG 미리보기·캘린더 링크). 예 `https://our.wedding/` | (빈 값) |
 | `VITE_API_URL` | 플랫폼 API 주소. `/` = 같은 오리진(`/api`), **빈 값 = 데모 전용**, 그 외 = 해당 서버 | (빈 값) |
+| `VITE_REF_STYLES` | `1` 이면 비공개 시험용 캐릭터 그림체(타사 게임 그림을 그대로 쓴 `msref`·`acref`)를 켭니다. 그림 파일이 저장소에 없으므로 `art/msref/build.py`·`art/acref/build.py` 로 만들어 둔 컴퓨터에서 빌드할 때만 나타납니다. **공개 배포에서는 비워 두세요** | (빈 값) |
 
 ### API 서버
 
@@ -311,6 +313,25 @@ Pages 프론트를 따로 띄운 API 에 연결하려면, API 서버의 `CORS_OR
 카카오**내비** 길안내는 공식적으로 JavaScript SDK + 도메인 등록이 필요합니다.
 키가 없어도 카카오맵/네이버지도/티맵 길안내는 동작합니다. 키는 사이트 도메인에 묶이는 값이라
 청첩장별로 저장하지 않습니다(서버는 `config.kakaoJsKey` 가 와도 버립니다).
+
+---
+
+## 🎨 Art credits (그림 출처)
+
+하객 캐릭터 그림체 가운데 두 가지는 오픈 라이선스 도트 그림을 색만 바꾸고 다시 묶어 씁니다.
+앱 안에서는 캐릭터 만들기 화면의 "그림 출처 · 저작자 보기" 링크가 [`web/public/CREDITS.txt`](web/public/CREDITS.txt)
+(배포 주소의 `/CREDITS.txt`)를 엽니다 — 저작자 전체 목록은 그 파일이 기준입니다.
+
+| 그림체 | 원본 | 라이선스 | 자세히 |
+|---|---|---|---|
+| LPC 도트 (`lpc`) | [Liberated Pixel Cup](http://opengameart.org/content/lpc-collection) 캐릭터 — [Universal LPC Spritesheet Character Generator](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator) 에서 고른 파츠 | OGA-BY 3.0 / CC-BY 3.0 (일부 CC0). 턱시도 재킷·조끼·넥타이·티아라·모자·안경 일부는 **CC-BY-SA 3.0** 이라, 조합된 캐릭터 그림도 같은 조건으로 공개됩니다 (그림에만 해당, 앱 코드는 아님) | [`art/lpc/LICENSE.md`](art/lpc/LICENSE.md), 파일별 목록 [`web/public/CREDITS-lpc.csv`](web/public/CREDITS-lpc.csv) |
+| RPG 치비 (`cabbit`) | [Stendhal](https://stendhalgame.org) 프로젝트의 의상 스프라이트 — Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge) 외 | OGA-BY 3.0 / CC-BY 3.0, 몸·얼굴은 CC0 | [`art/cabbit/LICENSE.md`](art/cabbit/LICENSE.md) |
+
+- 원본 시트는 `art/<그림체>/raw/` 에 함께 들어 있고, `art/<그림체>/build.py` 가 앱용 아틀라스(`web/src/guestbook/styles/<그림체>/assets/`)를 다시 만듭니다.
+  `python -I art/lpc/build.py --no-sa` 는 CC-BY-SA 파츠를 빼고 만듭니다 (신랑·신부 의상과 옵션 개수가 달라지므로 `registry.ts` 의 개수도 함께 고쳐야 합니다).
+- `art/lpc/build.py` 를 다시 돌렸다면 `web/src/guestbook/styles/lpc/assets/credits.csv` 를 `web/public/CREDITS-lpc.csv` 로 복사합니다 (테스트가 두 파일이 같은지 확인합니다).
+- `msref`·`acref` 는 타사 게임 그림을 그대로 쓴 **비공개 품질 시험용**입니다. 그림 파일은 저장소에 올리지 않으며(`.gitignore`),
+  `VITE_REF_STYLES=1` 로 빌드하고 그림 파일이 있을 때만 나타납니다. 그 밖의 빌드에서는 번들에 들어가지 않고, 그 그림체로 저장된 하객은 기본 픽셀로 보입니다.
 
 ---
 

@@ -18,7 +18,7 @@ import { randomUUID } from 'node:crypto'
  * @property {number} outfit
  * @property {number} outfitColor
  * @property {number} accessory
- * @property {'pixel' | 'maple' | 'forest' | 'doll'} [style] 하객이 고른 그림체 (없으면 기본 픽셀 — 예전 글)
+ * @property {'pixel' | 'maple' | 'forest' | 'doll' | 'lpc' | 'cabbit' | 'msref' | 'acref'} [style] 하객이 고른 그림체 (없으면 기본 픽셀 — 예전 글)
  */
 
 /**

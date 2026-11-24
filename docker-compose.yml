@@ -79,6 +79,8 @@ services:
         VITE_BASE: ${VITE_BASE:-/}
         VITE_SITE_URL: ${VITE_SITE_URL:-}
         VITE_API_URL: ${VITE_API_URL:-/}
+        # "1" = 비공개 시험용 그림체(타사 게임 그림)를 켠다. 기본은 꺼짐 — 공개 배포에서는 비워 둔다.
+        VITE_REF_STYLES: ${VITE_REF_STYLES:-}
     ports:
       - "${WEB_PORT:-8080}:80"
     depends_on:

@@ -128,7 +128,8 @@ test('캐릭터 그림체(style)는 선택 필드: 저장되어 그대로 돌아
   try {
     await createWedding(fresh.base, SLUG)
     const parts = { skin: 1, hairStyle: 2, hairColor: 3, outfit: 0, outfitColor: 4, accessory: 0 }
-    for (const style of ['pixel', 'maple', 'forest']) {
+    const styles = ['pixel', 'maple', 'forest', 'doll', 'lpc', 'cabbit', 'msref', 'acref']
+    for (const style of styles) {
       const res = await postGuest(fresh.base, SLUG, validGuest({ name: style, appearance: { ...parts, style } }))
       assert.equal(res.status, 201, `style ${style}`)
       assert.deepEqual((await res.json()).appearance, { ...parts, style })
@@ -140,7 +141,7 @@ test('캐릭터 그림체(style)는 선택 필드: 저장되어 그대로 돌아
     const list = await (await fetch(`${fresh.base}/api/weddings/${SLUG}/guests`)).json()
     assert.deepEqual(
       list.map((/** @type {any} */ g) => [g.name, g.appearance.style]),
-      [['pixel', 'pixel'], ['maple', 'maple'], ['forest', 'forest'], ['옛방식', undefined]],
+      [...styles.map((style) => [style, style]), ['옛방식', undefined]],
     )
   } finally {
     await fresh.stop()

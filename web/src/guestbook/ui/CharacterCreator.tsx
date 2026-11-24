@@ -49,13 +49,11 @@ export function CharacterCreator({ value, onChange, memory, hideStyles }: Charac
 
   // 고르지 않은 그림체의 카드에도 "고르면 이 캐릭터가 된다" 는 견본을 보여 준다:
   // 그 그림체로 만들던 캐릭터가 있으면 그것, 없으면 이 화면이 뜰 때 한 번 정한 랜덤 캐릭터
-  const [fresh] = useState<Record<StyleId, Appearance>>(() => ({
-    pixel: randomAppearanceFor('pixel'),
-    maple: randomAppearanceFor('maple'),
-    forest: randomAppearanceFor('forest'),
-    doll: randomAppearanceFor('doll'),
-  }))
-  const sampleOf = (id: StyleId): Appearance => (id === styleId ? value : (mem.current[id] ?? fresh[id]))
+  const [fresh] = useState<StyleMemory>(() =>
+    Object.fromEntries(STYLE_IDS.map((id) => [id, randomAppearanceFor(id)])),
+  )
+  const sampleOf = (id: StyleId): Appearance =>
+    id === styleId ? value : (mem.current[id] ?? fresh[id] ?? randomAppearanceFor(id))
 
   const rotate = () => setDir((d) => DIR_CYCLE[(DIR_CYCLE.indexOf(d) + 1) % DIR_CYCLE.length])
   const emit = (next: Appearance) => {
@@ -129,7 +127,8 @@ export function CharacterCreator({ value, onChange, memory, hideStyles }: Charac
         </p>
       ) : (
         <div className="cc-parts">
-          {style.partDefs.map((part) => (
+          {/* 옵션이 하나뿐인 파츠(통짜 그림인 그림체의 피부·의상 등)는 고를 것이 없으니 보이지 않는다 */}
+          {style.partDefs.filter((part) => part.options.length > 1).map((part) => (
             <div className="cc-row" key={part.key}>
               <div className="cc-row-label">{part.label}</div>
               <div className="cc-options" role="group" aria-label={part.label}>
@@ -178,6 +177,15 @@ export function CharacterCreator({ value, onChange, memory, hideStyles }: Charac
             </div>
           ))}
         </div>
+      )}
+
+      {STYLE_META[styleId].credits && (
+        <p className="cc-credits">
+          이 그림체는 오픈 라이선스 도트 그림을 사용해요.{' '}
+          <a href={`${import.meta.env.BASE_URL}CREDITS.txt`} target="_blank" rel="noreferrer">
+            그림 출처 · 저작자 보기
+          </a>
+        </p>
       )}
     </div>
   )

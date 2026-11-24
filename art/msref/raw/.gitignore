@@ -1,0 +1,3 @@
+# 내려받은 타사 게임 리소스(캐시) — 저장소에 올리지 않는다. art/msref/build.py fetch 로 다시 받는다
+*
+!.gitignore

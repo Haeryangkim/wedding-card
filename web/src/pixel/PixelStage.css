@@ -357,20 +357,19 @@ html.px-locked body {
   }
 }
 
-/* 데모: 그림체 스위치 — 위쪽 바 아래 줄에 가운데로 */
+/* 데모: 그림체 스위치 — 위쪽 바 아래 줄에 화면 폭 가득 (그림체가 많으면 StyleSwitch 가 여러 줄로 접는다) */
 .px-top {
   flex-wrap: wrap;
 }
 .px-style {
-  display: flex;
+  display: grid;
   width: 100%;
   margin: 0 8px 4px 0;
 }
 .px-style .style-switch__btn {
-  flex: 1;
-}
-.px-style .style-switch__btn {
   min-height: 30px;
+  padding: 0 2px;
   font-family: var(--font-pixel);
   font-size: 11px;
+  letter-spacing: 0;
 }

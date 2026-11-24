@@ -163,6 +163,20 @@
   transform: translateY(1px);
 }
 
+/* 오픈 라이선스 그림체의 저작자 표시 링크 */
+.cc-credits {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--ink-faint);
+}
+.cc-credits a {
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* ── 파츠 선택 영역 ────────────────────────────────── */
 .cc-parts {
   display: flex;

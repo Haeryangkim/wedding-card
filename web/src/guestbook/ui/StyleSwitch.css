@@ -1,5 +1,9 @@
+/* 그림체 스위치: 칸 수(--style-switch-cols)는 StyleSwitch 가 그림체 개수로 정한다 — 많으면 여러 줄 */
 .style-switch {
-  display: inline-flex;
+  display: inline-grid;
+  grid-template-columns: repeat(var(--style-switch-cols, 4), minmax(0, 1fr));
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 3px;
   gap: 2px;
   border-radius: 999px;
@@ -7,16 +11,25 @@
   border: 1px solid var(--line, #e3d9c8);
   box-shadow: 0 1px 4px rgb(60 45 30 / 0.12);
 }
+/* 여러 줄이면 알약 모양 대신 둥근 상자 */
+.style-switch--rows {
+  border-radius: 20px;
+}
 .style-switch__btn {
+  min-width: 0;
   min-height: 34px;
-  padding: 0 12px;
+  padding: 0 10px;
   border: 0;
   border-radius: 999px;
   background: none;
   color: var(--ink-soft, #6b5f52);
   font: inherit;
   font-size: 0.78rem;
-  white-space: nowrap;
+  letter-spacing: -0.02em;
+  /* 칸이 좁으면 띄어쓴 자리에서 두 줄로 접는다 (글자 중간에서는 끊지 않는다) — 이름이 잘리지 않게 */
+  line-height: 1.15;
+  word-break: keep-all;
+  overflow: hidden;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -26,5 +39,17 @@
 }
 .style-switch__btn:focus-visible {
   outline: 2px solid var(--accent, #b98a5e);
-  outline-offset: 2px;
+  outline-offset: -2px;
+}
+/* 좁은 화면: 칸 안쪽 여백을 줄여 이름이 잘리지 않게 */
+@media (max-width: 420px) {
+  .style-switch__btn {
+    padding: 0 6px;
+  }
+}
+@media (max-width: 350px) {
+  .style-switch__btn {
+    padding: 0 3px;
+    font-size: 0.72rem;
+  }
 }

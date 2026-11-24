@@ -6,7 +6,15 @@
  */
 import { useMemo, useSyncExternalStore } from 'react'
 import type { Appearance, GuestEntry } from './types'
-import { DEFAULT_STYLE, normalizeAnyAppearance, styleOf, toStyleId, type StyleId } from './styles/registry'
+import {
+  DEFAULT_STYLE,
+  GUEST_EXCLUDED,
+  normalizeAnyAppearance,
+  randomAppearanceFor,
+  styleOf,
+  toStyleId,
+  type StyleId,
+} from './styles/registry'
 
 const KEY = 'wc:demo-scene-style'
 const listeners = new Set<() => void>()
@@ -41,9 +49,32 @@ function subscribe(fn: () => void): () => void {
   return () => listeners.delete(fn)
 }
 
-/** 외형을 다른 그림체로 옮긴다 — 파츠 번호는 그대로 두고 그 그림체의 범위로만 자른다 */
+/** 외형 하나에서 늘 같은 난수열이 나오게 한다: 파츠 번호 여섯 개를 섞은 시드로 도는 mulberry32 */
+function seededRandom(a: Appearance): () => number {
+  let h = 2166136261
+  for (const v of [a.skin, a.hairStyle, a.hairColor, a.outfit, a.outfitColor, a.accessory]) {
+    h = Math.imul(h ^ (v + 1), 16777619)
+  }
+  return () => {
+    h = (h + 0x6d2b79f5) | 0
+    let t = Math.imul(h ^ (h >>> 15), 1 | h)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+/**
+ * 외형을 다른 그림체로 옮긴다.
+ *  - 기본 픽셀·SD 캐릭터·숲속 주민: 파츠 번호는 그대로 두고 그 그림체의 범위로만 자른다.
+ *  - 신랑·신부 몫의 옷·장식이 따로 있는 그림체(GUEST_EXCLUDED): 번호의 뜻이 전혀 달라 그대로 옮기면
+ *    하객이 턱시도·웨딩드레스를 입게 된다. 그래서 원래 외형을 시드로 그 그림체의 "하객용 랜덤" 을 뽑는다
+ *    (같은 하객은 언제나 같은 모습, 신랑·신부 몫은 빠지고, 몸에 맞는 머리 길이 같은 규칙도 그대로 적용된다).
+ */
 export function restyle(appearance: Appearance, id: StyleId): Appearance {
   if (styleOf(appearance) === id) return appearance
+  if (id !== 'doll' && GUEST_EXCLUDED[id]) {
+    return randomAppearanceFor(id, seededRandom(appearance))
+  }
   if (id === 'doll') {
     // 도트 인형: 하객이 턱시도·웨딩드레스(0·1번)를 입지 않게 하고, 옷은 그림 원래 색으로
     return normalizeAnyAppearance({

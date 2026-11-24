@@ -1,0 +1,63 @@
+file,layer,index,description,authors,license,source
+data/sprites/outfit/body/000-nonude.png,body,000-nonude,male,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",CC0,https://opengameart.org/node/84455
+data/sprites/outfit/body/002-nonude.png,body,002-nonude,female,"Svetlana Kushnariova (Cabbit), bleutailfly, Jordan Irwin (AntumDeluge), nhnb",CC0,https://opengameart.org/node/84455
+data/sprites/outfit/head/000.png,head,000,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",CC0,https://opengameart.org/node/84455
+data/sprites/outfit/eyes/000.png,eyes,000,,"(Stendhal project, no individual author listed)",CC0,Stendhal
+data/sprites/outfit/eyes/001.png,eyes,001,,"(Stendhal project, no individual author listed)",CC0,Stendhal
+data/sprites/outfit/eyes/004.png,eyes,004,,"(Stendhal project, no individual author listed)",CC0,Stendhal
+data/sprites/outfit/eyes/017.png,eyes,017,simple dots,"(Stendhal project, no individual author listed)",CC0,Stendhal
+data/sprites/outfit/eyes/023.png,eyes,023,,"(Stendhal project, no individual author listed)",CC0,Stendhal
+data/sprites/outfit/eyes/024.png,eyes,024,,"(Stendhal project, no individual author listed)",CC0,Stendhal
+data/sprites/outfit/mouth/001.png,mouth,001,plain,"(Stendhal project, no individual author listed)",CC0,Stendhal
+data/sprites/outfit/mouth/002.png,mouth,002,lips,"(Stendhal project, no individual author listed)",CC0,Stendhal
+data/sprites/outfit/mouth/003.png,mouth,003,grin,Jordan Irwin (AntumDeluge),CC0,Stendhal
+data/sprites/outfit/hair/001.png,hair,001,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hair/002.png,hair,002,,"diamonddmgirl, Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72198
+data/sprites/outfit/hair/005.png,hair,005,,Jordan Irwin (AntumDeluge),OGA-BY 3.0,Stendhal
+data/sprites/outfit/hair/007.png,hair,007,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hair/008.png,hair,008,,"Svetlana Kushnariova (Cabbit), diamonddmgirl, Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72198
+data/sprites/outfit/hair/016.png,hair,016,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hair/020.png,hair,020,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/79804
+data/sprites/outfit/hair/021.png,hair,021,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hair/022.png,hair,022,,"Svetlana Kushnariova (Cabbit), Tracy, Jordan Irwin (AntumDeluge)",CC-BY 3.0,"https://opengameart.org/node/72969, https://opengameart.org/node/13927"
+data/sprites/outfit/hair/032.png,hair,032,,Jordan Irwin (AntumDeluge),OGA-BY 3.0,Stendhal
+data/sprites/outfit/hair/041.png,hair,041,,Jordan Irwin (AntumDeluge),OGA-BY 3.0,Stendhal
+data/sprites/outfit/hair/043.png,hair,043,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hair/047.png,hair,047,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hair/048.png,hair,048,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hair/050.png,hair,050,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hair/052.png,hair,052,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hair/053.png,hair,053,,"diamonddmgirl, Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/83661
+data/sprites/outfit/hair/998.png,hair,998,,Jordan Irwin (AntumDeluge),OGA-BY 3.0,Stendhal
+data/sprites/outfit/dress/987.png,dress,987,tuxedo,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/83523
+data/sprites/outfit/dress/988.png,dress,988,wedding gown,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/83523
+data/sprites/outfit/dress/053.png,dress,053,formal vest,"Svetlana Kushnariova (Cabbit), bleutailfly, Jordan Irwin (AntumDeluge)",OGA-BY 3.0,"Stendhal, https://opengameart.org/node/72969"
+data/sprites/outfit/dress/977.png,dress,977,,"Svetlana Kushnariova (Cabbit), olonu, Jordan Irwin (AntumDeluge)",OGA-BY 3.0,"Stendhal, https://github.com/arianne/stendhal/issues/130"
+data/sprites/outfit/dress/968.png,dress,968,,"Svetlana Kushnariova (Cabbit), olonu, Jordan Irwin (AntumDeluge)",OGA-BY 3.0,"Stendhal, https://github.com/arianne/stendhal/issues/95, https://opengameart.org/node/72969"
+data/sprites/outfit/dress/006.png,dress,006,denim,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/dress/005.png,dress,005,,bleutailfly,OGA-BY 3.0,Stendhal
+data/sprites/outfit/dress/054.png,dress,054,casual buttons,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/dress/010.png,dress,010,,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/dress/017.png,dress,017,dress,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/dress/018.png,dress,018,lavender dress,bleutailfly,OGA-BY 3.0,Stendhal
+data/sprites/outfit/dress/024.png,dress,024,red dress,bleutailfly,OGA-BY 3.0,Stendhal
+data/sprites/outfit/dress/025.png,dress,025,dress / skirt,"diamonddmgirl, Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72198
+data/sprites/outfit/dress/985.png,dress,985,dress,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/dress/982.png,dress,982,dress,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/dress/033.png,dress,033,overalls,bleutailfly,OGA-BY 3.0,Stendhal
+data/sprites/outfit/dress/981.png,dress,981,bunny suit,"Svetlana Kushnariova (Cabbit), Stephen Challener (Redshrike), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/14851
+data/sprites/outfit/dress/971.png,dress,971,dress & apron,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hat/991.png,hat,991,wedding veil,Jordan Irwin (AntumDeluge),OGA-BY 3.0,https://opengameart.org/node/83523
+data/sprites/outfit/hat/988.png,hat,988,crown,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,"Stendhal, https://opengameart.org/node/72969"
+data/sprites/outfit/hat/014.png,hat,014,bowler,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hat/011.png,hat,011,fedora/panama,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hat/009.png,hat,009,beret,Jordan Irwin (AntumDeluge),OGA-BY 3.0,https://opengameart.org/node/81952
+data/sprites/outfit/hat/012.png,hat,012,boggin,bleutailfly,OGA-BY 3.0,Stendhal
+data/sprites/outfit/hat/999.png,hat,999,Santa hat,Svetlana Kushnariova (Cabbit),OGA-BY 3.0,https://opengameart.org/node/72969
+data/sprites/outfit/hat/017.png,hat,017,fedora,"Svetlana Kushnariova (Cabbit), Jordan Irwin (AntumDeluge)",OGA-BY 3.0,"Stendhal, https://opengameart.org/node/72969"
+data/sprites/outfit/mask/001.png,mask,001,glasses,bleutailfly,OGA-BY 3.0,Stendhal
+data/sprites/outfit/mask/008.png,mask,008,earrings,Jordan Irwin (AntumDeluge),OGA-BY 3.0,Stendhal
+data/sprites/outfit/detail/001.png,detail,001,balloon,Jordan Irwin (AntumDeluge),OGA-BY 3.0,"Stendhal, https://opengameart.org/node/101299"
+data/sprites/outfit/detail/001-rear.png,detail,001-rear,balloon,Jordan Irwin (AntumDeluge),OGA-BY 3.0,"Stendhal, https://opengameart.org/node/101299"
+data/sprites/outfit/detail/002.png,detail,002,balloon,Jordan Irwin (AntumDeluge),OGA-BY 3.0,"Stendhal, https://opengameart.org/node/101299"
+data/sprites/outfit/detail/002-rear.png,detail,002-rear,balloon,Jordan Irwin (AntumDeluge),OGA-BY 3.0,"Stendhal, https://opengameart.org/node/101299"
